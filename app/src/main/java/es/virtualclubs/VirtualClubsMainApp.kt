@@ -4,7 +4,7 @@ import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import es.iesfernandoaguilar.ui.navigation.AppNavHost
+import es.virtualclubs.presentation.navigation.AppNavHost
 
 
 @Composable

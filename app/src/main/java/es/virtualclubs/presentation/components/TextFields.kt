@@ -8,6 +8,7 @@ import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,7 +28,7 @@ import es.virtualclubs.R
 fun RoundedTextField(
     value: String,
     onValueChange: (String) -> Unit,
-    @StringRes placeholder: Int,
+    @StringRes placeholder: Int? = null,
     leadingIcon: ImageVector,
     isPassword: Boolean = false,
     keyboardType: KeyboardType = KeyboardType.Text,
@@ -38,7 +39,7 @@ fun RoundedTextField(
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
-        placeholder = { Text(stringResource(placeholder)) },
+        placeholder = { if (placeholder != null) Text(stringResource(placeholder)) },
         leadingIcon = { Icon(leadingIcon, contentDescription = null) },
         trailingIcon = {
             // Toggle visibility icon for password fields
@@ -64,6 +65,7 @@ fun RoundedTextField(
         ),
         singleLine = true,
         readOnly = readOnly,
+        shape = MaterialTheme.shapes.medium,
         modifier = Modifier.fillMaxWidth()
     )
 }
