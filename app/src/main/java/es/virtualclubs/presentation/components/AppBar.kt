@@ -1,14 +1,11 @@
 package es.virtualclubs.presentation.components
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
@@ -20,28 +17,28 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
-import es.virtualclubs.models.objects.ErrorHandler
-import es.virtualclubs.models.objects.NotifyHandler
+import es.virtualclubs.presentation.handlers.UiMessage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppBar(
     canGoBack: Boolean,
     @StringRes titleResId: Int,
-    titleString: String? = null,
     modifier: Modifier = Modifier,
+    titleString: String? = null,
     onNavigateBack: (() -> Unit)? = null,
-    actions: (@Composable RowScope.() -> Unit)? = null
+    actions: (@Composable RowScope.() -> Unit)? = null,
+    uiMessage: UiMessage = UiMessage.None
 ) {
-    val errorMessageId = ErrorHandler.errorMessage
-    val errorAction = ErrorHandler.errorAction
-    val errorActionNameId = ErrorHandler.errorActionName
-    val notifyMessageId = NotifyHandler.notifyMessage
+    var message by remember { mutableStateOf(uiMessage) }
 
     Column(modifier = modifier) {
 
@@ -59,9 +56,14 @@ fun AppBar(
         )
 
         // Optional error or notification message bar
-        val messageId = errorMessageId ?: notifyMessageId
+        val messageId = when (message) {
+            is UiMessage.None -> null
+            is UiMessage.Error -> (message as UiMessage.Error).messageKey
+            is UiMessage.Notification -> (message as UiMessage.Notification).messageKey
+        }
+
         if (messageId != null) {
-            val isError = errorMessageId != null
+            val isError = message is UiMessage.Error
 
             Surface(
                 color = if (isError) MaterialTheme.colorScheme.errorContainer
@@ -82,23 +84,9 @@ fun AppBar(
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
 
-                    // Optional retry or action text if error
-                    if (isError && errorAction != null && errorActionNameId != null) {
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = stringResource(id = errorActionNameId),
-                            modifier = Modifier.clickable { errorAction() },
-                            style = MaterialTheme.typography.bodyMedium.copy(
-                                textDecoration = TextDecoration.Underline,
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                        )
-                    }
-
                     // Close icon to dismiss message
                     IconButton(onClick = {
-                        ErrorHandler.clear()
-                        NotifyHandler.clear()
+                        message = UiMessage.None
                     }) {
                         Icon(Icons.Default.Close, contentDescription = "Close")
                     }

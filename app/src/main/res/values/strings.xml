@@ -267,4 +267,7 @@
     <string name="created_room">Sala creada con éxito</string>
     <string name="deleted_room">Sala eliminada con éxito</string>
     <string name="updated_room">Sala actualizada con éxito</string>
+    <string name="user_already_exists">El usuario ya existe</string>
+    <string name="settings">Ajustes</string>
+    <string name="email_placeholder">johndoe@gmail.com</string>
 </resources>

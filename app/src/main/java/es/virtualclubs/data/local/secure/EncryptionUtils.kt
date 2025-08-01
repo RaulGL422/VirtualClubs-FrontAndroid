@@ -1,0 +1,53 @@
+package es.virtualclubs.data.local.secure
+
+import android.security.keystore.*
+import java.nio.charset.StandardCharsets
+import java.security.*
+import javax.crypto.*
+import javax.crypto.spec.GCMParameterSpec
+import kotlin.experimental.and
+
+object EncryptionUtils {
+    private const val KEY_ALIAS = "secure_user_key"
+    private const val TRANSFORMATION = "AES/GCM/NoPadding"
+    private const val ANDROID_KEYSTORE = "AndroidKeyStore"
+
+    private fun getOrCreateSecretKey(): SecretKey {
+        val keyStore = KeyStore.getInstance(ANDROID_KEYSTORE).apply { load(null) }
+
+        if (keyStore.containsAlias(KEY_ALIAS)) {
+            return (keyStore.getEntry(KEY_ALIAS, null) as KeyStore.SecretKeyEntry).secretKey
+        }
+
+        val keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, ANDROID_KEYSTORE)
+        val spec = KeyGenParameterSpec.Builder(
+            KEY_ALIAS,
+            KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
+        ).run {
+            setBlockModes(KeyProperties.BLOCK_MODE_GCM)
+            setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
+            setKeySize(256)
+            build()
+        }
+
+        keyGenerator.init(spec)
+        return keyGenerator.generateKey()
+    }
+
+    fun encrypt(input: String): ByteArray {
+        val cipher = Cipher.getInstance(TRANSFORMATION)
+        cipher.init(Cipher.ENCRYPT_MODE, getOrCreateSecretKey())
+        val iv = cipher.iv
+        val encrypted = cipher.doFinal(input.toByteArray(StandardCharsets.UTF_8))
+        return iv + encrypted
+    }
+
+    fun decrypt(encryptedInput: ByteArray): String {
+        val cipher = Cipher.getInstance(TRANSFORMATION)
+        val iv = encryptedInput.copyOfRange(0, 12)
+        val data = encryptedInput.copyOfRange(12, encryptedInput.size)
+        val spec = GCMParameterSpec(128, iv)
+        cipher.init(Cipher.DECRYPT_MODE, getOrCreateSecretKey(), spec)
+        return String(cipher.doFinal(data), StandardCharsets.UTF_8)
+    }
+}
