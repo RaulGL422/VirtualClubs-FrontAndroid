@@ -7,7 +7,12 @@ import dagger.hilt.components.SingletonComponent
 import es.virtualclubs.BuildConfig
 import es.virtualclubs.data.remote.api.AuthApi
 import es.virtualclubs.data.repository.AuthRepositoryImpl
+import es.virtualclubs.data.repository.SafeCall
 import es.virtualclubs.domain.repository.AuthRepository
+import es.virtualclubs.domain.usecase.RefreshTokenUseCase
+import es.virtualclubs.domain.usecase.token.GetRefreshTokenUseCase
+import es.virtualclubs.domain.usecase.token.SaveTokensUseCase
+import es.virtualclubs.presentation.navigation.SessionManager
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -44,6 +49,11 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideAuthRepository(api: AuthApi): AuthRepository =
-        AuthRepositoryImpl(api)
+    fun provideAuthRepository(api: AuthApi, safeCall: SafeCall): AuthRepository =
+        AuthRepositoryImpl(api, safeCall)
+
+    @Provides
+    @Singleton
+    fun provideSafeCall(sessionManager: SessionManager, refresh: RefreshTokenUseCase, refreshTokenUseCase: GetRefreshTokenUseCase, saveTokensUseCase: SaveTokensUseCase): SafeCall =
+        SafeCall(sessionManager, refresh, refreshTokenUseCase, saveTokensUseCase)
 }

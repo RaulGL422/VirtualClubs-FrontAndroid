@@ -2,9 +2,12 @@ package es.virtualclubs
 
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import es.virtualclubs.presentation.navigation.AppNavHost
+import es.virtualclubs.presentation.navigation.AppNavigator
+import es.virtualclubs.presentation.navigation.AppNavigatorImpl
 
 
 @Composable
@@ -20,7 +23,8 @@ fun VirtualClubsMainApp(
     }
 
     // Initialize Nav Host
-    AppNavHost(navController, screenType)
+    val navigator: AppNavigatorImpl = hiltViewModel()
+    AppNavHost(navController, screenType, navigator)
 }
 
 // Enum for screen types based on window size.

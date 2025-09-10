@@ -1,6 +1,7 @@
 package es.virtualclubs.presentation.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -12,9 +13,11 @@ import es.virtualclubs.presentation.screens.home.HomePage
 fun AppNavHost(
     navController: NavHostController,
     screenType: ScreenType,
+    appNavigator: AppNavigatorImpl = AppNavigatorImpl()
 ) {
-    val navigateToSettings = { navController.navigate(Screen.Settings.route) }
-    val navigateBack: () -> Unit = { navController.popBackStack() }
+    LaunchedEffect(navController) {
+        appNavigator.setNavController(navController)
+    }
 
     NavHost(
         navController = navController,
@@ -22,17 +25,12 @@ fun AppNavHost(
     ) {
         composable(Screen.Auth.route) {
             LoginPage(
-                onSettingsTap = navigateToSettings
+                onSettingsTap = { appNavigator.navigateToSettings() },
+                screenType = screenType,
+                onLogged = { appNavigator.navigateToHome() },
+                onForgottedPass = { }
             )
         }
-
-//        composable(Screen.Settings.route) {
-//            SettingsPage(
-//                title = SettingsDestination.titleRes,
-//                onNavigateBack = navigateBack,
-//                screenType = screenType
-//            )
-//        }
 
         composable(Screen.Home.route) {
             HomePage()

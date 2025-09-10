@@ -8,3 +8,9 @@ class LogoutUserUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(refreshToken: String) = repository.logout(refreshToken)
 }
+
+class LogoutUserUseCaseFactory @Inject constructor(
+    private val repository: AuthRepository
+) {
+    fun create(): LogoutUserUseCase = LogoutUserUseCase(repository)
+}

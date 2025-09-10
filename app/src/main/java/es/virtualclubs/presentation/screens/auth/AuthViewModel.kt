@@ -20,10 +20,8 @@ import es.virtualclubs.domain.repository.AuthRepository
 import es.virtualclubs.domain.usecase.token.GetRefreshTokenUseCase
 import es.virtualclubs.domain.usecase.token.SaveTokensUseCase
 import jakarta.inject.Inject
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
@@ -45,8 +43,6 @@ class AuthViewModel @Inject constructor(
 
     // Google
     val oneTapClientGoogle = Identity.getSignInClient(context)
-    private val _signInResultGoogle = MutableSharedFlow<Result<String>>()
-    val signInResultGoogle = _signInResultGoogle.asSharedFlow()
 
     var googleSignIn = BeginSignInRequest.builder()
         .setGoogleIdTokenRequestOptions(
@@ -59,7 +55,9 @@ class AuthViewModel @Inject constructor(
         .setAutoSelectEnabled(true)
         .build()
 
-    fun beginSignInGoogle(activity: Activity, launcher: ManagedActivityResultLauncher<IntentSenderRequest, ActivityResult>) {
+    fun beginSignInGoogle(launcher: ManagedActivityResultLauncher<IntentSenderRequest, ActivityResult>) {
+        _uiState.value = AuthUiState.AttemptingAuth
+
         oneTapClientGoogle.beginSignIn(googleSignIn)
             .addOnSuccessListener { result ->
                 try {
@@ -67,19 +65,22 @@ class AuthViewModel @Inject constructor(
                         IntentSenderRequest.Builder(result.pendingIntent.intentSender).build()
                     )
                 } catch (e: Exception) {
-                    viewModelScope.launch {
-                        _signInResultGoogle.emit(Result.failure(Exception("Error lanzando intent: ${e.message}")))
-                    }
+                    onLoginFailed("google_login_launch_failed")
                 }
             }
             .addOnFailureListener { e ->
-                viewModelScope.launch {
-                    _signInResultGoogle.emit(Result.failure(Exception("Error iniciando sign-in: ${e.message}")))
-                }
+                onLoginFailed("google_login_sign-in_failed")
             }
     }
 
-    fun handleSignInResultGoogle(data: Intent?) {
+    fun handleSignInResultGoogle(activityResult: ActivityResult) {
+        if (activityResult.resultCode != Activity.RESULT_OK) {
+            onLoginFailed("google_login_sign-in_failed")
+            return
+        }
+
+        val data = activityResult.data
+
         try {
             val credential = oneTapClientGoogle.getSignInCredentialFromIntent(data)
             val idToken = credential.googleIdToken
@@ -88,27 +89,27 @@ class AuthViewModel @Inject constructor(
                 viewModelScope.launch {
                     val response = repository.google(idToken)
                     if (response.isSuccess) {
-                        _signInResultGoogle.emit(Result.success(idToken))
+                        val tokens = response.getOrNull()
+                        if (tokens != null) {
+                            _uiState.value = AuthUiState.Success
+                            saveTokensUseCase(tokens.accessToken, tokens.refreshToken)
+                        } else {
+                            _uiState.value = AuthUiState.AuthFailed("missing_tokens")
+                        }
                     } else {
-                        onGoogleLoginFailed("Error backend")
+                        _uiState.value = AuthUiState.AuthFailed(response.exceptionOrNull()?.message ?: "unknown_error")
                     }
                 }
             } else {
-                viewModelScope.launch {
-                    onGoogleLoginFailed("ID Token es null")
-                }
+                onLoginFailed("google_login_no_token")
             }
         } catch (e: ApiException) {
-            viewModelScope.launch {
-                onGoogleLoginFailed("Error procesando login: ${e.statusCode}")
-            }
+            onLoginFailed("google_login_api_exception")
         }
     }
 
-    fun onGoogleLoginFailed(message: String) {
-        viewModelScope.launch {
-            _signInResultGoogle.emit(Result.failure(Exception(message)))
-        }
+    fun onLoginFailed(message: String) {
+        _uiState.value = AuthUiState.AuthFailed(message)
     }
 
     private fun tryAutoLogin() {
@@ -184,7 +185,6 @@ class AuthViewModel @Inject constructor(
             }
         }
     }
-
 }
 
 sealed class AuthUiState {
