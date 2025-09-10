@@ -5,6 +5,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import es.virtualclubs.data.local.secure.SecureUserPreferences
+import es.virtualclubs.data.repository.TokenRefresher
 import es.virtualclubs.domain.repository.AuthRepository
 import es.virtualclubs.domain.usecase.AuthUseCase
 import es.virtualclubs.domain.usecase.GoogleUseCase
@@ -34,8 +35,8 @@ object UseCaseModule {
 
     @Provides
     @Singleton
-    fun provideRefreshTokenUseCse(repository: AuthRepository): RefreshTokenUseCase {
-        return RefreshTokenUseCase(repository)
+    fun provideRefreshTokenUseCse(tokenRefresher: TokenRefresher): RefreshTokenUseCase {
+        return RefreshTokenUseCase(tokenRefresher)
     }
 
     @Provides

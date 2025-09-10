@@ -9,25 +9,31 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.Divider
+import androidx.compose.material3.DividerDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -40,27 +46,31 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import es.virtualclubs.R
+import es.virtualclubs.ScreenType
 import es.virtualclubs.presentation.components.RoundedTextField
 import es.virtualclubs.presentation.components.SocialButton
+import es.virtualclubs.presentation.handlers.ErrorHandler
+import es.virtualclubs.presentation.theme.getAppVersion
+import es.virtualclubs.presentation.theme.getLargeLogo
 
 @Composable
 fun LoginPage(
     onSettingsTap: () -> Unit,
-    viewModel: AuthViewModel = hiltViewModel()
+    onLogged: () -> Unit,
+    onForgottedPass: () -> Unit,
+    viewModel: AuthViewModel = hiltViewModel(),
+    screenType: ScreenType
 ) {
     var isLogin by remember { mutableStateOf(true) }
     val uiState = viewModel.uiState.collectAsState().value
-    val context = LocalContext.current
-    val activity = context as Activity
 
     Scaffold { padding ->
         Column(
@@ -72,7 +82,7 @@ fun LoginPage(
             IconButton(
                 onClick = onSettingsTap,
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
                     .align(Alignment.End)
             ) {
                 Icon(Icons.Filled.Settings, contentDescription = stringResource(R.string.settings))
@@ -82,11 +92,7 @@ fun LoginPage(
             val googleSignInLauncher = rememberLauncherForActivityResult(
                 contract = ActivityResultContracts.StartIntentSenderForResult()
             ) { result ->
-                if (result.resultCode == Activity.RESULT_OK) {
-                    viewModel.handleSignInResultGoogle(result.data)
-                } else {
-                    viewModel.onGoogleLoginFailed("Resultado cancelado o erróneo")
-                }
+                viewModel.handleSignInResultGoogle(result)
             }
 
             // Animate transition between login and register forms
@@ -106,7 +112,7 @@ fun LoginPage(
                         viewModel.loginUser(email, password)
                     },
                     onGoogle = {
-                        viewModel.beginSignInGoogle(activity, googleSignInLauncher)
+                        viewModel.beginSignInGoogle(googleSignInLauncher)
                     },
                     onFacebook = {
 
@@ -115,11 +121,14 @@ fun LoginPage(
 
                     },
                     onRegister = { email, password, confirmPassword ->
-
+                        viewModel.registerUser(email, password, confirmPassword)
                     },
                     onChangeLogin = {
                         isLogin = !isLogin
-                    }
+                    },
+                    screenType = screenType,
+                    onLogged = onLogged,
+                    onForgottedPass = onForgottedPass,
                 )
             }
         }
@@ -136,7 +145,10 @@ fun LoginScreen(
     onFacebook: () -> Unit,
     onApple: () -> Unit,
     onRegister: (String, String, String) -> Unit,
-    onChangeLogin: () -> Unit
+    onChangeLogin: () -> Unit,
+    screenType: ScreenType,
+    onLogged: () -> Unit,
+    onForgottedPass: () -> Unit,
 ) {
     // Estado de los campos
     var email by remember { mutableStateOf("") }
@@ -144,38 +156,43 @@ fun LoginScreen(
     var rememberUser by remember { mutableStateOf(false) }
     var confirmPassword by remember { mutableStateOf("") }
 
-    var showForgotPasswordDialog by remember { mutableStateOf(false) }
+    val columnWidthFraction = when (screenType) {
+        ScreenType.Small -> 0.90f
+        ScreenType.Medium -> 0.65f
+    }
 
-    Column(
+    if (uiState is AuthUiState.Success) {
+        onLogged()
+    }
+
+    Box(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp)
+            .fillMaxSize(),
+        contentAlignment = Alignment.Center
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            // Logo (puede ser Image)
-            Icon(
-                painter = painterResource(id = R.drawable.logo_whitout_text),
-                contentDescription = "Logo",
-                modifier = Modifier.size(64.dp),
-                tint = Color(0xFF1E88E5) // Azul principal
+        Column(
+            modifier = Modifier
+                .fillMaxHeight()
+                .fillMaxWidth(columnWidthFraction)
+                .padding(24.dp)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // Logo Column
+            Image(
+                painter = getLargeLogo(),
+                contentDescription = stringResource(R.string.logo),
+                contentScale = ContentScale.FillWidth,
+                modifier = Modifier
+                    .fillMaxWidth(columnWidthFraction)
+                    .wrapContentHeight()
             )
-            Text(
-                text = "VirtualClubs",
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E88E5)
-            )
-            Text(
-                text = "Gestiona, descubre y disfruta del deporte",
-                fontSize = 14.sp,
-                color = Color.Gray
-            )
-        }
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
-        // Campos de texto
-        Column {
+            // Form TextFields
+
+            // Email TextField
             RoundedTextField(
                 value = email,
                 onValueChange = { email = it },
@@ -184,133 +201,134 @@ fun LoginScreen(
                 keyboardType = KeyboardType.Email
             )
 
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Password TextField
             RoundedTextField(
                 value = password,
                 onValueChange = { password = it },
                 leadingIcon = Icons.Default.Lock,
+                placeholder = R.string.password_placeholder,
                 isPassword = true,
                 keyboardType = KeyboardType.Password
             )
 
+            Spacer(modifier = Modifier.height(16.dp))
+
             if (!isLogin) {
+                // Confirm Password TextField
                 RoundedTextField(
                     value = confirmPassword,
                     onValueChange = { confirmPassword = it },
                     leadingIcon = Icons.Default.Lock,
+                    placeholder = R.string.confirm_password_placeholder,
                     isPassword = true,
                     keyboardType = KeyboardType.Password
                 )
             }
 
             Spacer(modifier = Modifier.height(8.dp))
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Checkbox(
-                    checked = rememberUser,
-                    onCheckedChange = { rememberUser = it }
+
+            // Remember user checkbox
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Checkbox(
+                        checked = rememberUser,
+                        onCheckedChange = { rememberUser = it }
+                    )
+                    Text(stringResource(R.string.remember_password))
+                }
+            }
+
+            if (uiState is AuthUiState.AuthFailed) {
+                Text(
+                    text = stringResource(ErrorHandler.getErrorMessage(uiState.message)),
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.padding(vertical = 8.dp)
                 )
-                Text("Recordar usuario")
             }
-        }
 
-        Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
-        // Botón iniciar sesión
-        Button(
-            onClick = { if (isLogin) onLogin(email, password) else onRegister(email, password, password) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(48.dp),
-        ) {
-            Text("Iniciar sesión")
-        }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        // ¿Has olvidado tu contraseña?
-        TextButton(onClick = { showForgotPasswordDialog = true }) {
-            Text("¿Has olvidado tu contraseña?")
-        }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        // Divider con "O"
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Divider(modifier = Modifier.weight(1f))
-            Text("  O  ", color = Color.Gray)
-            Divider(modifier = Modifier.weight(1f))
-        }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        // Botones sociales
-        Column {
-            SocialButton(text = "Continuar con Google", icon = R.drawable.google_icon) {
-                onGoogle()
+            // Log Button
+            Button(
+                enabled = uiState !is AuthUiState.AttemptingAuth,
+                onClick = {
+                    if (isLogin)
+                        onLogin(email, password)
+                    else
+                        onRegister(email, password, password)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
+            ) {
+                Text(stringResource(if (isLogin) R.string.login else R.string.register))
             }
+
+            // Forgot Password?
+            TextButton(onClick = onForgottedPass) {
+                Text(stringResource(R.string.forgot_password))
+            }
+
+            // Divider
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                HorizontalDivider(
+                    modifier = Modifier.weight(1f),
+                    thickness = DividerDefaults.Thickness,
+                    color = DividerDefaults.color
+                )
+                Text("  O  ", color = Color.Gray)
+                HorizontalDivider(
+                    modifier = Modifier.weight(1f),
+                    thickness = DividerDefaults.Thickness,
+                    color = DividerDefaults.color
+                )
+            }
+
             Spacer(modifier = Modifier.height(4.dp))
-            SocialButton(text = "Continuar con Apple", icon = R.drawable.apple_icon) {
-                onApple()
+
+            // Social Buttons
+            Column {
+                SocialButton(R.string.continue_with_google, icon = R.drawable.google_icon) {
+                    onGoogle()
+                }
+                Spacer(modifier = Modifier.height(4.dp))
+                SocialButton(R.string.continue_with_apple, icon = R.drawable.apple_icon) {
+                    onApple()
+                }
+                Spacer(modifier = Modifier.height(4.dp))
+                SocialButton(R.string.facebook, icon = R.drawable.facebook_icon) {
+                    onFacebook()
+                }
             }
-            Spacer(modifier = Modifier.height(4.dp))
-            SocialButton(text = "Continuar con Facebook", icon = R.drawable.facebook_icon) {
-                onFacebook()
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Register or login link
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(stringResource(if (isLogin) R.string.dont_have_account else R.string.have_account))
+                TextButton(onClick = { onChangeLogin() }) {
+                    Text(stringResource(if (isLogin) R.string.register else R.string.login))
+                }
             }
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
-
-        // ¿No tienes cuenta? Regístrate
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Text("¿No tienes cuenta? ")
-            TextButton(onClick = { onChangeLogin() }) {
-                Text("Regístrate")
-            }
-        }
-
-        // Versión de la app
+        // App Version
         Text(
-            text = "v1.0",
+            text = getAppVersion(LocalContext.current),
             fontSize = 12.sp,
             color = Color.Gray,
-            modifier = Modifier.align(Alignment.CenterHorizontally)
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .padding(start = 24.dp, bottom = 12.dp)
         )
-
-        if (showForgotPasswordDialog) {
-            var recoveryEmail by remember { mutableStateOf("") }
-
-            AlertDialog(
-                onDismissRequest = { showForgotPasswordDialog = false },
-                title = { Text("Recuperar contraseña") },
-                text = {
-                    Column {
-                        Text("Introduce tu correo electrónico y te enviaremos un código para cambiar tu contraseña.")
-                        Spacer(modifier = Modifier.height(8.dp))
-                        RoundedTextField(
-                            value = recoveryEmail,
-                            onValueChange = { recoveryEmail = it },
-                            placeholder = R.string.email_placeholder,
-                            leadingIcon = Icons.Default.Email,
-                            keyboardType = KeyboardType.Email
-                        )
-                    }
-                },
-                confirmButton = {
-                    Button(onClick = {
-                        // TODO: Acción de recuperación de contraseña
-                        showForgotPasswordDialog = false
-                    }) {
-                        Text("Solicitar código")
-                    }
-                },
-                dismissButton = {
-                    TextButton(onClick = { showForgotPasswordDialog = false }) {
-                        Text("Cancelar")
-                    }
-                }
-            )
-        }
     }
 }

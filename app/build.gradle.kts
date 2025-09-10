@@ -17,7 +17,7 @@ android {
         minSdk = 30
         targetSdk = 35
         versionCode = 1
-        versionName = "1.0"
+        versionName = "0.1.1v Alpha"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables { useSupportLibrary = true }
     }
@@ -33,12 +33,12 @@ android {
     productFlavors {
         create("dev") {
             dimension = "env"
-            buildConfigField("String", "BASE_URL", "\"http://127.0.0.1:8080/\"")
+            buildConfigField("String", "BASE_URL", "\"https://192.168.3.21:8080/\"")
             buildConfigField("String", "GOOGLE_CLIENT_ID", "\"1234567890-abc123def456.apps.googleusercontent.com\"")
         }
         create("prod") {
             dimension = "env"
-            buildConfigField("String", "BASE_URL", "\"http://127.0.0.1:8080/\"")
+            buildConfigField("String", "BASE_URL", "\"https://192.168.3.21:8080/\"")
             buildConfigField("String", "GOOGLE_CLIENT_ID", "\"${localProperties["GOOGLE_CLIENT_ID"]}\"")
         }
     }

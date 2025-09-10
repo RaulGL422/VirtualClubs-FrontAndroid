@@ -1,5 +1,6 @@
 package es.virtualclubs.presentation.theme
 
+import android.content.Context
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
@@ -295,4 +296,12 @@ fun getLargeLogo(): Painter {
 @Composable
 fun getLogo(): Painter {
     return painterResource(id = R.drawable.logo_whitout_text)
+}
+
+fun getAppVersion(context: Context): String {
+    val packageInfo = context.packageManager.getPackageInfo(
+        context.packageName,
+        0
+    )
+    return packageInfo.versionName ?: "N/A"
 }

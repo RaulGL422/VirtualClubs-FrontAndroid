@@ -1,11 +1,13 @@
 package es.virtualclubs.data.local.secure
 
-import android.security.keystore.*
+import android.security.keystore.KeyGenParameterSpec
+import android.security.keystore.KeyProperties
 import java.nio.charset.StandardCharsets
-import java.security.*
-import javax.crypto.*
+import java.security.KeyStore
+import javax.crypto.Cipher
+import javax.crypto.KeyGenerator
+import javax.crypto.SecretKey
 import javax.crypto.spec.GCMParameterSpec
-import kotlin.experimental.and
 
 object EncryptionUtils {
     private const val KEY_ALIAS = "secure_user_key"
