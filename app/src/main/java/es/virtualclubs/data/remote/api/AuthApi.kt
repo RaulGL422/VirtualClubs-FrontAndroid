@@ -16,9 +16,6 @@ interface AuthApi {
     @POST("/api/auth/register")
     suspend fun register(@Body request: RegisterRequest): ApiResponse<Map<String, String>>
 
-    @POST("/api/auth/refresh")
-    suspend fun refresh(@Body request: RefreshRequest): ApiResponse<Map<String, String>>
-
     @POST("/api/auth/logout")
     suspend fun logout(@Body request: LogoutRequest): ApiResponse<Unit>
 

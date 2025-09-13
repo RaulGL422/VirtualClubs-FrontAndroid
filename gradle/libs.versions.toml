@@ -1,5 +1,5 @@
 [versions]
-agp = "8.12.2"
+agp = "8.13.0"
 barcodeScanning = "17.3.0"
 cameraCamera2 = "1.4.2"
 cameraLifecycle = "1.4.2"
@@ -11,6 +11,7 @@ hiltCompilerVersion = "2.57"
 hilt = "2.57"
 hiltNavigationComposeVersion = "1.2.0"
 kotlin = "2.2.0"
+material3WindowSizeClass = "1.2.1"
 playServicesAuth = "21.4.0"
 playServicesAuthVersion = "21.4.0"
 coreKtx = "1.16.0"
@@ -68,6 +69,9 @@ androidx-foundation-layout-android = { group = "androidx.compose.foundation", na
 androidx-foundation-android = { group = "androidx.compose.foundation", name = "foundation-android", version.ref = "foundationAndroid" }
 androidx-animation-android = { group = "androidx.compose.animation", name = "animation-android", version.ref = "animationAndroid" }
 androidx-animation-core-lint = { group = "androidx.compose.animation", name = "animation-core-lint", version.ref = "animationCoreLint" }
+androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-compose-material3-window-size = { group = "androidx.compose.material3", name = "material3-window-size-class", version.ref = "material3WindowSizeClass" }
+androidx-compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended", version = "1.6.8" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

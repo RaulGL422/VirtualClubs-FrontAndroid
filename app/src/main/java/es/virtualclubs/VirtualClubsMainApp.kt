@@ -23,7 +23,7 @@ fun VirtualClubsMainApp(
     }
 
     // Initialize Nav Host
-    val navigator: AppNavigatorImpl = hiltViewModel()
+    val navigator = AppNavigatorImpl()
     AppNavHost(navController, screenType, navigator)
 }
 
