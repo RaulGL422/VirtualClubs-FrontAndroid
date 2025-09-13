@@ -6,9 +6,12 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import es.virtualclubs.BuildConfig
 import es.virtualclubs.data.remote.api.AuthApi
+import es.virtualclubs.data.remote.api.RefreshApi
 import es.virtualclubs.data.repository.AuthRepositoryImpl
+import es.virtualclubs.data.repository.RefreshRepositoryImpl
 import es.virtualclubs.data.repository.SafeCall
 import es.virtualclubs.domain.repository.AuthRepository
+import es.virtualclubs.domain.repository.RefreshRepository
 import es.virtualclubs.domain.usecase.RefreshTokenUseCase
 import es.virtualclubs.domain.usecase.token.GetRefreshTokenUseCase
 import es.virtualclubs.domain.usecase.token.SaveTokensUseCase
@@ -54,6 +57,16 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideSafeCall(sessionManager: SessionManager, refresh: RefreshTokenUseCase, refreshTokenUseCase: GetRefreshTokenUseCase, saveTokensUseCase: SaveTokensUseCase): SafeCall =
+    fun provideRefreshApi(retrofit: Retrofit): RefreshApi =
+        retrofit.create(RefreshApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideRefreshRepository(api: RefreshApi): RefreshRepository =
+        RefreshRepositoryImpl(api)
+
+    @Provides
+    @Singleton
+    fun provideSafeCall(sessionManager: SessionManager, refresh: RefreshRepository, refreshTokenUseCase: GetRefreshTokenUseCase, saveTokensUseCase: SaveTokensUseCase): SafeCall =
         SafeCall(sessionManager, refresh, refreshTokenUseCase, saveTokensUseCase)
 }

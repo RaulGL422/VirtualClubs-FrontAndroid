@@ -1,11 +1,10 @@
 package es.virtualclubs.domain.usecase
 
-import es.virtualclubs.data.repository.TokenRefresher
-import es.virtualclubs.domain.repository.AuthRepository
+import es.virtualclubs.domain.repository.RefreshRepository
 import jakarta.inject.Inject
 
 class RefreshTokenUseCase @Inject constructor(
-    private val refresher: TokenRefresher
+    private val refresher: RefreshRepository
 ) {
-    suspend operator fun invoke(token: String) = refresher.refreshToken(token)
+    suspend operator fun invoke(token: String) = refresher.refresh(token)
 }

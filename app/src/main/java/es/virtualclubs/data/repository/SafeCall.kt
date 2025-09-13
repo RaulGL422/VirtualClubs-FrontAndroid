@@ -2,6 +2,7 @@ package es.virtualclubs.data.repository
 
 import com.google.gson.Gson
 import es.virtualclubs.data.remote.dto.ApiResponse
+import es.virtualclubs.domain.repository.RefreshRepository
 import es.virtualclubs.presentation.navigation.SessionManager
 import es.virtualclubs.domain.usecase.RefreshTokenUseCase
 import es.virtualclubs.domain.usecase.token.GetRefreshTokenUseCase
@@ -13,7 +14,7 @@ import kotlin.coroutines.cancellation.CancellationException
 
 class SafeCall @Inject constructor(
     private val sessionManager: SessionManager,
-    private val refresh: RefreshTokenUseCase,
+    private val refreshRepository: RefreshRepository,
     private val refreshToken: GetRefreshTokenUseCase,
     private val saveTokens: SaveTokensUseCase,
 ) {
@@ -24,7 +25,7 @@ class SafeCall @Inject constructor(
             block()
         } catch (e: CancellationException) {
             throw e
-        } catch (e: IOException) {
+        } catch (_: IOException) {
             Result.failure(Exception("cant_connect_server"))
         } catch (e: HttpException) {
             if (e.code() == 401) {
@@ -51,7 +52,7 @@ class SafeCall @Inject constructor(
 
     private suspend fun tryRefreshToken(): Boolean {
         val refreshToken = refreshToken() ?: return false
-        val result = refresh(refreshToken)
+        val result = refreshRepository.refresh(refreshToken)
         return if (result.isSuccess) {
             val tokens = result.getOrNull()!!
             saveTokens(tokens.accessToken, tokens.refreshToken)

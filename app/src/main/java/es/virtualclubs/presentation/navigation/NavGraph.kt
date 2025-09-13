@@ -13,7 +13,7 @@ import es.virtualclubs.presentation.screens.home.HomePage
 fun AppNavHost(
     navController: NavHostController,
     screenType: ScreenType,
-    appNavigator: AppNavigatorImpl = AppNavigatorImpl()
+    appNavigator: AppNavigatorImpl
 ) {
     LaunchedEffect(navController) {
         appNavigator.setNavController(navController)

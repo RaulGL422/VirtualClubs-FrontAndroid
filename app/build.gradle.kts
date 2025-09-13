@@ -10,7 +10,7 @@ plugins {
 
 android {
     namespace = "es.virtualclubs"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "es.virtualclubs"
@@ -33,12 +33,12 @@ android {
     productFlavors {
         create("dev") {
             dimension = "env"
-            buildConfigField("String", "BASE_URL", "\"https://192.168.3.21:8080/\"")
+            buildConfigField("String", "BASE_URL", "\"https://api.virtualclubs.local:62496/\"")
             buildConfigField("String", "GOOGLE_CLIENT_ID", "\"1234567890-abc123def456.apps.googleusercontent.com\"")
         }
         create("prod") {
             dimension = "env"
-            buildConfigField("String", "BASE_URL", "\"https://192.168.3.21:8080/\"")
+            buildConfigField("String", "BASE_URL", "\"https://api.virtualclubs.local:62496/\"")
             buildConfigField("String", "GOOGLE_CLIENT_ID", "\"${localProperties["GOOGLE_CLIENT_ID"]}\"")
         }
     }
@@ -80,7 +80,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.datastore.preferences)
-    implementation("androidx.compose.material3:material3-window-size-class:1.3.2")
+    implementation(libs.androidx.compose.material3.window.size)
     implementation(libs.androidx.hilt.common)
     implementation(libs.ui.graphics)
     implementation(libs.androidx.ui.test.android)
@@ -88,6 +88,7 @@ dependencies {
     implementation(libs.androidx.foundation.android)
     implementation(libs.androidx.animation.android)
     implementation(libs.androidx.animation.core.lint)
+    implementation(libs.androidx.compose.material3)
 
 
     // Dependencias de pruebas
@@ -107,7 +108,7 @@ dependencies {
     implementation(libs.androidx.camera.camera2)
     implementation(libs.androidx.camera.lifecycle)
     implementation(libs.androidx.camera.view)
-    implementation("androidx.compose.material:material-icons-extended:1.7.8")
+    implementation(libs.androidx.compose.material.icons.extended)
 
     implementation(libs.retrofit)
     implementation(libs.converter.gson)

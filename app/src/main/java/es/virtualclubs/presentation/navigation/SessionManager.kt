@@ -1,21 +1,15 @@
 package es.virtualclubs.presentation.navigation
 
-import dagger.internal.Provider
-import es.virtualclubs.domain.repository.AuthRepository
-import es.virtualclubs.domain.usecase.LogoutUserUseCase
 import es.virtualclubs.domain.usecase.LogoutUserUseCaseFactory
-import es.virtualclubs.domain.usecase.token.GetRefreshTokenUseCase
 import jakarta.inject.Inject
-import jakarta.inject.Singleton
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import jakarta.inject.Provider
 
 class SessionManager @Inject constructor(
-    private val appNavigator: AppNavigator,
-    private val logoutFactory: LogoutUserUseCaseFactory
+    private val logoutFactory: Provider<LogoutUserUseCaseFactory>,
+    private val appNavigator: AppNavigatorImpl
 ) {
     suspend fun logout(token: String) {
-        logoutFactory.create().invoke(token)
+        logoutFactory.get().create().invoke(token)
         appNavigator.navigateToLoginAndClearStack()
     }
 }

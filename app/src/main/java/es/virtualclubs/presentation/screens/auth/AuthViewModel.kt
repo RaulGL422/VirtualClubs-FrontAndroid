@@ -17,6 +17,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import es.virtualclubs.BuildConfig
 import es.virtualclubs.data.local.datastore.UserPreferences
 import es.virtualclubs.domain.repository.AuthRepository
+import es.virtualclubs.domain.repository.RefreshRepository
 import es.virtualclubs.domain.usecase.token.GetRefreshTokenUseCase
 import es.virtualclubs.domain.usecase.token.SaveTokensUseCase
 import jakarta.inject.Inject
@@ -29,6 +30,7 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val repository: AuthRepository,
+    private val refreshRepository: RefreshRepository,
     private val userPreferences: UserPreferences,
     private val getRefreshTokenUseCase: GetRefreshTokenUseCase,
     private val saveTokensUseCase: SaveTokensUseCase,
@@ -118,7 +120,7 @@ class AuthViewModel @Inject constructor(
                 val refreshToken = getRefreshTokenUseCase()
                 if (refreshToken != null) {
                     // Try to get a new access token from backend
-                    val response = repository.refresh(refreshToken)
+                    val response = refreshRepository.refresh(refreshToken)
                     if (response.isSuccess) {
                         val tokens = response.getOrNull()
                         if (tokens != null) {
