@@ -1,5 +1,6 @@
 package es.virtualclubs.data.repository
 
+import android.util.Log
 import com.google.gson.Gson
 import es.virtualclubs.data.remote.dto.ApiResponse
 import es.virtualclubs.domain.repository.RefreshRepository
@@ -13,10 +14,7 @@ import java.io.IOException
 import kotlin.coroutines.cancellation.CancellationException
 
 class SafeCall @Inject constructor(
-    private val sessionManager: SessionManager,
-    private val refreshRepository: RefreshRepository,
-    private val refreshToken: GetRefreshTokenUseCase,
-    private val saveTokens: SaveTokensUseCase,
+    private val refreshRepository: RefreshRepository
 ) {
     suspend fun <T> safeCall(
         block: suspend () -> Result<T>
@@ -29,12 +27,11 @@ class SafeCall @Inject constructor(
             Result.failure(Exception("cant_connect_server"))
         } catch (e: HttpException) {
             if (e.code() == 401) {
-                val refreshed = tryRefreshToken()
-                if (refreshed) {
-                    return block()
+                val result = refreshRepository.refresh()
+                if (result.isSuccess) {
+                    block()
                 } else {
-                    sessionManager.logout(refreshToken.invoke() ?: "")
-                    return Result.failure(Exception("unauthorized"))
+                    Result.failure(Exception(result.exceptionOrNull()?.message ?: "unauthorized"))
                 }
             }
 
@@ -47,18 +44,6 @@ class SafeCall @Inject constructor(
             Result.failure(Exception(serverMessage ?: "server_error"))
         } catch (e: Exception) {
             Result.failure(Exception(e.message ?: "unknown_error"))
-        }
-    }
-
-    private suspend fun tryRefreshToken(): Boolean {
-        val refreshToken = refreshToken() ?: return false
-        val result = refreshRepository.refresh(refreshToken)
-        return if (result.isSuccess) {
-            val tokens = result.getOrNull()!!
-            saveTokens(tokens.accessToken, tokens.refreshToken)
-            true
-        } else {
-            false
         }
     }
 }
