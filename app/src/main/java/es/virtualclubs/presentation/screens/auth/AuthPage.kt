@@ -108,8 +108,8 @@ fun LoginPage(
                 LoginScreen(
                     targetIsLogin,
                     uiState,
-                    onLogin = { email, password ->
-                        viewModel.loginUser(email, password)
+                    onLogin = { email, password, rememberUser ->
+                        viewModel.loginUser(email, password, rememberUser)
                     },
                     onGoogle = {
                         viewModel.beginSignInGoogle(googleSignInLauncher)
@@ -120,8 +120,8 @@ fun LoginPage(
                     onApple = {
 
                     },
-                    onRegister = { email, password, confirmPassword ->
-                        viewModel.registerUser(email, password, confirmPassword)
+                    onRegister = { email, password, confirmPassword, rememberUser ->
+                        viewModel.registerUser(email, password, confirmPassword, rememberUser)
                     },
                     onChangeLogin = {
                         isLogin = !isLogin
@@ -140,11 +140,11 @@ fun LoginPage(
 fun LoginScreen(
     isLogin: Boolean,
     uiState: AuthUiState,
-    onLogin: (String, String) -> Unit,
+    onLogin: (String, String, Boolean) -> Unit,
     onGoogle: () -> Unit,
     onFacebook: () -> Unit,
     onApple: () -> Unit,
-    onRegister: (String, String, String) -> Unit,
+    onRegister: (String, String, String, Boolean) -> Unit,
     onChangeLogin: () -> Unit,
     screenType: ScreenType,
     onLogged: () -> Unit,
@@ -258,9 +258,9 @@ fun LoginScreen(
                 enabled = uiState !is AuthUiState.AttemptingAuth,
                 onClick = {
                     if (isLogin)
-                        onLogin(email, password)
+                        onLogin(email, password, rememberUser)
                     else
-                        onRegister(email, password, password)
+                        onRegister(email, password, password, rememberUser)
                 },
                 modifier = Modifier
                     .fillMaxWidth()

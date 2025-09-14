@@ -32,7 +32,6 @@ class AuthViewModel @Inject constructor(
     private val repository: AuthRepository,
     private val refreshRepository: RefreshRepository,
     private val userPreferences: UserPreferences,
-    private val getRefreshTokenUseCase: GetRefreshTokenUseCase,
     private val saveTokensUseCase: SaveTokensUseCase,
     @param:ApplicationContext private val context: Context
 ) : ViewModel() {
@@ -117,30 +116,19 @@ class AuthViewModel @Inject constructor(
     private fun tryAutoLogin() {
         viewModelScope.launch {
             if (userPreferences.autoLoginFlow.firstOrNull() == true) {
-                val refreshToken = getRefreshTokenUseCase()
-                if (refreshToken != null) {
-                    // Try to get a new access token from backend
-                    val response = refreshRepository.refresh(refreshToken)
-                    if (response.isSuccess) {
-                        val tokens = response.getOrNull()
-                        if (tokens != null) {
-                            saveTokensUseCase(tokens.accessToken, tokens.refreshToken)
-                            _uiState.value = AuthUiState.Success
-                        } else {
-                            _uiState.value = AuthUiState.Idle
-                        }
-                    } else {
-                        _uiState.value = AuthUiState.Idle
-                    }
+                // Try to get a new access token from backend
+                val response = refreshRepository.refresh(false)
+                val tokens = response.getOrNull()
+                if (response.isSuccess && tokens != null) {
+                    _uiState.value = AuthUiState.Success
                 } else {
-                    // No saved refresh token → show login screen
                     _uiState.value = AuthUiState.Idle
                 }
             }
         }
     }
 
-    fun loginUser(email: String, password: String) {
+    fun loginUser(email: String, password: String, rememberUser: Boolean) {
         Log.i("Login", "Attempting login for email: $email")
 
         viewModelScope.launch {
@@ -150,6 +138,7 @@ class AuthViewModel @Inject constructor(
                 val tokens = response.getOrNull()
                 if (tokens != null) {
                     saveTokensUseCase(tokens.accessToken, tokens.refreshToken)
+                    userPreferences.saveUser(email,rememberUser)
                     _uiState.value = AuthUiState.Success
                 } else {
                     _uiState.value = AuthUiState.AuthFailed("missing_tokens")
@@ -161,7 +150,7 @@ class AuthViewModel @Inject constructor(
     }
 
     fun registerUser(
-        email: String, password: String, confirmPassword: String
+        email: String, password: String, confirmPassword: String, rememberUser: Boolean
     ) {
         Log.i("Register", "Attempting register for email: $email")
 
@@ -177,6 +166,7 @@ class AuthViewModel @Inject constructor(
             if (response.isSuccess) {
                 val tokens = response.getOrNull()
                 if (tokens != null) {
+                    userPreferences.saveUser(email,rememberUser)
                     saveTokensUseCase(tokens.accessToken, tokens.refreshToken)
                     _uiState.value = AuthUiState.Success
                 } else {

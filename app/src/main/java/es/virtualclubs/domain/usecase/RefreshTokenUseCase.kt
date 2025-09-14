@@ -6,5 +6,5 @@ import jakarta.inject.Inject
 class RefreshTokenUseCase @Inject constructor(
     private val refresher: RefreshRepository
 ) {
-    suspend operator fun invoke(token: String) = refresher.refresh(token)
+    suspend operator fun invoke(canLogout: Boolean = true) = refresher.refresh(canLogout)
 }

@@ -62,11 +62,11 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideRefreshRepository(api: RefreshApi): RefreshRepository =
-        RefreshRepositoryImpl(api)
+    fun provideRefreshRepository(api: RefreshApi, sessionManager: SessionManager, saveTokensUseCase: SaveTokensUseCase, refreshTokenUseCase: GetRefreshTokenUseCase): RefreshRepository =
+        RefreshRepositoryImpl(api, sessionManager, saveTokensUseCase, refreshTokenUseCase)
 
     @Provides
     @Singleton
-    fun provideSafeCall(sessionManager: SessionManager, refresh: RefreshRepository, refreshTokenUseCase: GetRefreshTokenUseCase, saveTokensUseCase: SaveTokensUseCase): SafeCall =
-        SafeCall(sessionManager, refresh, refreshTokenUseCase, saveTokensUseCase)
+    fun provideSafeCall(refresh: RefreshRepository): SafeCall =
+        SafeCall(refresh)
 }
