@@ -1,12 +1,19 @@
+@file:Suppress("DEPRECATION")
+
 package es.virtualclubs.presentation.screens.auth
 
+import android.R.attr.data
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
+import androidx.credentials.CreateCredentialRequest
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
@@ -26,6 +33,15 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
+import androidx.credentials.CredentialManager
+import androidx.credentials.CreateCredentialResponse
+import androidx.credentials.CredentialManagerCallback
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
@@ -43,51 +59,36 @@ class AuthViewModel @Inject constructor(
     }
 
     // Google
-    val oneTapClientGoogle = Identity.getSignInClient(context)
+    val googleSignInClient: GoogleSignInClient = GoogleSignIn.getClient(
+        context,
+        GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(BuildConfig.GOOGLE_CLIENT_ID) // Web Client ID
+            .requestEmail()
+            .build()
+    )
 
-    var googleSignIn = BeginSignInRequest.builder()
-        .setGoogleIdTokenRequestOptions(
-            BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
-                .setSupported(true)
-                .setServerClientId(BuildConfig.GOOGLE_CLIENT_ID)
-                .setFilterByAuthorizedAccounts(false)
-                .build()
-        )
-        .setAutoSelectEnabled(true)
-        .build()
-
-    fun beginSignInGoogle(launcher: ManagedActivityResultLauncher<IntentSenderRequest, ActivityResult>) {
-        _uiState.value = AuthUiState.AttemptingAuth
-
-        oneTapClientGoogle.beginSignIn(googleSignIn)
-            .addOnSuccessListener { result ->
-                try {
-                    launcher.launch(
-                        IntentSenderRequest.Builder(result.pendingIntent.intentSender).build()
-                    )
-                } catch (e: Exception) {
-                    onLoginFailed("google_login_launch_failed")
-                }
-            }
-            .addOnFailureListener { e ->
-                onLoginFailed("google_login_sign-in_failed")
-            }
+    // --- Función para iniciar login ---
+    fun beginSignInGoogle(
+        googleSignInLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>
+    ) {
+        val signInIntent: Intent = googleSignInClient.signInIntent
+        googleSignInLauncher.launch(signInIntent)
     }
-
-    fun handleSignInResultGoogle(activityResult: ActivityResult) {
-        if (activityResult.resultCode != Activity.RESULT_OK) {
+    
+    // --- Manejo del resultado ---
+    fun handleSignInResultGoogle(result: ActivityResult) {
+        if (result.resultCode != Activity.RESULT_OK) {
+            Log.e("GoogleSignIn", "Sign-in fallido")
             onLoginFailed("google_login_sign-in_failed")
             return
         }
 
-        val data = activityResult.data
-
+        val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
         try {
-            val credential = oneTapClientGoogle.getSignInCredentialFromIntent(data)
-            val idToken = credential.googleIdToken
-
+            val account: GoogleSignInAccount = task.getResult(Exception::class.java)
+            val idToken = account.idToken
             if (idToken != null) {
-                viewModelScope.launch {
+                CoroutineScope(Dispatchers.IO).launch {
                     val response = repository.google(idToken)
                     if (response.isSuccess) {
                         val tokens = response.getOrNull()
@@ -98,14 +99,17 @@ class AuthViewModel @Inject constructor(
                             _uiState.value = AuthUiState.AuthFailed("missing_tokens")
                         }
                     } else {
-                        _uiState.value = AuthUiState.AuthFailed(response.exceptionOrNull()?.message ?: "unknown_error")
+                        _uiState.value = AuthUiState.AuthFailed(
+                            response.exceptionOrNull()?.message ?: "unknown_error"
+                        )
                     }
                 }
             } else {
                 onLoginFailed("google_login_no_token")
             }
-        } catch (e: ApiException) {
-            onLoginFailed("google_login_api_exception")
+        } catch (e: Exception) {
+            Log.e("GoogleSignIn", "Error obteniendo cuenta: ${e.message}")
+            onLoginFailed("google_login_exception")
         }
     }
 
