@@ -1,6 +1,7 @@
 package es.virtualclubs.presentation.screens.auth
 
 import android.app.Activity
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedContent
@@ -90,8 +91,10 @@ fun LoginPage(
 
             // Manage activity with google
             val googleSignInLauncher = rememberLauncherForActivityResult(
-                contract = ActivityResultContracts.StartIntentSenderForResult()
+                contract = ActivityResultContracts.StartActivityForResult()
             ) { result ->
+                Log.d("GoogleSignIn", "Result code: ${result.resultCode}")
+                Log.d("GoogleSignIn", "Intent: ${result.data}")
                 viewModel.handleSignInResultGoogle(result)
             }
 

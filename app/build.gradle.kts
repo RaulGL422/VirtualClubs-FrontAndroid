@@ -34,7 +34,7 @@ android {
         create("dev") {
             dimension = "env"
             buildConfigField("String", "BASE_URL", "\"https://api.virtualclubs.local:62496/\"")
-            buildConfigField("String", "GOOGLE_CLIENT_ID", "\"1234567890-abc123def456.apps.googleusercontent.com\"")
+            buildConfigField("String", "GOOGLE_CLIENT_ID", "\"879741762461-03ck5fqsbrrpgs6gvidvdofpe6ebao6u.apps.googleusercontent.com\"")
         }
         create("prod") {
             dimension = "env"
