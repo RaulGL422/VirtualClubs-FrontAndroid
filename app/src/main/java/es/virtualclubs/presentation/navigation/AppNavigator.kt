@@ -5,4 +5,6 @@ interface AppNavigator {
     fun navigateToHome()
     fun navigateBack()
     fun navigateToSettings()
+    fun navigateToResetPassword(token: String)
+    fun navigateToVerifyEmail(token: String)
 }

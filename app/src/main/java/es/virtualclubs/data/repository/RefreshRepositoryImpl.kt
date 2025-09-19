@@ -1,6 +1,5 @@
 package es.virtualclubs.data.repository
 
-import android.util.Log
 import es.virtualclubs.data.remote.api.RefreshApi
 import es.virtualclubs.data.remote.dto.RefreshRequest
 import es.virtualclubs.domain.model.AuthTokens

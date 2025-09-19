@@ -4,8 +4,8 @@ import es.virtualclubs.data.remote.dto.ApiResponse
 import es.virtualclubs.data.remote.dto.AuthRequest
 import es.virtualclubs.data.remote.dto.GoogleAuthRequest
 import es.virtualclubs.data.remote.dto.LogoutRequest
-import es.virtualclubs.data.remote.dto.RefreshRequest
 import es.virtualclubs.data.remote.dto.RegisterRequest
+import es.virtualclubs.data.remote.dto.RequestPasswordResetRequest
 import retrofit2.http.Body
 import retrofit2.http.POST
 
@@ -21,4 +21,7 @@ interface AuthApi {
 
     @POST("/api/auth/google")
     suspend fun google(@Body request: GoogleAuthRequest): ApiResponse<Map<String, String>>
+
+    @POST("/api/auth/request-password-reset")
+    suspend fun requestPasswordReset(@Body request: RequestPasswordResetRequest): ApiResponse<Unit>
 }

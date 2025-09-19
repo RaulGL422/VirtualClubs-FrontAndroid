@@ -5,8 +5,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import es.virtualclubs.data.local.secure.SecureUserPreferences
-import es.virtualclubs.domain.repository.RefreshRepository
 import es.virtualclubs.domain.repository.AuthRepository
+import es.virtualclubs.domain.repository.RefreshRepository
 import es.virtualclubs.domain.usecase.AuthUseCase
 import es.virtualclubs.domain.usecase.GoogleUseCase
 import es.virtualclubs.domain.usecase.LogoutUserUseCase
