@@ -1,7 +1,5 @@
 package es.virtualclubs.presentation.screens.auth
 
-import android.app.Activity
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedContent
@@ -28,6 +26,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DividerDefaults
@@ -36,13 +35,18 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -61,19 +65,38 @@ import es.virtualclubs.presentation.components.SocialButton
 import es.virtualclubs.presentation.handlers.ErrorHandler
 import es.virtualclubs.presentation.theme.getAppVersion
 import es.virtualclubs.presentation.theme.getLargeLogo
+import kotlinx.coroutines.launch
 
 @Composable
 fun LoginPage(
     onSettingsTap: () -> Unit,
     onLogged: () -> Unit,
-    onForgottedPass: () -> Unit,
     viewModel: AuthViewModel = hiltViewModel(),
     screenType: ScreenType
 ) {
     var isLogin by remember { mutableStateOf(true) }
     val uiState = viewModel.uiState.collectAsState().value
+    val passwordResetUiState = viewModel.passwordResetUiState.collectAsState().value
 
-    Scaffold { padding ->
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+    val resetEmailSent = stringResource(R.string.password_reset_email_sent)
+
+    LaunchedEffect(passwordResetUiState) {
+        if (passwordResetUiState is PasswordResetUiState.Success) {
+            scope.launch {
+                snackbarHostState.showSnackbar(
+                    message = resetEmailSent,
+                    duration = SnackbarDuration.Short
+                )
+                viewModel.resetPasswordRequest()
+            }
+        }
+    }
+
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) }
+    ) { padding ->
         Column(
             modifier = Modifier
                 .padding(padding)
@@ -93,8 +116,6 @@ fun LoginPage(
             val googleSignInLauncher = rememberLauncherForActivityResult(
                 contract = ActivityResultContracts.StartActivityForResult()
             ) { result ->
-                Log.d("GoogleSignIn", "Result code: ${result.resultCode}")
-                Log.d("GoogleSignIn", "Intent: ${result.data}")
                 viewModel.handleSignInResultGoogle(result)
             }
 
@@ -111,6 +132,7 @@ fun LoginPage(
                 LoginScreen(
                     targetIsLogin,
                     uiState,
+                    passwordResetUiState,
                     onLogin = { email, password, rememberUser ->
                         viewModel.loginUser(email, password, rememberUser)
                     },
@@ -131,7 +153,9 @@ fun LoginPage(
                     },
                     screenType = screenType,
                     onLogged = onLogged,
-                    onForgottedPass = onForgottedPass,
+                    onForgottenPass = { email ->
+                        viewModel.requestPasswordReset(email)
+                    },
                 )
             }
         }
@@ -143,6 +167,7 @@ fun LoginPage(
 fun LoginScreen(
     isLogin: Boolean,
     uiState: AuthUiState,
+    passwordResetUiState: PasswordResetUiState,
     onLogin: (String, String, Boolean) -> Unit,
     onGoogle: () -> Unit,
     onFacebook: () -> Unit,
@@ -151,13 +176,14 @@ fun LoginScreen(
     onChangeLogin: () -> Unit,
     screenType: ScreenType,
     onLogged: () -> Unit,
-    onForgottedPass: () -> Unit,
+    onForgottenPass: (String) -> Unit,
 ) {
     // Estado de los campos
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var rememberUser by remember { mutableStateOf(false) }
     var confirmPassword by remember { mutableStateOf("") }
+    var showForgotPasswordDialog by remember { mutableStateOf(false) }
 
     val columnWidthFraction = when (screenType) {
         ScreenType.Small -> 0.90f
@@ -273,7 +299,7 @@ fun LoginScreen(
             }
 
             // Forgot Password?
-            TextButton(onClick = onForgottedPass) {
+            TextButton(onClick = { showForgotPasswordDialog = true }) {
                 Text(stringResource(R.string.forgot_password))
             }
 
@@ -333,5 +359,73 @@ fun LoginScreen(
                 .align(Alignment.BottomStart)
                 .padding(start = 24.dp, bottom = 12.dp)
         )
+
+        if (showForgotPasswordDialog) {
+            ForgotPasswordDialog(
+                passwordResetUiState = passwordResetUiState,
+                onDismiss = {
+                    showForgotPasswordDialog = false
+
+                },
+                onConfirm = { email ->
+                    onForgottenPass(email)
+                }
+            )
+        }
     }
+}
+
+@Composable
+fun ForgotPasswordDialog(
+    passwordResetUiState: PasswordResetUiState,
+    onDismiss: () -> Unit,
+    onConfirm: (String) -> Unit
+) {
+    var email by remember { mutableStateOf("") }
+
+    if (passwordResetUiState is PasswordResetUiState.Success) {
+        onDismiss()
+    }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(text = stringResource(R.string.forgot_password))
+        },
+        text = {
+            Column {
+                Text(
+                    text = stringResource(R.string.forgot_password_description),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                RoundedTextField(
+                    value = email,
+                    onValueChange = { email = it },
+                    placeholder = R.string.email_placeholder,
+                    leadingIcon = Icons.Default.Email,
+                    keyboardType = KeyboardType.Email
+                )
+                if (passwordResetUiState is PasswordResetUiState.Failed)
+                    Text(
+                        text = stringResource(ErrorHandler.getErrorMessage(passwordResetUiState.message)),
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    )
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = { onConfirm(email) },
+                enabled = email.isNotBlank() && passwordResetUiState !is PasswordResetUiState.Attempting
+            ) {
+                Text(stringResource(R.string.send_email))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.close))
+            }
+        }
+    )
 }

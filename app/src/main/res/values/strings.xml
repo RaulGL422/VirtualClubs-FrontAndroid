@@ -35,4 +35,10 @@
     <string name="password_min_length">La contraseña debe tener un minimo de 6 caracteres</string>
     <string name="email_required">El email es obligatorio</string>
     <string name="email_valid">El email debe ser valido</string>
+    <string name="forgot_password_description">Introduce el correo de tu cuenta y te enviaremos un enlace para cambiar tu contraseña</string>
+    <string name="confirm">Confirmar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="password_reset_email_sent">Se ha enviado el correo de recuperación</string>
+    <string name="send_email">Enviar correo</string>
+    <string name="close">Cerrar</string>
 </resources>

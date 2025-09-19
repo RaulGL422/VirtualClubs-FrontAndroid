@@ -2,7 +2,6 @@ package es.virtualclubs.presentation.navigation
 
 import androidx.navigation.NavController
 import jakarta.inject.Inject
-import jakarta.inject.Singleton
 
 class AppNavigatorImpl @Inject constructor() : AppNavigator {
 
@@ -31,6 +30,20 @@ class AppNavigatorImpl @Inject constructor() : AppNavigator {
     override fun navigateToSettings() {
         navController?.navigate(Screen.Settings.route) {
             popUpTo(Screen.Auth.route) { inclusive = true }
+        }
+    }
+
+    override fun navigateToResetPassword(token: String) {
+        val routeWithToken = Screen.ResetPassword.route.replace("{token}", token)
+        navController?.navigate(routeWithToken) {
+            popUpTo(Screen.Home.route) { inclusive = true }
+        }
+    }
+
+    override fun navigateToVerifyEmail(token: String) {
+        val routeWithToken = Screen.VerifyEmail.route.replace("{token}", token)
+        navController?.navigate(routeWithToken) {
+            popUpTo(Screen.Home.route) { inclusive = true }
         }
     }
 }

@@ -12,7 +12,6 @@ import es.virtualclubs.data.repository.RefreshRepositoryImpl
 import es.virtualclubs.data.repository.SafeCall
 import es.virtualclubs.domain.repository.AuthRepository
 import es.virtualclubs.domain.repository.RefreshRepository
-import es.virtualclubs.domain.usecase.RefreshTokenUseCase
 import es.virtualclubs.domain.usecase.token.GetRefreshTokenUseCase
 import es.virtualclubs.domain.usecase.token.SaveTokensUseCase
 import es.virtualclubs.presentation.navigation.SessionManager

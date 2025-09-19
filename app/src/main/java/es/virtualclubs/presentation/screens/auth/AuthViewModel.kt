@@ -2,46 +2,33 @@
 
 package es.virtualclubs.presentation.screens.auth
 
-import android.R.attr.data
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.activity.compose.ManagedActivityResultLauncher
-import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
-import androidx.activity.result.IntentSenderRequest
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
-import androidx.credentials.CreateCredentialRequest
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.auth.api.identity.BeginSignInRequest
-import com.google.android.gms.auth.api.identity.Identity
-import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import es.virtualclubs.BuildConfig
 import es.virtualclubs.data.local.datastore.UserPreferences
 import es.virtualclubs.domain.repository.AuthRepository
 import es.virtualclubs.domain.repository.RefreshRepository
-import es.virtualclubs.domain.usecase.token.GetRefreshTokenUseCase
 import es.virtualclubs.domain.usecase.token.SaveTokensUseCase
 import jakarta.inject.Inject
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
-import androidx.credentials.CredentialManager
-import androidx.credentials.CreateCredentialResponse
-import androidx.credentials.CredentialManagerCallback
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
@@ -53,6 +40,8 @@ class AuthViewModel @Inject constructor(
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<AuthUiState>(AuthUiState.Idle)
     val uiState: StateFlow<AuthUiState> = _uiState.asStateFlow()
+    private val _passwordResetUiState = MutableStateFlow<PasswordResetUiState>(PasswordResetUiState.Idle)
+    val passwordResetUiState: StateFlow<PasswordResetUiState> = _passwordResetUiState.asStateFlow()
 
     init {
         tryAutoLogin()
@@ -181,6 +170,25 @@ class AuthViewModel @Inject constructor(
             }
         }
     }
+
+    fun requestPasswordReset(email: String) {
+        Log.i("Password Request", "Requesting password reset for email: $email")
+
+        viewModelScope.launch {
+            _passwordResetUiState.value = PasswordResetUiState.Attempting
+
+            val response = repository.requestPasswordReset(email)
+            if (response.isSuccess) {
+                _passwordResetUiState.value = PasswordResetUiState.Success
+            } else {
+                _passwordResetUiState.value = PasswordResetUiState.Failed(response.exceptionOrNull()?.message ?: "unknown_error")
+            }
+        }
+    }
+
+    fun resetPasswordRequest() {
+        _passwordResetUiState.value = PasswordResetUiState.Idle
+    }
 }
 
 sealed class AuthUiState {
@@ -188,4 +196,11 @@ sealed class AuthUiState {
     data class AuthFailed(val message: String) : AuthUiState()
     object AttemptingAuth : AuthUiState()
     object Idle: AuthUiState()
+}
+
+sealed class PasswordResetUiState {
+    object Success: PasswordResetUiState()
+    data class Failed(val message: String) : PasswordResetUiState()
+    object Attempting : PasswordResetUiState()
+    object Idle: PasswordResetUiState()
 }

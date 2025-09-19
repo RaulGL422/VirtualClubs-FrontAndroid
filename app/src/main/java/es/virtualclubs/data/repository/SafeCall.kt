@@ -1,13 +1,8 @@
 package es.virtualclubs.data.repository
 
-import android.util.Log
 import com.google.gson.Gson
 import es.virtualclubs.data.remote.dto.ApiResponse
 import es.virtualclubs.domain.repository.RefreshRepository
-import es.virtualclubs.presentation.navigation.SessionManager
-import es.virtualclubs.domain.usecase.RefreshTokenUseCase
-import es.virtualclubs.domain.usecase.token.GetRefreshTokenUseCase
-import es.virtualclubs.domain.usecase.token.SaveTokensUseCase
 import jakarta.inject.Inject
 import retrofit2.HttpException
 import java.io.IOException

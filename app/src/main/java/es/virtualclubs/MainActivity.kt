@@ -21,12 +21,16 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         enableEdgeToEdge()
+        val deepLinkData = intent?.data
         setContent {
             VirtualClubsTheme(
                 preferences = appPreferences
             ) {
                 val windowSize = calculateWindowSizeClass(this)
-                VirtualClubsMainApp(windowSize.widthSizeClass)
+                VirtualClubsMainApp(
+                    windowSize.widthSizeClass,
+                    deepLinkData = deepLinkData
+                )
             }
         }
     }

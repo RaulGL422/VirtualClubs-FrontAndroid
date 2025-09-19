@@ -1,8 +1,12 @@
 package es.virtualclubs.data.repository
 
-import com.google.gson.Gson
 import es.virtualclubs.data.remote.api.AuthApi
-import es.virtualclubs.data.remote.dto.*
+import es.virtualclubs.data.remote.dto.ApiResponse
+import es.virtualclubs.data.remote.dto.AuthRequest
+import es.virtualclubs.data.remote.dto.GoogleAuthRequest
+import es.virtualclubs.data.remote.dto.LogoutRequest
+import es.virtualclubs.data.remote.dto.RegisterRequest
+import es.virtualclubs.data.remote.dto.RequestPasswordResetRequest
 import es.virtualclubs.domain.model.AuthTokens
 import es.virtualclubs.domain.repository.AuthRepository
 import javax.inject.Inject
@@ -30,6 +34,16 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun google(idToken: String): Result<AuthTokens> =
         safeAuthCall { api.google(GoogleAuthRequest(idToken)) }
+
+    override suspend fun requestPasswordReset(email: String): Result<Unit> =
+        safeCall.safeCall {
+            val response = api.requestPasswordReset(RequestPasswordResetRequest(email))
+            if (response.success) {
+                Result.success(Unit)
+            } else {
+                Result.failure(Exception(response.message))
+            }
+        }
 
     // --- PRIVATE HELPERS ---
 
