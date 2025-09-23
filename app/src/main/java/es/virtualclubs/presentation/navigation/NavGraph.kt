@@ -53,7 +53,10 @@ fun AppNavHost(
             val token = backStackEntry.arguments?.getString("token")?.let {
                 URLDecoder.decode(it, StandardCharsets.UTF_8.toString())
             } ?: ""
-            ResetPasswordPage(token = token)
+            ResetPasswordPage(
+                token = token,
+                onSettingsTap = { appNavigator.navigateToSettings() }
+            )
         }
 
         composable(

@@ -95,22 +95,36 @@ fun LoginPage(
     }
 
     Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) }
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+        topBar = {
+            Row(
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .padding(vertical = 16.dp)
+                    .fillMaxWidth()
+            ) {
+                // Settings button
+                IconButton(
+                    onClick = onSettingsTap,
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                ) {
+                    Icon(
+                        Icons.Filled.Settings,
+                        contentDescription = stringResource(R.string.settings)
+                    )
+                }
+            }
+        }
     ) { padding ->
         Column(
             modifier = Modifier
                 .padding(padding)
                 .fillMaxSize()
         ) {
-            // Settings button
-            IconButton(
-                onClick = onSettingsTap,
-                modifier = Modifier
-                    .padding(horizontal = 16.dp)
-                    .align(Alignment.End)
-            ) {
-                Icon(Icons.Filled.Settings, contentDescription = stringResource(R.string.settings))
-            }
+
+
 
             // Manage activity with google
             val googleSignInLauncher = rememberLauncherForActivityResult(
