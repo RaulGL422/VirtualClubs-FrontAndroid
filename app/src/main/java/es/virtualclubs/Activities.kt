@@ -1,11 +1,17 @@
 package es.virtualclubs
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
+import androidx.compose.runtime.LaunchedEffect
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import es.virtualclubs.data.local.datastore.AppPreferences
 import es.virtualclubs.presentation.theme.VirtualClubsTheme
@@ -15,6 +21,7 @@ import javax.inject.Inject
 class MainActivity : ComponentActivity() {
     @Inject
     lateinit var appPreferences: AppPreferences
+    private var navController: NavHostController? = null
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,8 +33,12 @@ class MainActivity : ComponentActivity() {
                 preferences = appPreferences
             ) {
                 val windowSize = calculateWindowSizeClass(this)
+                val controller = rememberNavController()
+                navController = controller
+
                 VirtualClubsMainApp(
-                    windowSize.widthSizeClass
+                    windowSize.widthSizeClass,
+                    navController = controller
                 )
             }
         }
@@ -38,23 +49,39 @@ class MainActivity : ComponentActivity() {
 class ResetPasswordActivity : ComponentActivity() {
     @Inject
     lateinit var appPreferences: AppPreferences
+    private var navController: NavHostController? = null
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         enableEdgeToEdge()
-        val deepLinkData = intent?.data
         setContent {
             VirtualClubsTheme(
                 preferences = appPreferences
             ) {
                 val windowSize = calculateWindowSizeClass(this)
+                val controller = rememberNavController()
+                navController = controller
+
+                Log.e("onCreate", "onCreate Reset Password: ${intent.data}")
+
                 VirtualClubsMainApp(
                     windowSize.widthSizeClass,
-                    deepLinkData = deepLinkData
+                    navController = controller
                 )
+
+                LaunchedEffect(controller) {
+                    controller.handleDeepLink(intent)
+                }
             }
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        intent.let {
+            navController?.handleDeepLink(it)
         }
     }
 }
