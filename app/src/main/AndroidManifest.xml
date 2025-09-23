@@ -20,6 +20,7 @@
         <!-- Main launcher activity -->
         <activity
             android:name=".MainActivity"
+            android:launchMode="singleTask"
             android:exported="true"
             android:theme="@style/Theme.VirtualClubs">
 
@@ -33,18 +34,15 @@
 
         <activity
             android:name=".ResetPasswordActivity"
+            android:launchMode="singleTask"
             android:exported="true"
             android:theme="@style/Theme.VirtualClubs">
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:scheme="virtualclubs"
-                    android:host="reset-password" />
+                <data android:scheme="virtualclubs" android:host="pass" android:path="/reset-password" />
             </intent-filter>
         </activity>
     </application>

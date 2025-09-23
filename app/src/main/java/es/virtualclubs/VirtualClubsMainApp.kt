@@ -1,5 +1,6 @@
 package es.virtualclubs
 
+import android.util.Log
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -12,8 +13,7 @@ import es.virtualclubs.presentation.navigation.AppNavigatorImpl
 @Composable
 fun VirtualClubsMainApp(
     windowSize: WindowWidthSizeClass,
-    navController: NavHostController = rememberNavController(),
-    deepLinkData: android.net.Uri? = null
+    navController: NavHostController
 ) {
     val screenType = when (windowSize) {
         WindowWidthSizeClass.Compact, WindowWidthSizeClass.Medium -> ScreenType.Small
@@ -22,21 +22,6 @@ fun VirtualClubsMainApp(
     }
 
     val navigator = AppNavigatorImpl()
-
-    LaunchedEffect(deepLinkData) {
-        deepLinkData?.let { uri ->
-            when (uri.path) {
-                "/reset-password" -> {
-                    val token = uri.getQueryParameter("token")
-                    token?.let { navigator.navigateToResetPassword(it) }
-                }
-                "/verify-email" -> {
-                    val token = uri.getQueryParameter("token")
-                    token?.let { navigator.navigateToVerifyEmail(it) }
-                }
-            }
-        }
-    }
 
     AppNavHost(navController, screenType, navigator)
 }
