@@ -42,4 +42,8 @@
     <string name="send_email">Enviar correo</string>
     <string name="close">Cerrar</string>
     <string name="recover_password">Recuperar Contraseña</string>
+    <string name="change_password">Cambiar Contraseña</string>
+    <string name="back">Volver</string>
+    <string name="introduce_reset_password">Introduce tu nueva contraseña para tu cuenta. Una vez cambiada puedes volver a iniciar sesión</string>
+    <string name="password_reset_success">Contraseña cambiada</string>
 </resources>
