@@ -17,6 +17,13 @@ class AppNavigatorImpl @Inject constructor() : AppNavigator {
         }
     }
 
+    override fun navigateToLoginAndClearStackWithMessage(message: String) {
+        val routeWithToken = Screen.ResetPassword.route.replace("{message}", message)
+        navController?.navigate(routeWithToken) {
+            popUpTo(0) { inclusive = true }
+        }
+    }
+
     override fun navigateToHome() {
         navController?.navigate(Screen.Home.route) {
             popUpTo(Screen.Auth.route) { inclusive = true }

@@ -7,6 +7,7 @@ import es.virtualclubs.data.remote.dto.GoogleAuthRequest
 import es.virtualclubs.data.remote.dto.LogoutRequest
 import es.virtualclubs.data.remote.dto.RegisterRequest
 import es.virtualclubs.data.remote.dto.RequestPasswordResetRequest
+import es.virtualclubs.data.remote.dto.ResetPasswordRequest
 import es.virtualclubs.domain.model.AuthTokens
 import es.virtualclubs.domain.repository.AuthRepository
 import javax.inject.Inject
@@ -34,6 +35,16 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun google(idToken: String): Result<AuthTokens> =
         safeAuthCall { api.google(GoogleAuthRequest(idToken)) }
+
+    override suspend fun resetPassword(token: String, newPassword: String): Result<Unit> =
+        safeCall.safeCall {
+            val response = api.resetPassword(ResetPasswordRequest(token, newPassword))
+            if (response.success) {
+                Result.success(Unit)
+            } else {
+                Result.failure(Exception(response.message))
+            }
+        }
 
     override suspend fun requestPasswordReset(email: String): Result<Unit> =
         safeCall.safeCall {

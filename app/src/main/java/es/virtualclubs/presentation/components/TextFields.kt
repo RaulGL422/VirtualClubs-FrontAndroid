@@ -2,6 +2,7 @@ package es.virtualclubs.presentation.components
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
@@ -19,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -28,11 +30,14 @@ import es.virtualclubs.R
 fun RoundedTextField(
     value: String,
     onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
     @StringRes placeholder: Int? = null,
     leadingIcon: ImageVector,
     isPassword: Boolean = false,
     keyboardType: KeyboardType = KeyboardType.Text,
-    readOnly: Boolean = false
+    imeAction: ImeAction = ImeAction.Done,
+    onImeAction: () -> Unit = {},
+    readOnly: Boolean = false,
 ) {
     var passwordVisible by remember { mutableStateOf(false) }
 
@@ -61,11 +66,16 @@ fun RoundedTextField(
             VisualTransformation.None
         },
         keyboardOptions = KeyboardOptions(
-            keyboardType = if (isPassword) KeyboardType.Password else keyboardType
+            keyboardType = if (isPassword) KeyboardType.Password else keyboardType,
+            imeAction = imeAction
         ),
         singleLine = true,
+        keyboardActions = KeyboardActions(
+            onAny = { onImeAction() }
+        ),
         readOnly = readOnly,
         shape = MaterialTheme.shapes.medium,
-        modifier = Modifier.fillMaxWidth()
+
+        modifier = modifier.fillMaxWidth()
     )
 }

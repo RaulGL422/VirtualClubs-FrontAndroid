@@ -1,11 +1,8 @@
 package es.virtualclubs
 
-import android.util.Log
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import es.virtualclubs.presentation.navigation.AppNavHost
 import es.virtualclubs.presentation.navigation.AppNavigatorImpl
 

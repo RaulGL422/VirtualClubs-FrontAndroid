@@ -11,7 +11,6 @@ import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import es.virtualclubs.data.local.datastore.AppPreferences
 import es.virtualclubs.presentation.theme.VirtualClubsTheme

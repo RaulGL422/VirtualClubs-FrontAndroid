@@ -89,6 +89,7 @@ dependencies {
     implementation(libs.androidx.animation.android)
     implementation(libs.androidx.animation.core.lint)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.foundation.layout)
 
 
     // Dependencias de pruebas

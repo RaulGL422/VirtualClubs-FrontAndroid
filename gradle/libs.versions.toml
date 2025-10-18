@@ -31,6 +31,7 @@ foundationAndroid = "1.8.3"
 animationAndroid = "1.8.3"
 animationCoreLint = "1.8.3"
 googleid = "1.1.1"
+foundationLayout = "1.9.2"
 
 [libraries]
 androidx-camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "cameraLifecycle" }
@@ -72,6 +73,7 @@ androidx-animation-core-lint = { group = "androidx.compose.animation", name = "a
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-compose-material3-window-size = { group = "androidx.compose.material3", name = "material3-window-size-class", version.ref = "material3WindowSizeClass" }
 androidx-compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended", version = "1.6.8" }
+androidx-compose-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout", version.ref = "foundationLayout" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

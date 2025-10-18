@@ -29,10 +29,14 @@ fun AppNavHost(
         navController = navController,
         startDestination = Screen.Auth.route
     ) {
-        composable(Screen.Auth.route) {
+        composable(
+            Screen.Auth.route
+        ) { backStackEntry ->
+            val message = backStackEntry.arguments?.getString("message")
             LoginPage(
                 onSettingsTap = { appNavigator.navigateToSettings() },
                 screenType = screenType,
+                message = message,
                 onLogged = { appNavigator.navigateToHome() }
             )
         }
@@ -55,7 +59,10 @@ fun AppNavHost(
             } ?: ""
             ResetPasswordPage(
                 token = token,
-                onSettingsTap = { appNavigator.navigateToSettings() }
+                screenType = screenType,
+                onSettingsTap = { appNavigator.navigateToSettings() },
+                onBack = { appNavigator.navigateBack() },
+                onPasswordResetSuccess = { appNavigator.navigateToLoginAndClearStackWithMessage(it) }
             )
         }
 
