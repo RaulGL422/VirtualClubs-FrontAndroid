@@ -100,8 +100,8 @@ fun LoginPage(
         }
     }
 
-    if (message != null) {
-        scope.launch {
+    LaunchedEffect(message) {
+        if (message != null) {
             snackbarHostState.showSnackbar(
                 message = message,
                 duration = SnackbarDuration.Short
