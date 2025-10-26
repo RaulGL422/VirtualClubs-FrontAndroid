@@ -19,7 +19,6 @@ class AppNavigatorImpl @Inject constructor() : AppNavigator {
     }
 
     override fun navigateToLoginAndClearStackWithMessage(message: String) {
-        Log.i("Navigation", "Attempting to navigate to login with message: $message")
         val routeWithToken = Screen.Auth.route.replace("{message}", message)
         navController?.navigate(routeWithToken) {
             popUpTo(0) { inclusive = true }
