@@ -1,5 +1,6 @@
 package es.virtualclubs.presentation.navigation
 
+import android.util.Log
 import androidx.navigation.NavController
 import jakarta.inject.Inject
 
@@ -18,7 +19,8 @@ class AppNavigatorImpl @Inject constructor() : AppNavigator {
     }
 
     override fun navigateToLoginAndClearStackWithMessage(message: String) {
-        val routeWithToken = Screen.ResetPassword.route.replace("{message}", message)
+        Log.i("Navigation", "Attempting to navigate to login with message: $message")
+        val routeWithToken = Screen.Auth.route.replace("{message}", message)
         navController?.navigate(routeWithToken) {
             popUpTo(0) { inclusive = true }
         }
