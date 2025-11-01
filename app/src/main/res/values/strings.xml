@@ -46,4 +46,13 @@
     <string name="back">Volver</string>
     <string name="introduce_reset_password">Introduce tu nueva contraseña para tu cuenta. Una vez cambiada puedes volver a iniciar sesión</string>
     <string name="password_reset_success">Contraseña cambiada</string>
+    <string name="user_not_found">No se ha encontrado al usuario</string>
+    <string name="username_required">Nombre de usuario requerido</string>
+    <string name="field_null">Campo nulo</string>
+    <string name="token_blank">El token estan en blanco</string>
+    <string name="failed_send_email">Error al enviar el email</string>
+    <string name="invalid_token">El token no es valido</string>
+    <string name="no_local_provider">La cuenta no tiene acceso local</string>
+    <string name="email_not_found">No se ha encontrado el email</string>
+    <string name="invalid_access_token">Token de acceso invalido</string>
 </resources>

@@ -294,7 +294,7 @@ fun LoginContent(
 
             when (uiState) {
                 is AuthUiState.AuthFailed -> Text(
-                    text = stringResource(ErrorHandler.getErrorMessage(uiState.message)),
+                    text = stringResource(ErrorHandler.getErrorMessage(uiState.errorType)),
                     color = MaterialTheme.colorScheme.error,
                     modifier = Modifier.padding(vertical = 8.dp)
                 )
@@ -413,7 +413,7 @@ fun ForgotPasswordDialog(
                 )
                 if (passwordResetUiState is PasswordResetUiState.Failed) {
                     Text(
-                        text = stringResource(ErrorHandler.getErrorMessage(passwordResetUiState.message)),
+                        text = stringResource(ErrorHandler.getErrorMessage(passwordResetUiState.errorType)),
                         color = MaterialTheme.colorScheme.error,
                         modifier = Modifier.padding(vertical = 8.dp)
                     )
