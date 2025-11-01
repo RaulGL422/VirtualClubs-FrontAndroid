@@ -59,7 +59,6 @@ fun AppBar(
         val messageId = when (message) {
             is UiMessage.None -> null
             is UiMessage.Error -> (message as UiMessage.Error).messageKey
-            is UiMessage.Notification -> (message as UiMessage.Notification).messageKey
         }
 
         if (messageId != null) {

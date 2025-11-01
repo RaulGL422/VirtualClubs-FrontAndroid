@@ -45,6 +45,20 @@
                 <data android:scheme="virtualclubs" android:host="pass" android:path="/reset-password" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".VerifyEmailActivity"
+            android:launchMode="singleTask"
+            android:exported="true"
+            android:theme="@style/Theme.VirtualClubs">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="virtualclubs" android:host="email" android:path="/verify-email" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

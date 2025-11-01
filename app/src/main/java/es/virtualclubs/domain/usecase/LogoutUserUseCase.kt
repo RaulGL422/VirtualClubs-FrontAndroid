@@ -6,11 +6,5 @@ import jakarta.inject.Inject
 class LogoutUserUseCase @Inject constructor(
     private val repository: AuthRepository
 ) {
-    suspend operator fun invoke(refreshToken: String) = repository.logout(refreshToken)
-}
-
-class LogoutUserUseCaseFactory @Inject constructor(
-    private val repository: AuthRepository
-) {
-    fun create(): LogoutUserUseCase = LogoutUserUseCase(repository)
+    suspend operator fun invoke() = repository.logout()
 }

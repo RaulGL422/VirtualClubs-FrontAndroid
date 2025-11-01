@@ -96,7 +96,7 @@ fun ResetPasswordPage(
                 AnimatedVisibility(visible = uiState is ResetPasswordUiState.Failed) {
                     if (uiState is ResetPasswordUiState.Failed) {
                         Text(
-                            text = stringResource(ErrorHandler.getErrorMessage((uiState as ResetPasswordUiState.Failed).message)),
+                            text = stringResource(ErrorHandler.getErrorMessage((uiState as ResetPasswordUiState.Failed).errorType)),
                                 color = MaterialTheme.colorScheme.error,
                                 modifier = Modifier.padding(vertical = 8.dp)
                             )

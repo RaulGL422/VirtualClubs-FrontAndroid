@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import es.virtualclubs.domain.model.ErrorType
+import es.virtualclubs.domain.model.VirtualClubException
 import es.virtualclubs.domain.repository.AuthRepository
 import es.virtualclubs.presentation.screens.auth.AuthUiState
 import jakarta.inject.Inject
@@ -26,7 +28,7 @@ class ResetPasswordViewModel @Inject constructor(
             _uiState.value = ResetPasswordUiState.Attempting
 
             if (newPassword != confirmPassword) {
-                _uiState.value = ResetPasswordUiState.Failed("passwords_not_equals")
+                _uiState.value = ResetPasswordUiState.Failed(ErrorType.PASSWORD_NOT_EQUALS)
                 return@launch
             }
 
@@ -34,7 +36,7 @@ class ResetPasswordViewModel @Inject constructor(
             _uiState.value = if (response.isSuccess) {
                 ResetPasswordUiState.Success
             } else {
-                ResetPasswordUiState.Failed(response.exceptionOrNull()?.message ?: "unknown_error")
+                ResetPasswordUiState.Failed((response.exceptionOrNull() as VirtualClubException).errorType)
             }
         }
     }
@@ -42,7 +44,7 @@ class ResetPasswordViewModel @Inject constructor(
 
 sealed class ResetPasswordUiState {
     object Success : ResetPasswordUiState()
-    data class Failed(val message: String) : ResetPasswordUiState()
+    data class Failed(val errorType: ErrorType) : ResetPasswordUiState()
     object Attempting : ResetPasswordUiState()
     object Idle : ResetPasswordUiState()
 }
