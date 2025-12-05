@@ -10,7 +10,7 @@ object ErrorHandler {
     return when (errorCode) {
       ErrorType.INTERNAL_ERROR -> R.string.internal_error
       ErrorType.INVALID_CREDENTIALS -> R.string.invalid_credentials
-      ErrorType.USER_NOT_FOUND -> R.string.user_not_found
+      ErrorType.USERNAME_NOT_FOUND -> R.string.username_not_found
       ErrorType.EMAIL_ALREADY_EXISTS -> R.string.user_already_exists
       ErrorType.EMAIL_REQUIRED -> R.string.email_required
       ErrorType.PASSWORD_REQUIRED -> R.string.password_required
@@ -32,6 +32,8 @@ object ErrorHandler {
       ErrorType.PASSWORD_NOT_EQUALS -> R.string.passwords_not_equals
       ErrorType.GOOGLE_SIGN_IN_NO_TOKEN -> R.string.google_login_no_token
       ErrorType.GOOGLE_LOGIN_EXCEPTION -> R.string.google_login_api_exception
+      ErrorType.USER_NOT_FOUND -> R.string.user_not_found
+      else -> R.string.unknown_error
     }
   }
 }

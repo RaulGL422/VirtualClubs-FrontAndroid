@@ -3,7 +3,7 @@ package es.virtualclubs.domain.model
 enum class ErrorType(val code: Int) {
   INTERNAL_ERROR(1),
   INVALID_CREDENTIALS(2),
-  USER_NOT_FOUND(3),
+  USERNAME_NOT_FOUND(3),
   EMAIL_ALREADY_EXISTS(4),
   EMAIL_REQUIRED(5),
   PASSWORD_REQUIRED(6),
@@ -24,7 +24,9 @@ enum class ErrorType(val code: Int) {
   GOOGLE_SIGN_IN_FAILED(21),
   PASSWORD_NOT_EQUALS(22),
   GOOGLE_SIGN_IN_NO_TOKEN(23),
-  GOOGLE_LOGIN_EXCEPTION(24);
+  GOOGLE_LOGIN_EXCEPTION(24),
+  USER_NOT_FOUND(25),
+  EMAIL_NOT_VERIFIED(26);
 
   companion object {
     @JvmStatic
