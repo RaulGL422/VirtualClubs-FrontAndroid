@@ -86,7 +86,7 @@ class AuthViewModel @Inject constructor(
       val idToken = account.idToken
       if (idToken != null) {
         CoroutineScope(Dispatchers.IO).launch {
-          val response = safeCall.safeCall { repository.google(idToken) }
+          val response = SafeCall.safeCall { repository.google(idToken) }
           if (response.isSuccess) {
             val tokens = response.getOrNull()
             if (tokens != null) {
@@ -134,7 +134,7 @@ class AuthViewModel @Inject constructor(
 
     viewModelScope.launch {
       _uiState.value = AuthUiState.AttemptingAuth
-      val response = safeCall.safeCall { repository.login(email, password) }
+      val response = SafeCall.safeCall { repository.login(email, password) }
       if (response.isSuccess) {
         val tokens = response.getOrNull()
         if (tokens != null) {
@@ -165,7 +165,7 @@ class AuthViewModel @Inject constructor(
         return@launch
       }
 
-      val response = safeCall.safeCall { repository.register(email, password) }
+      val response = SafeCall.safeCall { repository.register(email, password) }
       if (response.isSuccess) {
         val tokens = response.getOrNull()
         if (tokens != null) {
@@ -188,7 +188,7 @@ class AuthViewModel @Inject constructor(
     viewModelScope.launch {
       _passwordResetUiState.value = PasswordResetUiState.Attempting
 
-      val response = safeCall.safeCall { repository.requestPasswordReset(email) }
+      val response = SafeCall.safeCall { repository.requestPasswordReset(email) }
       if (response.isSuccess) {
         _passwordResetUiState.value = PasswordResetUiState.Success
       } else {

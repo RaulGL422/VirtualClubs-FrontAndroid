@@ -73,10 +73,10 @@ fun AppNavHost(
 
     composable(
       route = Screen.VerifyEmailResult.route,
-      arguments = listOf(navArgument("token") { type = NavType.StringType }),
+      arguments = listOf(navArgument("result") { type = NavType.StringType }),
       deepLinks = listOf(
         navDeepLink {
-          uriPattern = "virtualclubs://verify-email?result={result}"
+          uriPattern = "virtualclubs://verify_email_result?result={result}"
         }
       )
     ) { backStackEntry ->
