@@ -1,4 +1,4 @@
-package es.virtualclubs.data.repository
+package es.virtualclubs.data.managers
 
 import com.google.gson.Gson
 import es.virtualclubs.data.remote.dto.ApiResponse
@@ -10,10 +10,10 @@ import retrofit2.HttpException
 import java.io.IOException
 import kotlin.coroutines.cancellation.CancellationException
 
-class SafeCall @Inject constructor(
+class SafeResponse @Inject constructor(
   private val refreshRepository: RefreshRepository
 ) {
-  suspend fun <T> safeCall(
+  suspend fun <T> safeResponse(
     block: suspend () -> Result<T>
   ): Result<T> {
     return try {

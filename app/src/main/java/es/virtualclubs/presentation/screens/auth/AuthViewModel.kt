@@ -18,6 +18,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import es.virtualclubs.BuildConfig
 import es.virtualclubs.data.local.datastore.UserPreferences
+import es.virtualclubs.data.managers.ErrorManager
+import es.virtualclubs.data.managers.SafeCall
 import es.virtualclubs.domain.model.ErrorType
 import es.virtualclubs.domain.model.VirtualClubException
 import es.virtualclubs.domain.repository.AuthRepository
@@ -84,18 +86,18 @@ class AuthViewModel @Inject constructor(
       val idToken = account.idToken
       if (idToken != null) {
         CoroutineScope(Dispatchers.IO).launch {
-          val response = repository.google(idToken)
+          val response = safeCall.safeCall { repository.google(idToken) }
           if (response.isSuccess) {
             val tokens = response.getOrNull()
             if (tokens != null) {
               _uiState.value = AuthUiState.Success
               saveTokensUseCase(tokens.accessToken, tokens.refreshToken)
             } else {
-              _uiState.value = AuthUiState.AuthFailed(ErrorType.MISSING_TOKENS)
+              ErrorManager.setError(ErrorType.MISSING_TOKENS)
+              _uiState.value = AuthUiState.Idle
             }
           } else {
-            _uiState.value =
-              AuthUiState.AuthFailed((response.exceptionOrNull() as VirtualClubException).errorType)
+            _uiState.value = AuthUiState.Idle
           }
         }
       } else {
@@ -108,14 +110,15 @@ class AuthViewModel @Inject constructor(
   }
 
   fun onLoginFailed(errorType: ErrorType) {
-    _uiState.value = AuthUiState.AuthFailed(errorType)
+    ErrorManager.setError(errorType)
+    _uiState.value = AuthUiState.Idle
   }
 
   private fun tryAutoLogin() {
     viewModelScope.launch {
       if (userPreferences.autoLoginFlow.firstOrNull() == true) {
         // Try to get a new access token from backend
-        val response = refreshRepository.refresh(false)
+        val response = SafeCall.safeCall { refreshRepository.refresh(false) }
         val tokens = response.getOrNull()
         _uiState.value = if (response.isSuccess && tokens != null) {
           AuthUiState.Success
@@ -131,7 +134,7 @@ class AuthViewModel @Inject constructor(
 
     viewModelScope.launch {
       _uiState.value = AuthUiState.AttemptingAuth
-      val response = repository.login(email, password)
+      val response = safeCall.safeCall { repository.login(email, password) }
       if (response.isSuccess) {
         val tokens = response.getOrNull()
         if (tokens != null) {
@@ -139,11 +142,11 @@ class AuthViewModel @Inject constructor(
           userPreferences.saveUser(email, rememberUser)
           _uiState.value = AuthUiState.Success
         } else {
-          _uiState.value = AuthUiState.AuthFailed(ErrorType.MISSING_TOKENS)
+          ErrorManager.setError(ErrorType.MISSING_TOKENS)
+          _uiState.value = AuthUiState.Idle
         }
       } else {
-        _uiState.value =
-          AuthUiState.AuthFailed((response.exceptionOrNull() as VirtualClubException).errorType)
+        _uiState.value = AuthUiState.Idle
       }
     }
   }
@@ -157,11 +160,12 @@ class AuthViewModel @Inject constructor(
       _uiState.value = AuthUiState.AttemptingAuth
 
       if (password != confirmPassword) {
-        _uiState.value = AuthUiState.AuthFailed(ErrorType.PASSWORD_NOT_EQUALS)
+        ErrorManager.setError(ErrorType.PASSWORD_NOT_EQUALS)
+        _uiState.value = AuthUiState.Idle
         return@launch
       }
 
-      val response = repository.register(email, password)
+      val response = safeCall.safeCall { repository.register(email, password) }
       if (response.isSuccess) {
         val tokens = response.getOrNull()
         if (tokens != null) {
@@ -169,10 +173,11 @@ class AuthViewModel @Inject constructor(
           saveTokensUseCase(tokens.accessToken, tokens.refreshToken)
           _uiState.value = AuthUiState.Success
         } else {
-          _uiState.value = AuthUiState.AuthFailed(ErrorType.MISSING_TOKENS)
+          ErrorManager.setError(ErrorType.MISSING_TOKENS)
+          _uiState.value = AuthUiState.Idle
         }
       } else {
-        _uiState.value = AuthUiState.AuthFailed((response.exceptionOrNull() as VirtualClubException).errorType)
+        _uiState.value = AuthUiState.Idle
       }
     }
   }
@@ -183,12 +188,11 @@ class AuthViewModel @Inject constructor(
     viewModelScope.launch {
       _passwordResetUiState.value = PasswordResetUiState.Attempting
 
-      val response = repository.requestPasswordReset(email)
+      val response = safeCall.safeCall { repository.requestPasswordReset(email) }
       if (response.isSuccess) {
         _passwordResetUiState.value = PasswordResetUiState.Success
       } else {
-        _passwordResetUiState.value =
-          PasswordResetUiState.Failed((response.exceptionOrNull() as VirtualClubException).errorType)
+        _passwordResetUiState.value = PasswordResetUiState.Idle
       }
     }
   }
@@ -200,14 +204,12 @@ class AuthViewModel @Inject constructor(
 
 sealed class AuthUiState {
   object Success : AuthUiState()
-  data class AuthFailed(val errorType: ErrorType) : AuthUiState()
   object AttemptingAuth : AuthUiState()
   object Idle : AuthUiState()
 }
 
 sealed class PasswordResetUiState {
   object Success : PasswordResetUiState()
-  data class Failed(val errorType: ErrorType) : PasswordResetUiState()
   object Attempting : PasswordResetUiState()
   object Idle : PasswordResetUiState()
 }

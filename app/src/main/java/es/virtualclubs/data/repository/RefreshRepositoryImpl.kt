@@ -3,7 +3,6 @@ package es.virtualclubs.data.repository
 import es.virtualclubs.data.remote.api.RefreshApi
 import es.virtualclubs.data.remote.dto.RefreshRequest
 import es.virtualclubs.data.remote.dto.getOrThrow
-import es.virtualclubs.domain.model.AuthTokens
 import es.virtualclubs.domain.repository.RefreshRepository
 import es.virtualclubs.domain.usecase.token.GetRefreshTokenUseCase
 import es.virtualclubs.domain.usecase.token.SaveTokensUseCase
@@ -23,12 +22,13 @@ class RefreshRepositoryImpl @Inject constructor(
       if (token == null)
         throw Exception()
 
-      val result = api.refresh(RefreshRequest(token)).getOrThrow()
+      val result = api.refresh(RefreshRequest(token)).getOrThrow() ?: throw Exception()
+
       saveTokens(result.accessToken, result.refreshToken)
       Result.success(Unit)
     } catch (e: Exception) {
       if (canLogout)
-        sessionManager.logout(token ?: "")
+        sessionManager.logout()
 
       Result.failure(e)
     }

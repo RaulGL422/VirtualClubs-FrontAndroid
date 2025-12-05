@@ -10,7 +10,7 @@ data class ApiResponse<T>(
     val data: T? = null
 )
 
-fun <T> ApiResponse<T>.getOrThrow(): T {
+fun <T> ApiResponse<T>.getOrThrow(): T? {
     if (!success) throw VirtualClubException(ErrorType.fromCode(message))
-    return data ?: throw VirtualClubException(ErrorType.fromCode(message))
+    return data
 }

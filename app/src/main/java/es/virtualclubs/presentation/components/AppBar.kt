@@ -17,80 +17,84 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import es.virtualclubs.presentation.handlers.UiMessage
+import es.virtualclubs.R
+import es.virtualclubs.data.managers.ErrorManager
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppBar(
-    canGoBack: Boolean,
-    @StringRes titleResId: Int,
-    modifier: Modifier = Modifier,
-    titleString: String? = null,
-    onNavigateBack: (() -> Unit)? = null,
-    actions: (@Composable RowScope.() -> Unit)? = null,
-    uiMessage: UiMessage = UiMessage.None
+  canGoBack: Boolean,
+  @StringRes titleResId: Int,
+  modifier: Modifier = Modifier,
+  titleString: String? = null,
+  onNavigateBack: (() -> Unit)? = null,
+  actions: (@Composable RowScope.() -> Unit)? = null
 ) {
-    var message by remember { mutableStateOf(uiMessage) }
+  val errorState by ErrorManager.errorState.collectAsState()
 
-    Column(modifier = modifier) {
+  val message = when (errorState.code) {
+    null -> UiMessage.None
+    else -> UiMessage.Error(
+      messageKey = ErrorManager.getErrorId()
+    )
+  }
 
-        // Top bar with title and optional navigation & actions
-        TopAppBar(
-            title = { Text(text = titleString ?: stringResource(id = titleResId)) },
-            navigationIcon = {
-                if (canGoBack && onNavigateBack != null) {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-                    }
-                }
-            },
-            actions = { actions?.invoke(this) }
-        )
+  Column(modifier = modifier) {
 
-        // Optional error or notification message bar
-        val messageId = when (message) {
-            is UiMessage.None -> null
-            is UiMessage.Error -> (message as UiMessage.Error).messageKey
+    TopAppBar(
+      title = { Text(text = titleString ?: stringResource(id = titleResId)) },
+      navigationIcon = {
+        if (canGoBack && onNavigateBack != null) {
+          IconButton(onClick = onNavigateBack) {
+            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+          }
         }
+      },
+      actions = { actions?.invoke(this) }
+    )
 
-        if (messageId != null) {
-            val isError = message is UiMessage.Error
-
-            Surface(
-                color = if (isError) MaterialTheme.colorScheme.errorContainer
-                else MaterialTheme.colorScheme.primaryContainer,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp, vertical = 4.dp)
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = stringResource(id = messageId),
-                        modifier = Modifier.weight(1f),
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
-                    )
-
-                    // Close icon to dismiss message
-                    IconButton(onClick = {
-                        message = UiMessage.None
-                    }) {
-                        Icon(Icons.Default.Close, contentDescription = "Close")
-                    }
-                }
-            }
-        }
+    val messageId = when (message) {
+      is UiMessage.None -> null
+      is UiMessage.Error -> message.messageKey
     }
+
+    if (messageId != null) {
+      Surface(
+        color = MaterialTheme.colorScheme.errorContainer,
+        modifier = Modifier
+          .fillMaxWidth()
+          .padding(horizontal = 8.dp, vertical = 4.dp)
+      ) {
+        Row(
+          modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
+          verticalAlignment = Alignment.CenterVertically
+        ) {
+          Text(
+            text = stringResource(id = messageId),
+            modifier = Modifier.weight(1f),
+            color = MaterialTheme.colorScheme.onPrimaryContainer
+          )
+
+          IconButton(onClick = {
+            ErrorManager.clearError()
+          }) {
+            Icon(Icons.Default.Close, contentDescription = stringResource(id = R.string.close))
+          }
+        }
+      }
+    }
+  }
+}
+
+sealed class UiMessage {
+  data class Error(val messageKey: Int) : UiMessage()
+  object None : UiMessage()
 }

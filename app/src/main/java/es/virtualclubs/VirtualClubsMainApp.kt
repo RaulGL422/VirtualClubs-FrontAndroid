@@ -4,8 +4,6 @@ import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import es.virtualclubs.presentation.navigation.AppNavHost
-import es.virtualclubs.presentation.navigation.AppNavigatorImpl
-
 
 @Composable
 fun VirtualClubsMainApp(
@@ -14,13 +12,10 @@ fun VirtualClubsMainApp(
 ) {
     val screenType = when (windowSize) {
         WindowWidthSizeClass.Compact, WindowWidthSizeClass.Medium -> ScreenType.Small
-        WindowWidthSizeClass.Expanded -> ScreenType.Medium
         else -> ScreenType.Medium
     }
 
-    val navigator = AppNavigatorImpl()
-
-    AppNavHost(navController, screenType, navigator)
+    AppNavHost(navController, screenType)
 }
 
 // Enum for screen types based on window size.
