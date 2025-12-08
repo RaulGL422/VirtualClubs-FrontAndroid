@@ -16,42 +16,48 @@ private const val FILE_NAME = "secure_user_prefs"
 
 @Singleton
 class SecureUserPreferences @Inject constructor(
-    @param:ApplicationContext private val context: Context
+  @param:ApplicationContext private val context: Context
 ) {
-    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
-        name = FILE_NAME
-    )
+  private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
+    name = FILE_NAME
+  )
 
-    private val ACCESS_KEY = stringPreferencesKey("access_token")
-    private val REFRESH_KEY = stringPreferencesKey("refresh_token")
+  private val ACCESS_KEY = stringPreferencesKey("access_token")
+  private val REFRESH_KEY = stringPreferencesKey("refresh_token")
 
-    suspend fun saveAccessToken(token: String) {
-        val encrypted = EncryptionUtils.encrypt(token)
-        context.dataStore.edit { prefs ->
-            prefs[ACCESS_KEY] = android.util.Base64.encodeToString(encrypted, android.util.Base64.DEFAULT)
-        }
+  suspend fun saveAccessToken(token: String) {
+    val encrypted = EncryptionUtils.encrypt(token)
+    context.dataStore.edit { prefs ->
+      prefs[ACCESS_KEY] = android.util.Base64.encodeToString(encrypted, android.util.Base64.DEFAULT)
     }
+  }
 
-    suspend fun saveRefreshToken(token: String) {
-        val encrypted = EncryptionUtils.encrypt(token)
-        context.dataStore.edit { prefs ->
-            prefs[REFRESH_KEY] = android.util.Base64.encodeToString(encrypted, android.util.Base64.DEFAULT)
-        }
+  suspend fun saveRefreshToken(token: String) {
+    val encrypted = EncryptionUtils.encrypt(token)
+    context.dataStore.edit { prefs ->
+      prefs[REFRESH_KEY] =
+        android.util.Base64.encodeToString(encrypted, android.util.Base64.DEFAULT)
     }
+  }
 
-    val accessToken: Flow<String?> = context.dataStore.data.map { prefs ->
-        prefs[ACCESS_KEY]?.let {
-            EncryptionUtils.decrypt(android.util.Base64.decode(it, android.util.Base64.DEFAULT))
-        }
-    }
+  suspend fun saveTokens(accessToken: String, refreshToken: String) {
+    saveAccessToken(accessToken)
+    saveRefreshToken(refreshToken)
+  }
 
-    val refreshToken: Flow<String?> = context.dataStore.data.map { prefs ->
-        prefs[REFRESH_KEY]?.let {
-            EncryptionUtils.decrypt(android.util.Base64.decode(it, android.util.Base64.DEFAULT))
-        }
+  val accessToken: Flow<String?> = context.dataStore.data.map { prefs ->
+    prefs[ACCESS_KEY]?.let {
+      EncryptionUtils.decrypt(android.util.Base64.decode(it, android.util.Base64.DEFAULT))
     }
+  }
 
-    suspend fun clearAll() {
-        context.dataStore.edit { it.clear() }
+  val refreshToken: Flow<String?> = context.dataStore.data.map { prefs ->
+    prefs[REFRESH_KEY]?.let {
+      EncryptionUtils.decrypt(android.util.Base64.decode(it, android.util.Base64.DEFAULT))
     }
+  }
+
+  suspend fun clearAll() {
+    context.dataStore.edit { it.clear() }
+  }
 }

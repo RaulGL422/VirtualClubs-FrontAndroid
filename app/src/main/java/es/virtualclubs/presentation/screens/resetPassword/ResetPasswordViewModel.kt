@@ -4,10 +4,9 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import es.virtualclubs.data.managers.ErrorManager
+import es.virtualclubs.data.managers.GlobalUIManager
 import es.virtualclubs.data.managers.SafeCall
 import es.virtualclubs.domain.model.ErrorType
-import es.virtualclubs.domain.model.VirtualClubException
 import es.virtualclubs.domain.repository.AuthRepository
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,7 +28,7 @@ class ResetPasswordViewModel @Inject constructor(
       _uiState.value = ResetPasswordUiState.Attempting
 
       if (newPassword != confirmPassword) {
-        ErrorManager.setError(ErrorType.PASSWORD_NOT_EQUALS)
+        GlobalUIManager.setError(ErrorType.PASSWORD_NOT_EQUALS)
         _uiState.value = ResetPasswordUiState.Idle
         return@launch
       }

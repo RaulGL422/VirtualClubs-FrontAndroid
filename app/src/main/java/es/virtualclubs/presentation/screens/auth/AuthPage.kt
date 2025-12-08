@@ -32,7 +32,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -62,10 +61,10 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import es.virtualclubs.R
 import es.virtualclubs.ScreenType
-import es.virtualclubs.data.managers.ErrorManager
+import es.virtualclubs.data.managers.GlobalUIManager
 import es.virtualclubs.presentation.components.RoundedTextField
 import es.virtualclubs.presentation.components.SocialButton
-import es.virtualclubs.presentation.handlers.ErrorHandler
+import es.virtualclubs.presentation.components.VCScaffold
 import es.virtualclubs.presentation.theme.getAppVersion
 import es.virtualclubs.presentation.theme.getLargeLogo
 import kotlinx.coroutines.launch
@@ -110,7 +109,7 @@ fun LoginPage(
     }
   }
 
-  Scaffold(
+  VCScaffold(
     snackbarHost = { SnackbarHost(snackbarHostState) },
     topBar = { AuthTopBar(onSettingsTap) }
   ) { padding ->
@@ -300,9 +299,9 @@ fun LoginContent(
         }
       }
 
-      if (ErrorManager.haveError()) {
+      if (GlobalUIManager.haveError()) {
         Text(
-          text = stringResource(ErrorManager.getErrorId()),
+          text = stringResource(GlobalUIManager.getErrorId()),
           color = MaterialTheme.colorScheme.error,
           modifier = Modifier.padding(vertical = 8.dp)
         )
@@ -418,9 +417,9 @@ fun ForgotPasswordDialog(
           keyboardType = KeyboardType.Email,
           modifier = Modifier.fillMaxWidth()
         )
-        if (ErrorManager.haveError()) {
+        if (GlobalUIManager.haveError()) {
           Text(
-            text = stringResource(ErrorManager.getErrorId()),
+            text = stringResource(GlobalUIManager.getErrorId()),
             color = MaterialTheme.colorScheme.error,
             modifier = Modifier.padding(vertical = 8.dp)
           )

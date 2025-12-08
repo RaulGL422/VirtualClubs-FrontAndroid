@@ -84,3 +84,44 @@ class ResetPasswordActivity : ComponentActivity() {
         }
     }
 }
+
+@AndroidEntryPoint
+class VerifyEmailActivity : ComponentActivity() {
+  @Inject
+  lateinit var appPreferences: AppPreferences
+  private var navController: NavHostController? = null
+
+  @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+
+    enableEdgeToEdge()
+    setContent {
+      VirtualClubsTheme(
+        preferences = appPreferences
+      ) {
+        val windowSize = calculateWindowSizeClass(this)
+        val controller = rememberNavController()
+        navController = controller
+
+        Log.e("onCreate", "onCreate Verify Email Result: ${intent.data}")
+
+        VirtualClubsMainApp(
+          windowSize.widthSizeClass,
+          navController = controller
+        )
+
+        LaunchedEffect(controller) {
+          controller.handleDeepLink(intent)
+        }
+      }
+    }
+  }
+
+  override fun onNewIntent(intent: Intent) {
+    super.onNewIntent(intent)
+    intent.let {
+      navController?.handleDeepLink(it)
+    }
+  }
+}

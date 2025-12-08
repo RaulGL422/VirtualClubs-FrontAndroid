@@ -2,7 +2,7 @@ package es.virtualclubs.presentation.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavOptionsBuilder
-import es.virtualclubs.data.managers.ErrorManager
+import es.virtualclubs.data.managers.GlobalUIManager
 
 object AppNavigator {
   private var navController: NavController? = null
@@ -31,7 +31,7 @@ object AppNavigator {
   }
 
   fun navigateBack() {
-    ErrorManager.clearError() // Reset the errors in new screen
+    GlobalUIManager.clearError() // Reset the errors in new screen
     navController?.popBackStack()
   }
 
@@ -41,14 +41,8 @@ object AppNavigator {
     }
   }
 
-  fun navigateToVerifyEmail() {
-    navigate(Screen.VerifyEmail.route) {
-      popUpTo(0) { inclusive = true }
-    }
-  }
-
   fun navigate(route: String, builder: (NavOptionsBuilder.() -> Unit)) {
-    ErrorManager.clearError() // Reset the errors in new screen
+    GlobalUIManager.clearError() // Reset the errors in new screen
     navController?.navigate(route, builder)
   }
 }

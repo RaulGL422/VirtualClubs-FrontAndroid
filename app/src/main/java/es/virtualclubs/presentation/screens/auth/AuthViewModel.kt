@@ -18,13 +18,13 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import es.virtualclubs.BuildConfig
 import es.virtualclubs.data.local.datastore.UserPreferences
-import es.virtualclubs.data.managers.ErrorManager
+import es.virtualclubs.data.local.secure.SecureUserPreferences
+import es.virtualclubs.data.managers.GlobalUIManager
 import es.virtualclubs.data.managers.SafeCall
 import es.virtualclubs.domain.model.ErrorType
-import es.virtualclubs.domain.model.VirtualClubException
 import es.virtualclubs.domain.repository.AuthRepository
 import es.virtualclubs.domain.repository.RefreshRepository
-import es.virtualclubs.domain.usecase.token.SaveTokensUseCase
+import es.virtualclubs.session.UserSession
 import jakarta.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -39,13 +39,13 @@ class AuthViewModel @Inject constructor(
   private val repository: AuthRepository,
   private val refreshRepository: RefreshRepository,
   private val userPreferences: UserPreferences,
-  private val saveTokensUseCase: SaveTokensUseCase,
+  private val securePreferences: SecureUserPreferences,
+  private val userSession: UserSession,
   @param:ApplicationContext private val context: Context
 ) : ViewModel() {
   private val _uiState = MutableStateFlow<AuthUiState>(AuthUiState.Idle)
   val uiState: StateFlow<AuthUiState> = _uiState.asStateFlow()
-  private val _passwordResetUiState =
-    MutableStateFlow<PasswordResetUiState>(PasswordResetUiState.Idle)
+  private val _passwordResetUiState = MutableStateFlow<PasswordResetUiState>(PasswordResetUiState.Idle)
   val passwordResetUiState: StateFlow<PasswordResetUiState> = _passwordResetUiState.asStateFlow()
 
   init {
@@ -90,10 +90,11 @@ class AuthViewModel @Inject constructor(
           if (response.isSuccess) {
             val tokens = response.getOrNull()
             if (tokens != null) {
+              userSession.currentUser.copy(email = account.email)
               _uiState.value = AuthUiState.Success
-              saveTokensUseCase(tokens.accessToken, tokens.refreshToken)
+              securePreferences.saveTokens(tokens.accessToken, tokens.refreshToken)
             } else {
-              ErrorManager.setError(ErrorType.MISSING_TOKENS)
+              GlobalUIManager.setError(ErrorType.MISSING_TOKENS)
               _uiState.value = AuthUiState.Idle
             }
           } else {
@@ -110,21 +111,24 @@ class AuthViewModel @Inject constructor(
   }
 
   fun onLoginFailed(errorType: ErrorType) {
-    ErrorManager.setError(errorType)
+    GlobalUIManager.setError(errorType)
     _uiState.value = AuthUiState.Idle
   }
 
   private fun tryAutoLogin() {
     viewModelScope.launch {
       if (userPreferences.autoLoginFlow.firstOrNull() == true) {
+        GlobalUIManager.showLoading()
         // Try to get a new access token from backend
         val response = SafeCall.safeCall { refreshRepository.refresh(false) }
         val tokens = response.getOrNull()
         _uiState.value = if (response.isSuccess && tokens != null) {
+          userSession.currentUser.copy(email = userPreferences.userEmailFlow.firstOrNull())
           AuthUiState.Success
         } else {
           AuthUiState.Idle
         }
+        GlobalUIManager.hideLoading()
       }
     }
   }
@@ -138,11 +142,12 @@ class AuthViewModel @Inject constructor(
       if (response.isSuccess) {
         val tokens = response.getOrNull()
         if (tokens != null) {
-          saveTokensUseCase(tokens.accessToken, tokens.refreshToken)
+          securePreferences.saveTokens(tokens.accessToken, tokens.refreshToken)
           userPreferences.saveUser(email, rememberUser)
+          userSession.currentUser.copy(email = email)
           _uiState.value = AuthUiState.Success
         } else {
-          ErrorManager.setError(ErrorType.MISSING_TOKENS)
+          GlobalUIManager.setError(ErrorType.MISSING_TOKENS)
           _uiState.value = AuthUiState.Idle
         }
       } else {
@@ -160,7 +165,7 @@ class AuthViewModel @Inject constructor(
       _uiState.value = AuthUiState.AttemptingAuth
 
       if (password != confirmPassword) {
-        ErrorManager.setError(ErrorType.PASSWORD_NOT_EQUALS)
+        GlobalUIManager.setError(ErrorType.PASSWORD_NOT_EQUALS)
         _uiState.value = AuthUiState.Idle
         return@launch
       }
@@ -170,10 +175,11 @@ class AuthViewModel @Inject constructor(
         val tokens = response.getOrNull()
         if (tokens != null) {
           userPreferences.saveUser(email, rememberUser)
-          saveTokensUseCase(tokens.accessToken, tokens.refreshToken)
+          securePreferences.saveTokens(tokens.accessToken, tokens.refreshToken)
+          userSession.currentUser.copy(email = email)
           _uiState.value = AuthUiState.Success
         } else {
-          ErrorManager.setError(ErrorType.MISSING_TOKENS)
+          GlobalUIManager.setError(ErrorType.MISSING_TOKENS)
           _uiState.value = AuthUiState.Idle
         }
       } else {
