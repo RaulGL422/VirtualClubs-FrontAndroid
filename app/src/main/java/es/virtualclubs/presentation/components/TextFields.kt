@@ -28,54 +28,56 @@ import es.virtualclubs.R
 
 @Composable
 fun RoundedTextField(
-    value: String,
-    onValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier,
-    @StringRes placeholder: Int? = null,
-    leadingIcon: ImageVector,
-    isPassword: Boolean = false,
-    keyboardType: KeyboardType = KeyboardType.Text,
-    imeAction: ImeAction = ImeAction.Done,
-    onImeAction: () -> Unit = {},
-    readOnly: Boolean = false,
+  value: String,
+  onValueChange: (String) -> Unit,
+  modifier: Modifier = Modifier,
+  @StringRes placeholder: Int? = null,
+  leadingIcon: ImageVector,
+  isPassword: Boolean = false,
+  keyboardType: KeyboardType = KeyboardType.Text,
+  imeAction: ImeAction = ImeAction.Done,
+  onImeAction: () -> Unit = {},
+  readOnly: Boolean = false,
+  enabled: Boolean = true
 ) {
-    var passwordVisible by remember { mutableStateOf(false) }
+  var passwordVisible by remember { mutableStateOf(false) }
 
-    OutlinedTextField(
-        value = value,
-        onValueChange = onValueChange,
-        placeholder = { if (placeholder != null) Text(stringResource(placeholder)) },
-        leadingIcon = { Icon(leadingIcon, contentDescription = null) },
-        trailingIcon = {
-            // Toggle visibility icon for password fields
-            if (isPassword) {
-                val icon = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
-                val description = if (passwordVisible) {
-                    stringResource(R.string.hide_password)
-                } else {
-                    stringResource(R.string.show_password)
-                }
-                IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                    Icon(icon, contentDescription = description)
-                }
-            }
-        },
-        visualTransformation = if (isPassword && !passwordVisible) {
-            PasswordVisualTransformation()
+  OutlinedTextField(
+    value = value,
+    onValueChange = onValueChange,
+    enabled = enabled,
+    placeholder = { if (placeholder != null) Text(stringResource(placeholder)) },
+    leadingIcon = { Icon(leadingIcon, contentDescription = null) },
+    trailingIcon = {
+      // Toggle visibility icon for password fields
+      if (isPassword) {
+        val icon = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
+        val description = if (passwordVisible) {
+          stringResource(R.string.hide_password)
         } else {
-            VisualTransformation.None
-        },
-        keyboardOptions = KeyboardOptions(
-            keyboardType = if (isPassword) KeyboardType.Password else keyboardType,
-            imeAction = imeAction
-        ),
-        singleLine = true,
-        keyboardActions = KeyboardActions(
-            onAny = { onImeAction() }
-        ),
-        readOnly = readOnly,
-        shape = MaterialTheme.shapes.medium,
+          stringResource(R.string.show_password)
+        }
+        IconButton(onClick = { passwordVisible = !passwordVisible }) {
+          Icon(icon, contentDescription = description)
+        }
+      }
+    },
+    visualTransformation = if (isPassword && !passwordVisible) {
+      PasswordVisualTransformation()
+    } else {
+      VisualTransformation.None
+    },
+    keyboardOptions = KeyboardOptions(
+      keyboardType = if (isPassword) KeyboardType.Password else keyboardType,
+      imeAction = imeAction
+    ),
+    singleLine = true,
+    keyboardActions = KeyboardActions(
+      onAny = { onImeAction() }
+    ),
+    readOnly = readOnly,
+    shape = MaterialTheme.shapes.medium,
 
-        modifier = modifier.fillMaxWidth()
-    )
+    modifier = modifier.fillMaxWidth()
+  )
 }

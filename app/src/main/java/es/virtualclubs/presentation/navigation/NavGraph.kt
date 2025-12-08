@@ -57,6 +57,7 @@ fun AppNavHost(
         URLDecoder.decode(it, StandardCharsets.UTF_8.toString())
       } ?: ""
       ResetPasswordPage(
+        titlePage = Screen.ResetPassword.nameId,
         token = token,
         screenType = screenType,
         onSettingsTap = { AppNavigator.navigateToSettings() },
@@ -66,21 +67,15 @@ fun AppNavHost(
     }
 
     composable(
-      route = Screen.VerifyEmail.route,
-    ) {
-      // TODO Hacer pagina de verificar email
-    }
-
-    composable(
       route = Screen.VerifyEmailResult.route,
-      arguments = listOf(navArgument("result") { type = NavType.StringType }),
+      arguments = listOf(navArgument("status") { type = NavType.StringType }),
       deepLinks = listOf(
         navDeepLink {
-          uriPattern = "virtualclubs://verify_email_result?result={result}"
+          uriPattern = "virtualclubs://email/verify-email?status={status}"
         }
       )
     ) { backStackEntry ->
-      val result = backStackEntry.arguments?.getBoolean("result") ?: "0"
+      val result = backStackEntry.arguments?.getBoolean("status") ?: "0"
       // TODO Hacer pagina de obtener resultado de la verificacion
     }
   }

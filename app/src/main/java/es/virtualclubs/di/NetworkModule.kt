@@ -6,19 +6,17 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import es.virtualclubs.BuildConfig
 import es.virtualclubs.data.local.secure.SecureUserPreferences
+import es.virtualclubs.data.managers.SafeResponse
 import es.virtualclubs.data.remote.api.AuthApi
 import es.virtualclubs.data.remote.api.RefreshApi
 import es.virtualclubs.data.remote.api.UserApi
 import es.virtualclubs.data.repository.AuthRepositoryImpl
 import es.virtualclubs.data.repository.RefreshRepositoryImpl
-import es.virtualclubs.data.managers.SafeResponse
 import es.virtualclubs.data.repository.UserRepositoryImpl
 import es.virtualclubs.domain.model.AuthInterceptor
 import es.virtualclubs.domain.repository.AuthRepository
 import es.virtualclubs.domain.repository.RefreshRepository
 import es.virtualclubs.domain.repository.UserRepository
-import es.virtualclubs.domain.usecase.token.GetRefreshTokenUseCase
-import es.virtualclubs.domain.usecase.token.SaveTokensUseCase
 import es.virtualclubs.presentation.navigation.SessionManager
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
@@ -36,19 +34,20 @@ object NetworkModule {
   @Singleton
   fun provideRetrofit(secureUserPreferences: SecureUserPreferences): Retrofit {
     val logging = HttpLoggingInterceptor().apply {
-      level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY
+      level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.HEADERS
       else HttpLoggingInterceptor.Level.NONE
     }
 
     val client = OkHttpClient.Builder()
+      .addInterceptor(AuthInterceptor {
+        runBlocking { secureUserPreferences.accessToken.firstOrNull() }
+      })
       .addInterceptor(logging)
-
-    val token = runBlocking { secureUserPreferences.accessToken.firstOrNull() }
-    if (token != null) client.addInterceptor(AuthInterceptor { token })
+      .build()
 
     return Retrofit.Builder()
       .baseUrl(BuildConfig.BASE_URL)
-      .client(client.build())
+      .client(client)
       .addConverterFactory(GsonConverterFactory.create())
       .build()
   }
@@ -73,10 +72,9 @@ object NetworkModule {
   fun provideRefreshRepository(
     api: RefreshApi,
     sessionManager: SessionManager,
-    saveTokensUseCase: SaveTokensUseCase,
-    refreshTokenUseCase: GetRefreshTokenUseCase
+    secureUserPreferences: SecureUserPreferences
   ): RefreshRepository =
-    RefreshRepositoryImpl(api, sessionManager, saveTokensUseCase, refreshTokenUseCase)
+    RefreshRepositoryImpl(api, sessionManager, secureUserPreferences = secureUserPreferences)
 
   @Provides
   @Singleton

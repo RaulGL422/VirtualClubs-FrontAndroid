@@ -56,4 +56,17 @@
     <string name="no_local_provider">La cuenta no tiene acceso local</string>
     <string name="email_not_found">No se ha encontrado el email</string>
     <string name="invalid_access_token">Token de acceso invalido</string>
+    <string name="verify_email_instructions">Introduce tu email para enviar el correo de verificación</string>
+    <string name="send_verification_email">Enviar email de verificación</string>
+    <string name="verification_email_sent">Correo enviado correctamente</string>
+    <string name="verify_email">Verificar email</string>
+    <string name="authentication_page">Inicio de sesión</string>
+    <string name="settings_page">Ajustes</string>
+    <string name="reset_password_page">Restablecer contraseña</string>
+    <string name="verify_email_page">Verificar email</string>
+    <string name="verify_email_result_page">Resultado de la verificación</string>
+    <string name="home_page">Menú principal</string>
+    <string name="email">Correo Electronico</string>
+    <string name="email_not_verified">Email no verificado</string>
+    <string name="email_not_verified_message">Debes verificar tu correo para continuar.</string>
 </resources>

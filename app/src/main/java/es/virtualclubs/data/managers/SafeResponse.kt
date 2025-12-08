@@ -2,6 +2,7 @@ package es.virtualclubs.data.managers
 
 import com.google.gson.Gson
 import es.virtualclubs.data.remote.dto.ApiResponse
+import es.virtualclubs.domain.model.AuthTokens
 import es.virtualclubs.domain.model.ErrorType
 import es.virtualclubs.domain.model.VirtualClubException
 import es.virtualclubs.domain.repository.RefreshRepository
@@ -25,8 +26,9 @@ class SafeResponse @Inject constructor(
     } catch (e: HttpException) {
       if (e.code() == 401) {
         try {
-          refreshRepository.refresh().getOrThrow()
+          refreshRepository.refresh(true).getOrThrow()
           block()
+          Result.success(Unit)
         } catch (_: VirtualClubException) {}
       }
 

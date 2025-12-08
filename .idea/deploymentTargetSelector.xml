@@ -4,10 +4,10 @@
     <selectionStates>
       <SelectionState runConfigName="VirtualClubs.app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-12-05T16:52:42.430703500Z">
+        <DropdownSelection timestamp="2025-12-07T11:24:15.293823700Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\Raul\.android\avd\Pixel_Fold_API_35.avd" />
+              <DeviceId pluginId="PhysicalDevice" identifier="serial=HVA1FG23" />
             </handle>
           </Target>
         </DropdownSelection>

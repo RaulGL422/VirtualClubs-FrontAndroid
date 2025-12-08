@@ -7,7 +7,7 @@ object SafeCall {
     val result = block()
 
     if (result.isFailure) {
-      ErrorManager.handleError(result.exceptionOrNull()!!)
+      GlobalUIManager.handleError(result.exceptionOrNull()!!)
     }
 
     return result
