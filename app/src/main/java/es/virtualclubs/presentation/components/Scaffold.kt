@@ -2,6 +2,7 @@ package es.virtualclubs.presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
@@ -17,6 +18,7 @@ import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -88,7 +90,11 @@ fun VCScaffold(
             }
           },
           title = { dialog.title?.let { text -> Text(stringResource(text)) } },
-          text = { dialog.content },
+          text = { dialog.content?.let { content ->
+            Column {
+              content()
+            }
+          } },
           confirmButton = {
             if (!dialog.blockDialog) {
               dialog.onConfirm?.let { onConfirm ->
