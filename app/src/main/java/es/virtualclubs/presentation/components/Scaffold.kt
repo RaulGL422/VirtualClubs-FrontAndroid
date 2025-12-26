@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -26,6 +27,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.window.DialogProperties
 import es.virtualclubs.R
 import es.virtualclubs.data.managers.GlobalUIManager
+import es.virtualclubs.presentation.theme.VCTheme
+import es.virtualclubs.presentation.theme.VirtualClubsTheme
 
 @Composable
 fun VCScaffold(
@@ -110,7 +113,8 @@ fun VCScaffold(
           properties = DialogProperties(
             dismissOnBackPress = dialog.dismissible,
             dismissOnClickOutside = dialog.dismissible
-          )
+          ),
+            modifier = Modifier.padding(VCTheme.spacing.dialogPadding)
         )
       }
     }
