@@ -44,7 +44,12 @@ import es.virtualclubs.R
 import es.virtualclubs.ScreenType
 import es.virtualclubs.data.managers.GlobalUIManager
 import es.virtualclubs.presentation.components.RoundedTextField
+import es.virtualclubs.presentation.components.VCButton
+import es.virtualclubs.presentation.components.VCButtonContent
+import es.virtualclubs.presentation.components.VCButtonStyle
+import es.virtualclubs.presentation.components.VCIcon
 import es.virtualclubs.presentation.components.VCScaffold
+import es.virtualclubs.presentation.theme.VCTheme
 
 @Composable
 fun ResetPasswordPage(
@@ -71,12 +76,12 @@ fun ResetPasswordPage(
     onNavigateBack = onBack,
     canGoBack = true,
     topBarActions = {
-      IconButton(onClick = onSettingsTap) {
-        Icon(
-          imageVector = Icons.Filled.Settings,
-          contentDescription = stringResource(R.string.settings)
-        )
-      }
+      VCButton(
+        content = VCButtonContent.Icon(VCIcon.Vector(Icons.Filled.Settings)),
+        style = VCButtonStyle.Icon,
+        iconSize = VCTheme.sizes.iconMd,
+        onClick = onSettingsTap
+      )
     },
   ) { padding ->
     Box(
@@ -121,30 +126,29 @@ fun ResetPasswordPage(
           modifier = Modifier.focusRequester(confirmPasswordFocusRequester)
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(VCTheme.spacing.sectionSpacingCompact))
 
         AnimatedVisibility(visible = GlobalUIManager.haveError()) {
           Text(
             text = stringResource(GlobalUIManager.getErrorId()),
-            color = MaterialTheme.colorScheme.error,
+            color = VCTheme.colors.error,
             modifier = Modifier.padding(vertical = 8.dp)
           )
         }
 
-        Button(
-          onClick = {
-            viewModel.resetPassword(token, newPassword, confirmPassword)
-          },
+        VCButton(
+          content = VCButtonContent.Text(R.string.change_password),
           enabled = newPassword.isNotBlank() &&
               confirmPassword.isNotBlank() &&
               uiState !is ResetPasswordUiState.Attempting,
-          shape = MaterialTheme.shapes.small,
+          shape = VCTheme.shapes.small,
+          onClick = {
+            viewModel.resetPassword(token, newPassword, confirmPassword)
+          },
           modifier = Modifier
             .fillMaxWidth()
-            .height(48.dp)
-        ) {
-          Text(stringResource(R.string.change_password))
-        }
+            .height(VCTheme.sizes.buttonHeightMd)
+        )
       }
     }
   }

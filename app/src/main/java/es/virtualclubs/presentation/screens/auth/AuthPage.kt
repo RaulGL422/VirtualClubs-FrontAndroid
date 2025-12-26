@@ -2,6 +2,8 @@ package es.virtualclubs.presentation.screens.auth
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.core.tween
@@ -63,8 +65,12 @@ import es.virtualclubs.R
 import es.virtualclubs.ScreenType
 import es.virtualclubs.data.managers.GlobalUIManager
 import es.virtualclubs.presentation.components.RoundedTextField
-import es.virtualclubs.presentation.components.SocialButton
+import es.virtualclubs.presentation.components.VCButton
+import es.virtualclubs.presentation.components.VCButtonContent
+import es.virtualclubs.presentation.components.VCButtonStyle
+import es.virtualclubs.presentation.components.VCIcon
 import es.virtualclubs.presentation.components.VCScaffold
+import es.virtualclubs.presentation.theme.VCTheme
 import es.virtualclubs.presentation.theme.getAppVersion
 import es.virtualclubs.presentation.theme.getLargeLogo
 import kotlinx.coroutines.launch
@@ -158,15 +164,18 @@ private fun AuthTopBar(onSettingsTap: () -> Unit) {
   Row(
     modifier = Modifier
       .fillMaxWidth()
-      .padding(vertical = 32.dp, horizontal = 16.dp),
+      .padding(
+        vertical = VCTheme.spacing.screenPaddingDouble,
+        horizontal = VCTheme.spacing.screenHorizontal
+      ),
     horizontalArrangement = Arrangement.End
   ) {
-    IconButton(onClick = onSettingsTap) {
-      Icon(
-        imageVector = Icons.Filled.Settings,
-        contentDescription = stringResource(R.string.settings)
-      )
-    }
+    VCButton(
+      content = VCButtonContent.Icon(VCIcon.Vector(Icons.Filled.Settings)),
+      style = VCButtonStyle.Icon,
+      iconSize = VCTheme.sizes.iconMd,
+      onClick = onSettingsTap
+    )
   }
 }
 
@@ -209,7 +218,7 @@ fun LoginContent(
       modifier = Modifier
         .fillMaxWidth(columnWidthFraction)
         .wrapContentHeight()
-        .padding(24.dp)
+        .padding(VCTheme.spacing.sectionSpacingCompact)
         .verticalScroll(rememberScrollState()),
       horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -221,7 +230,7 @@ fun LoginContent(
         modifier = Modifier.fillMaxWidth(columnWidthFraction)
       )
 
-      Spacer(modifier = Modifier.height(32.dp))
+      Spacer(modifier = Modifier.height(VCTheme.spacing.sectionSpacingExpanded))
 
       // Email field
       RoundedTextField(
@@ -237,10 +246,9 @@ fun LoginContent(
         modifier = Modifier
           .fillMaxWidth()
           .focusRequester(emailFocusRequester)
-          .padding(horizontal = 16.dp)
       )
 
-      Spacer(modifier = Modifier.height(16.dp))
+      Spacer(modifier = Modifier.height(VCTheme.spacing.sectionSpacingCompact))
 
       // Password field
       RoundedTextField(
@@ -258,11 +266,10 @@ fun LoginContent(
         modifier = Modifier
           .fillMaxWidth()
           .focusRequester(passwordFocusRequester)
-          .padding(horizontal = 16.dp)
       )
 
       if (!isLogin) {
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(VCTheme.spacing.sectionSpacingCompact))
         RoundedTextField(
           value = confirmPassword,
           onValueChange = { confirmPassword = it },
@@ -278,17 +285,16 @@ fun LoginContent(
           modifier = Modifier
             .fillMaxWidth()
             .focusRequester(confirmPasswordFocusRequester)
-            .padding(horizontal = 16.dp)
         )
       }
 
-      Spacer(modifier = Modifier.height(8.dp))
+      Spacer(modifier = Modifier.height(VCTheme.spacing.sectionSpacingCompact))
 
       // Remember user checkbox
       Box(
         modifier = Modifier
           .fillMaxWidth()
-          .padding(16.dp)
+          .padding(horizontal = VCTheme.spacing.itemHorizontalPadding)
       ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
           Checkbox(
@@ -302,45 +308,44 @@ fun LoginContent(
       if (GlobalUIManager.haveError()) {
         Text(
           text = stringResource(GlobalUIManager.getErrorId()),
-          color = MaterialTheme.colorScheme.error,
-          modifier = Modifier.padding(vertical = 8.dp)
+          color = VCTheme.colors.error
         )
       }
 
-      Spacer(modifier = Modifier.height(8.dp))
+      Spacer(modifier = Modifier.height(VCTheme.spacing.itemSpacingExpanded))
 
       // Login/Register button
-      Button(
+      VCButton(
+        content = VCButtonContent.Text(if (isLogin) R.string.login else R.string.register),
+        enabled = uiState !is AuthUiState.AttemptingAuth,
         onClick = {
           if (isLogin) onLogin(email, password, rememberUser)
           else onRegister(email, password, confirmPassword, rememberUser)
         },
-        enabled = uiState !is AuthUiState.AttemptingAuth,
         modifier = Modifier
           .fillMaxWidth()
-          .height(48.dp)
-      ) {
-        Text(stringResource(if (isLogin) R.string.login else R.string.register))
-      }
+      )
 
       // Forgot password
-      TextButton(onClick = { showForgotPasswordDialog = true }) {
-        Text(stringResource(R.string.forgot_password))
-      }
+      VCButton(
+        content = VCButtonContent.Text(R.string.forgot_password),
+        style = VCButtonStyle.Text,
+        onClick = { showForgotPasswordDialog = true }
+      )
 
       // Divider
       AuthDivider()
 
-      Spacer(modifier = Modifier.height(8.dp))
+      Spacer(modifier = Modifier.height(VCTheme.spacing.sectionSpacingCompact))
 
       // Social buttons
-      SocialButton(R.string.continue_with_google, R.drawable.google_icon, onGoogle)
-      Spacer(modifier = Modifier.height(4.dp))
-      SocialButton(R.string.continue_with_apple, R.drawable.apple_icon, onApple)
-      Spacer(modifier = Modifier.height(4.dp))
-      SocialButton(R.string.facebook, R.drawable.facebook_icon, onFacebook)
+      _SocialButton(R.string.continue_with_google, R.drawable.google_icon, onGoogle)
+      Spacer(modifier = Modifier.height(VCTheme.spacing.buttonPaddingVertical))
+      _SocialButton(R.string.continue_with_apple, R.drawable.apple_icon, onApple)
+      Spacer(modifier = Modifier.height(VCTheme.spacing.buttonPaddingVertical))
+      _SocialButton(R.string.facebook, R.drawable.facebook_icon, onFacebook)
 
-      Spacer(modifier = Modifier.height(8.dp))
+      Spacer(modifier = Modifier.height(VCTheme.spacing.buttonPaddingVerticalExpanded))
 
       // Register/Login toggle
       AuthToggle(isLogin, onChangeLogin)
@@ -383,9 +388,11 @@ private fun AuthToggle(isLogin: Boolean, onChangeLogin: () -> Unit) {
     verticalAlignment = Alignment.CenterVertically
   ) {
     Text(stringResource(if (isLogin) R.string.dont_have_account else R.string.have_account))
-    TextButton(onClick = onChangeLogin) {
-      Text(stringResource(if (isLogin) R.string.register else R.string.login))
-    }
+    VCButton(
+      content = VCButtonContent.Text(if (isLogin) R.string.register else R.string.login),
+      style = VCButtonStyle.Text,
+      onClick = onChangeLogin
+    )
   }
 }
 
@@ -427,15 +434,31 @@ fun ForgotPasswordDialog(
       }
     },
     confirmButton = {
-      Button(
-        onClick = { onConfirm(email) },
-        enabled = email.isNotBlank() && passwordResetUiState !is PasswordResetUiState.Attempting
-      ) { Text(stringResource(R.string.send_email)) }
+      VCButton(
+        content = VCButtonContent.Text(R.string.send_email),
+        enabled = email.isNotBlank() && passwordResetUiState !is PasswordResetUiState.Attempting,
+        shape = VCTheme.shapes.large,
+        onClick = { onConfirm(email) }
+      )
     },
     dismissButton = {
-      TextButton(onClick = onDismiss) {
-        Text(stringResource(R.string.close))
-      }
+      VCButton(
+        content = VCButtonContent.Text(R.string.close),
+        style = VCButtonStyle.Text,
+        onClick = onDismiss
+      )
     }
+  )
+}
+
+@Composable
+fun _SocialButton(@StringRes text: Int, @DrawableRes icon: Int, onClick: () -> Unit) {
+  VCButton(
+    content = VCButtonContent.TextAndIcon(
+      text = text, VCIcon.Drawable(icon)
+    ),
+    style = VCButtonStyle.Outline,
+    onClick = onClick,
+    modifier = Modifier.fillMaxWidth()
   )
 }

@@ -5,9 +5,17 @@ import androidx.compose.material3.Shapes
 import androidx.compose.ui.unit.dp
 
 val AppShapes = Shapes(
-    extraSmall = RoundedCornerShape(4.dp),
-    small = RoundedCornerShape(8.dp),
-    medium = RoundedCornerShape(12.dp),
-    large = RoundedCornerShape(16.dp),
-    extraLarge = RoundedCornerShape(24.dp)
+    extraSmall = VCShapes().extraSmall,
+    small = VCShapes().small,
+    medium = VCShapes().medium,
+    large = VCShapes().large,
+    extraLarge = VCShapes().extraLarge
+)
+
+data class VCShapes(
+  val extraSmall: RoundedCornerShape = RoundedCornerShape(4.dp),
+  val small: RoundedCornerShape = RoundedCornerShape(8.dp),
+  val medium: RoundedCornerShape = RoundedCornerShape(12.dp),
+  val large: RoundedCornerShape = RoundedCornerShape(16.dp),
+  val extraLarge: RoundedCornerShape = RoundedCornerShape(24.dp)
 )
