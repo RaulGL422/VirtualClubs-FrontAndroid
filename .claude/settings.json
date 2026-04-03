@@ -1,0 +1,39 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./gradlew compileDevDebugKotlin*)",
+      "Bash(./gradlew assembleDevDebug*)",
+      "Bash(./gradlew testDevDebugUnitTest*)",
+      "Bash(./gradlew test*)",
+      "Bash(./gradlew clean*)",
+      "Bash(./gradlew dependencies*)",
+      "Bash(./gradlew :app:dependencies*)",
+      "Bash(git status*)",
+      "Bash(git log*)",
+      "Bash(git diff*)",
+      "Bash(git branch*)",
+      "Bash(git stash list*)",
+      "Bash(git fetch*)",
+      "Bash(git show*)",
+      "Bash(gh pr view*)",
+      "Bash(gh pr list*)",
+      "Bash(gh pr diff*)",
+      "Bash(gh auth status*)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "input=$(cat); if echo \"$input\" | grep -q '\"git commit'; then output=$(./gradlew compileDevDebugKotlin -q 2>&1); code=$?; if [ $code -ne 0 ]; then safe=$(echo \"$output\" | head -20 | tr '\"' '`' | tr '\\n' ' '); printf '{\"continue\":false,\"stopReason\":\"Compilacion Kotlin fallida. Corrige los errores antes de commitear: %s\"}' \"$safe\"; exit 0; fi; fi",
+            "timeout": 180,
+            "statusMessage": "Verificando compilacion Kotlin antes del commit..."
+          }
+        ]
+      }
+    ]
+  }
+}
