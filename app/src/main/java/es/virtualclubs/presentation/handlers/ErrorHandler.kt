@@ -33,6 +33,7 @@ object ErrorHandler {
       ErrorType.GOOGLE_SIGN_IN_NO_TOKEN -> R.string.google_login_no_token
       ErrorType.GOOGLE_LOGIN_EXCEPTION -> R.string.google_login_api_exception
       ErrorType.USER_NOT_FOUND -> R.string.user_not_found
+      ErrorType.EMAIL_NOT_VERIFIED -> R.string.error_email_not_verified
       else -> R.string.unknown_error
     }
   }
