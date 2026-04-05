@@ -34,7 +34,7 @@ android {
         create("dev") {
             dimension = "env"
             buildConfigField("String", "BASE_URL", "\"https://virtualclubs-backend.onrender.com/\"")
-            buildConfigField("String", "GOOGLE_CLIENT_ID", "\"879741762461-03ck5fqsbrrpgs6gvidvdofpe6ebao6u.apps.googleusercontent.com\"")
+            buildConfigField("String", "GOOGLE_CLIENT_ID", "\"${localProperties["GOOGLE_CLIENT_ID"]}\"")
         }
         create("prod") {
             dimension = "env"
