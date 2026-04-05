@@ -31,6 +31,15 @@ object GlobalUIManager {
   fun showLoading() { _isLoading.value = true }
   fun hideLoading() { _isLoading.value = false }
 
+  suspend fun <T> withLoading(block: suspend () -> T): T {
+    showLoading()
+    try {
+      return block()
+    } finally {
+      hideLoading()
+    }
+  }
+
 
   // ----- Dialog -----
   data class DialogState(
