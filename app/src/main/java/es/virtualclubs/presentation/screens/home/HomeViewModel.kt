@@ -17,13 +17,13 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
   init {
     viewModelScope.launch {
-      GlobalUIManager.showLoading()
-      // Obtain user information
-      val result = SafeCall.safeCall { repository.getUserInfo() }
-      if (result.isSuccess) {
-        // TODO
+      GlobalUIManager.withLoading {
+        // Obtain user information
+        val result = SafeCall.safeCall { repository.getUserInfo() }
+        if (result.isSuccess) {
+          // TODO
+        }
       }
-      GlobalUIManager.hideLoading()
     }
   }
 }

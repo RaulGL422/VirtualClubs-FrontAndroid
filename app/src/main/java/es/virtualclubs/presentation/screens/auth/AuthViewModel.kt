@@ -118,17 +118,17 @@ class AuthViewModel @Inject constructor(
   private fun tryAutoLogin() {
     viewModelScope.launch {
       if (userPreferences.autoLoginFlow.firstOrNull() == true) {
-        GlobalUIManager.showLoading()
-        // Try to get a new access token from backend
-        val response = SafeCall.safeCall { refreshRepository.refresh(false) }
-        val tokens = response.getOrNull()
-        _uiState.value = if (response.isSuccess && tokens != null) {
-          userSession.currentUser.copy(email = userPreferences.userEmailFlow.firstOrNull())
-          AuthUiState.Success
-        } else {
-          AuthUiState.Idle
+        GlobalUIManager.withLoading {
+          // Try to get a new access token from backend
+          val response = SafeCall.safeCall { refreshRepository.refresh(false) }
+          val tokens = response.getOrNull()
+          _uiState.value = if (response.isSuccess && tokens != null) {
+            userSession.currentUser.copy(email = userPreferences.userEmailFlow.firstOrNull())
+            AuthUiState.Success
+          } else {
+            AuthUiState.Idle
+          }
         }
-        GlobalUIManager.hideLoading()
       }
     }
   }
