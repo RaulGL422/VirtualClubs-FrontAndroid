@@ -9,6 +9,7 @@ import es.virtualclubs.domain.model.ErrorType
 import es.virtualclubs.domain.model.VirtualClubException
 import es.virtualclubs.presentation.components.dialogs.showEmailNotVerifiedDialog
 import es.virtualclubs.presentation.handlers.ErrorHandler
+import es.virtualclubs.presentation.navigation.AppNavigator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -81,6 +82,10 @@ object GlobalUIManager {
 
     if (code == ErrorType.EMAIL_NOT_VERIFIED) {
       showEmailNotVerifiedDialog()
+    }
+
+    if (code == ErrorType.MISSING_TOKENS) {
+      AppNavigator.navigateToLoginAndClearStack()
     }
   }
 
