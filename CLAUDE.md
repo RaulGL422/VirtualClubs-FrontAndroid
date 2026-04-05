@@ -56,6 +56,7 @@ es/virtualclubs/
 │   ├── model/
 │   │   ├── AuthInterceptor.kt      Inyecta Bearer token en requests
 │   │   ├── AuthTokens.kt           accessToken + refreshToken
+│   │   ├── Endpoint.kt             Constantes de rutas HTTP agrupadas por módulo
 │   │   ├── ErrorType.kt            Enum con 26 tipos de error
 │   │   └── VirtualClubException.kt Excepción custom del proyecto
 │   ├── repository/                 Interfaces de repositorios
@@ -120,15 +121,15 @@ Base URL: `https://virtualclubs-backend.onrender.com/`
 
 | Método | Ruta | Descripción | API interface |
 |--------|------|-------------|---------------|
-| POST | `/api/auth/authenticate` | Login con email/contraseña | AuthApi |
-| POST | `/api/auth/register` | Registro de usuario | AuthApi |
-| POST | `/api/auth/logout` | Cerrar sesión | AuthApi |
-| POST | `/api/auth/google` | Login con Google | AuthApi |
-| POST | `/api/auth/requestPasswordReset` | Solicitar reset de contraseña | AuthApi |
-| POST | `/api/auth/resetPassword` | Aplicar reset con token | AuthApi |
-| POST | `/api/auth/requestVerify` | Solicitar verificación de email | AuthApi |
-| POST | `/api/auth/refresh` | Refrescar access token | RefreshApi |
-| GET | `/api/user/getUserInfo` | Info del usuario autenticado | UserApi |
+| POST | `/v1/auth/login` | Login con email/contraseña | AuthApi |
+| POST | `/v1/auth/register` | Registro de usuario | AuthApi |
+| DELETE | `/v1/auth/logout` | Cerrar sesión | AuthApi |
+| POST | `/v1/auth/google` | Login con Google | AuthApi |
+| POST | `/v1/auth/requestPasswordReset` | Solicitar reset de contraseña | AuthApi |
+| POST | `/v1/auth/resetPassword` | Aplicar reset con token | AuthApi |
+| POST | `/v1/auth/requestVerify` | Solicitar verificación de email | AuthApi |
+| POST | `/v1/auth/refresh` | Refrescar access token | RefreshApi |
+| GET | `/v1/user/getUserInfo` | Info del usuario autenticado | UserApi |
 
 ---
 
