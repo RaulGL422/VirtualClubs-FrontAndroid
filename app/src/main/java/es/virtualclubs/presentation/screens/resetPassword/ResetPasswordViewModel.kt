@@ -1,6 +1,5 @@
 package es.virtualclubs.presentation.screens.resetPassword
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,8 +21,6 @@ class ResetPasswordViewModel @Inject constructor(
   val uiState: StateFlow<ResetPasswordUiState> = _uiState.asStateFlow()
 
   fun resetPassword(token: String, newPassword: String, confirmPassword: String) {
-    Log.i("Reset Password", "Resetting password for token: $token")
-
     viewModelScope.launch {
       _uiState.value = ResetPasswordUiState.Attempting
 

@@ -134,7 +134,7 @@ class AuthViewModel @Inject constructor(
   }
 
   fun loginUser(email: String, password: String, rememberUser: Boolean) {
-    Log.i("Login", "Attempting login for email: $email")
+    Log.d("Auth", "Login attempt")
 
     viewModelScope.launch {
       _uiState.value = AuthUiState.AttemptingAuth
@@ -159,7 +159,7 @@ class AuthViewModel @Inject constructor(
   fun registerUser(
     email: String, password: String, confirmPassword: String, rememberUser: Boolean
   ) {
-    Log.i("Register", "Attempting register for email: $email")
+    Log.d("Auth", "Register attempt")
 
     viewModelScope.launch {
       _uiState.value = AuthUiState.AttemptingAuth
@@ -189,7 +189,7 @@ class AuthViewModel @Inject constructor(
   }
 
   fun requestPasswordReset(email: String) {
-    Log.i("Password Request", "Requesting password reset for email: $email")
+    Log.d("Auth", "Password reset requested")
 
     viewModelScope.launch {
       _passwordResetUiState.value = PasswordResetUiState.Attempting
