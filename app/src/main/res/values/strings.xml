@@ -71,4 +71,9 @@
     <string name="email_not_verified_message">Debes verificar tu correo para continuar.</string>
     <string name="password_too_weak">La contraseña es demasiado débil. Usa letras, números y símbolos.</string>
     <string name="rate_limit_exceeded">Demasiados intentos. Espera unos minutos antes de volver a intentarlo.</string>
+    <string name="email_verified_success_title">¡Email verificado!</string>
+    <string name="email_verified_success_message">Tu cuenta ha sido verificada correctamente. Ya puedes iniciar sesión.</string>
+    <string name="email_verified_error_title">Error de verificación</string>
+    <string name="email_verified_error_message">El enlace de verificación no es válido o ha expirado. Inicia sesión para solicitar un nuevo correo de verificación.</string>
+    <string name="go_to_login">Ir al inicio de sesión</string>
 </resources>
