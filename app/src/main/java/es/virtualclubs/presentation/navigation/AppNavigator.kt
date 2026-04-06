@@ -14,6 +14,7 @@ object AppNavigator {
   fun navigateToLoginAndClearStack() {
     navigate(Screen.Auth.route) {
       popUpTo(0) { inclusive = true }
+      launchSingleTop = true
     }
   }
 
@@ -21,12 +22,14 @@ object AppNavigator {
     val routeWithToken = Screen.Auth.route.replace("{message}", message)
     navigate(routeWithToken) {
       popUpTo(0) { inclusive = true }
+      launchSingleTop = true
     }
   }
 
   fun navigateToHome() {
     navigate(Screen.Home.route) {
       popUpTo(Screen.Auth.route) { inclusive = true }
+      launchSingleTop = true
     }
   }
 
