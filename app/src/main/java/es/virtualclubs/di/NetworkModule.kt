@@ -17,6 +17,7 @@ import es.virtualclubs.domain.model.AuthInterceptor
 import es.virtualclubs.domain.repository.AuthRepository
 import es.virtualclubs.domain.repository.RefreshRepository
 import es.virtualclubs.domain.repository.UserRepository
+import dagger.Lazy
 import es.virtualclubs.presentation.navigation.SessionManager
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
@@ -32,16 +33,20 @@ object NetworkModule {
 
   @Provides
   @Singleton
-  fun provideRetrofit(secureUserPreferences: SecureUserPreferences): Retrofit {
+  fun provideRetrofit(
+    secureUserPreferences: SecureUserPreferences,
+    refreshRepository: Lazy<RefreshRepository>
+  ): Retrofit {
     val logging = HttpLoggingInterceptor().apply {
       level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.HEADERS
       else HttpLoggingInterceptor.Level.NONE
     }
 
     val client = OkHttpClient.Builder()
-      .addInterceptor(AuthInterceptor {
-        runBlocking { secureUserPreferences.accessToken.firstOrNull() }
-      })
+      .addInterceptor(AuthInterceptor(
+        tokenProvider = { runBlocking { secureUserPreferences.accessToken.firstOrNull() } },
+        onTokenExpired = { runBlocking { refreshRepository.get().refresh(false) } }
+      ))
       .addInterceptor(logging)
       .build()
 
