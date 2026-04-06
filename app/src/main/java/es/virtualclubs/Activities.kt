@@ -2,7 +2,6 @@ package es.virtualclubs
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -63,8 +62,6 @@ class ResetPasswordActivity : ComponentActivity() {
                 val controller = rememberNavController()
                 navController = controller
 
-                Log.e("onCreate", "onCreate Reset Password: ${intent.data}")
-
                 VirtualClubsMainApp(
                     windowSize.widthSizeClass,
                     navController = controller
@@ -103,8 +100,6 @@ class VerifyEmailActivity : ComponentActivity() {
         val windowSize = calculateWindowSizeClass(this)
         val controller = rememberNavController()
         navController = controller
-
-        Log.e("onCreate", "onCreate Verify Email Result: ${intent.data}")
 
         VirtualClubsMainApp(
           windowSize.widthSizeClass,
