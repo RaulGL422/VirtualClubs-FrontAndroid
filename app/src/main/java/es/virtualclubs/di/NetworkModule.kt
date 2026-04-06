@@ -18,8 +18,7 @@ import es.virtualclubs.domain.repository.AuthRepository
 import es.virtualclubs.domain.repository.RefreshRepository
 import es.virtualclubs.domain.repository.UserRepository
 import es.virtualclubs.presentation.navigation.SessionManager
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.runBlocking
+import es.virtualclubs.session.UserSession
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -32,16 +31,14 @@ object NetworkModule {
 
   @Provides
   @Singleton
-  fun provideRetrofit(secureUserPreferences: SecureUserPreferences): Retrofit {
+  fun provideRetrofit(userSession: UserSession): Retrofit {
     val logging = HttpLoggingInterceptor().apply {
       level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.HEADERS
       else HttpLoggingInterceptor.Level.NONE
     }
 
     val client = OkHttpClient.Builder()
-      .addInterceptor(AuthInterceptor {
-        runBlocking { secureUserPreferences.accessToken.firstOrNull() }
-      })
+      .addInterceptor(AuthInterceptor { userSession.cachedAccessToken })
       .addInterceptor(logging)
       .build()
 
@@ -72,9 +69,10 @@ object NetworkModule {
   fun provideRefreshRepository(
     api: RefreshApi,
     sessionManager: SessionManager,
-    secureUserPreferences: SecureUserPreferences
+    secureUserPreferences: SecureUserPreferences,
+    userSession: UserSession
   ): RefreshRepository =
-    RefreshRepositoryImpl(api, sessionManager, secureUserPreferences = secureUserPreferences)
+    RefreshRepositoryImpl(api, sessionManager, secureUserPreferences, userSession)
 
   @Provides
   @Singleton

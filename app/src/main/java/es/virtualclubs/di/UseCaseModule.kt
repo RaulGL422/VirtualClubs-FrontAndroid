@@ -16,6 +16,7 @@ import es.virtualclubs.domain.usecase.token.ClearTokensUseCase
 import es.virtualclubs.domain.usecase.token.GetAccessTokenUseCase
 import es.virtualclubs.domain.usecase.token.GetRefreshTokenUseCase
 import es.virtualclubs.domain.usecase.token.SaveTokensUseCase
+import es.virtualclubs.session.UserSession
 import javax.inject.Singleton
 
 @Module
@@ -53,8 +54,8 @@ object UseCaseModule {
 
     @Provides
     @Singleton
-    fun provideClearTokensUseCase(securePreferences: SecureUserPreferences): ClearTokensUseCase {
-        return ClearTokensUseCase(securePreferences)
+    fun provideClearTokensUseCase(securePreferences: SecureUserPreferences, userSession: UserSession): ClearTokensUseCase {
+        return ClearTokensUseCase(securePreferences, userSession)
     }
 
     @Provides
@@ -71,7 +72,7 @@ object UseCaseModule {
 
     @Provides
     @Singleton
-    fun provideSaveTokensUseCase(securePreferences: SecureUserPreferences): SaveTokensUseCase {
-        return SaveTokensUseCase(securePreferences)
+    fun provideSaveTokensUseCase(securePreferences: SecureUserPreferences, userSession: UserSession): SaveTokensUseCase {
+        return SaveTokensUseCase(securePreferences, userSession)
     }
 }
