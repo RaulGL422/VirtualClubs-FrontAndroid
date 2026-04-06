@@ -15,7 +15,7 @@ android {
     defaultConfig {
         applicationId = "es.virtualclubs"
         minSdk = 30
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "0.1.1v Alpha"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -83,15 +83,12 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.compose.material3.window.size)
     implementation(libs.androidx.hilt.common)
-    implementation(libs.ui.graphics)
     implementation(libs.androidx.ui.test.android)
     implementation(libs.androidx.foundation.layout.android)
     implementation(libs.androidx.foundation.android)
     implementation(libs.androidx.animation.android)
     implementation(libs.androidx.animation.core.lint)
-    implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.foundation.layout)
-    implementation(libs.material3)
     implementation(libs.androidx.compose.ui.unit)
 
 
