@@ -28,6 +28,8 @@ class SafeResponse @Inject constructor(
           try {
             refreshRepository.refresh(true).getOrThrow()
             block()
+          } catch (ex: VirtualClubException) {
+            Result.failure(ex)
           } catch (_: Exception) {
             Result.failure(VirtualClubException(ErrorType.INVALID_REFRESH_TOKEN))
           }
