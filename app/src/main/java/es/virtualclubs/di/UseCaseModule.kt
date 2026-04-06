@@ -7,7 +7,9 @@ import dagger.hilt.components.SingletonComponent
 import es.virtualclubs.data.local.secure.SecureUserPreferences
 import es.virtualclubs.domain.repository.AuthRepository
 import es.virtualclubs.domain.repository.RefreshRepository
+import es.virtualclubs.domain.repository.UserRepository
 import es.virtualclubs.domain.usecase.AuthUseCase
+import es.virtualclubs.domain.usecase.GetUserInfoUseCase
 import es.virtualclubs.domain.usecase.GoogleUseCase
 import es.virtualclubs.domain.usecase.LogoutUserUseCase
 import es.virtualclubs.domain.usecase.RefreshTokenUseCase
@@ -16,6 +18,7 @@ import es.virtualclubs.domain.usecase.token.ClearTokensUseCase
 import es.virtualclubs.domain.usecase.token.GetAccessTokenUseCase
 import es.virtualclubs.domain.usecase.token.GetRefreshTokenUseCase
 import es.virtualclubs.domain.usecase.token.SaveTokensUseCase
+import es.virtualclubs.session.UserSession
 import javax.inject.Singleton
 
 @Module
@@ -73,5 +76,11 @@ object UseCaseModule {
     @Singleton
     fun provideSaveTokensUseCase(securePreferences: SecureUserPreferences): SaveTokensUseCase {
         return SaveTokensUseCase(securePreferences)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetUserInfoUseCase(userRepository: UserRepository, userSession: UserSession): GetUserInfoUseCase {
+        return GetUserInfoUseCase(userRepository, userSession)
     }
 }
