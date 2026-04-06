@@ -69,4 +69,5 @@
     <string name="email">Correo Electronico</string>
     <string name="email_not_verified">Email no verificado</string>
     <string name="email_not_verified_message">Debes verificar tu correo para continuar.</string>
+    <string name="error_email_not_verified">Tu email no está verificado. Revisa tu bandeja de entrada.</string>
 </resources>
