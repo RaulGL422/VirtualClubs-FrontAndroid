@@ -75,7 +75,7 @@ fun AppNavHost(
         }
       )
     ) { backStackEntry ->
-      val result = backStackEntry.arguments?.getBoolean("status") ?: "0"
+      val result = backStackEntry.arguments?.getString("status") ?: ""
       // TODO Hacer pagina de obtener resultado de la verificacion
     }
   }
