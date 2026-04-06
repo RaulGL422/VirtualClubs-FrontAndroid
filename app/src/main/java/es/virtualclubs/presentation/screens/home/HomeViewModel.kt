@@ -7,7 +7,7 @@ import es.virtualclubs.data.managers.GlobalUIManager
 import es.virtualclubs.data.managers.SafeCall
 import es.virtualclubs.domain.repository.UserRepository
 import es.virtualclubs.session.UserSession
-import jakarta.inject.Inject
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 
 @HiltViewModel
