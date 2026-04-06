@@ -69,5 +69,6 @@
     <string name="email">Correo Electronico</string>
     <string name="email_not_verified">Email no verificado</string>
     <string name="email_not_verified_message">Debes verificar tu correo para continuar.</string>
-    <string name="error_email_not_verified">Tu email no está verificado. Revisa tu bandeja de entrada.</string>
+    <string name="password_too_weak">La contraseña es demasiado débil. Usa letras, números y símbolos.</string>
+    <string name="rate_limit_exceeded">Demasiados intentos. Espera unos minutos antes de volver a intentarlo.</string>
 </resources>
