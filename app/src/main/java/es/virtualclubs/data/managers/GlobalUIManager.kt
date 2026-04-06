@@ -106,7 +106,6 @@ object GlobalUIManager {
     _errorState.value = ErrorUiState(code)
   }
 
-  @Composable
   fun getErrorId() : Int {
     if (!haveError()) return 0
     return ErrorHandler.getErrorMessage(_errorState.value.code!!)
