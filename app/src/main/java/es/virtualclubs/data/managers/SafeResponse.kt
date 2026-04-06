@@ -6,7 +6,7 @@ import es.virtualclubs.domain.model.AuthTokens
 import es.virtualclubs.domain.model.ErrorType
 import es.virtualclubs.domain.model.VirtualClubException
 import es.virtualclubs.domain.repository.RefreshRepository
-import jakarta.inject.Inject
+import javax.inject.Inject
 import retrofit2.HttpException
 import java.io.IOException
 import kotlin.coroutines.cancellation.CancellationException
