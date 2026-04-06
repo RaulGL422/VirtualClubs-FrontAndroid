@@ -7,28 +7,30 @@ import es.virtualclubs.data.remote.dto.RegisterRequest
 import es.virtualclubs.data.remote.dto.RequestPasswordResetRequest
 import es.virtualclubs.data.remote.dto.ResetPasswordRequest
 import es.virtualclubs.domain.model.AuthTokens
+import es.virtualclubs.domain.model.Endpoint
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.POST
 
 interface AuthApi {
-    @POST("/api/auth/authenticate")
+    @POST(Endpoint.login)
     suspend fun login(@Body request: AuthRequest): ApiResponse<AuthTokens>
 
-    @POST("/api/auth/register")
+    @POST(Endpoint.register)
     suspend fun register(@Body request: RegisterRequest): ApiResponse<AuthTokens>
 
-    @POST("/api/auth/logout")
+    @DELETE(Endpoint.logout)
     suspend fun logout(): ApiResponse<Unit>
 
-    @POST("/api/auth/google")
+    @POST(Endpoint.google)
     suspend fun google(@Body request: GoogleAuthRequest): ApiResponse<AuthTokens>
 
-    @POST("/api/auth/requestPasswordReset")
+    @POST(Endpoint.requestPasswordReset)
     suspend fun requestPasswordReset(@Body request: RequestPasswordResetRequest): ApiResponse<Unit>
 
-    @POST("/api/auth/resetPassword")
+    @POST(Endpoint.resetPassword)
     suspend fun resetPassword(@Body request: ResetPasswordRequest): ApiResponse<Unit>
 
-    @POST("/api/auth/requestVerify")
+    @POST(Endpoint.requestVerify)
     suspend fun requestVerify(): ApiResponse<Unit>
 }
