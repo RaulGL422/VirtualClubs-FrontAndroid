@@ -50,6 +50,8 @@ object EncryptionUtils {
     @Throws(KeyPermanentlyInvalidatedException::class, UserNotAuthenticatedException::class)
     fun encrypt(input: String): ByteArray {
         val cipher = Cipher.getInstance(TRANSFORMATION)
+        // Android genera un IV aleatorio de 12 bytes en cada init() sin GCMParameterSpec.
+        // Se prefija al ciphertext para que decrypt() pueda extraerlo correctamente.
         cipher.init(Cipher.ENCRYPT_MODE, getOrCreateSecretKey())
         val iv = cipher.iv
         val encrypted = cipher.doFinal(input.toByteArray(StandardCharsets.UTF_8))
