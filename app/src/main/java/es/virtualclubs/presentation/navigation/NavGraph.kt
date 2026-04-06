@@ -12,6 +12,7 @@ import es.virtualclubs.ScreenType
 import es.virtualclubs.presentation.screens.auth.LoginPage
 import es.virtualclubs.presentation.screens.home.HomePage
 import es.virtualclubs.presentation.screens.resetPassword.ResetPasswordPage
+import es.virtualclubs.presentation.screens.verifyemailresult.VerifyEmailResultPage
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 
@@ -74,9 +75,11 @@ fun AppNavHost(
           uriPattern = "virtualclubs://email/verify-email?status={status}"
         }
       )
-    ) { backStackEntry ->
-      val result = backStackEntry.arguments?.getString("status") ?: ""
-      // TODO Hacer pagina de obtener resultado de la verificacion
+    ) {
+      VerifyEmailResultPage(
+        onGoToLogin = { AppNavigator.navigateToLoginAndClearStack() },
+        onSettingsTap = { AppNavigator.navigateToSettings() }
+      )
     }
   }
 }
