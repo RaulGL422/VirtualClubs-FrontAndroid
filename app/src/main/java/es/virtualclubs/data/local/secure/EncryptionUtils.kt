@@ -1,7 +1,9 @@
 package es.virtualclubs.data.local.secure
 
 import android.security.keystore.KeyGenParameterSpec
+import android.security.keystore.KeyPermanentlyInvalidatedException
 import android.security.keystore.KeyProperties
+import android.security.keystore.UserNotAuthenticatedException
 import java.nio.charset.StandardCharsets
 import java.security.KeyStore
 import javax.crypto.Cipher
@@ -36,6 +38,16 @@ object EncryptionUtils {
         return keyGenerator.generateKey()
     }
 
+    fun deleteKey() {
+        try {
+            val keyStore = KeyStore.getInstance(ANDROID_KEYSTORE).apply { load(null) }
+            if (keyStore.containsAlias(KEY_ALIAS)) {
+                keyStore.deleteEntry(KEY_ALIAS)
+            }
+        } catch (_: Exception) { }
+    }
+
+    @Throws(KeyPermanentlyInvalidatedException::class, UserNotAuthenticatedException::class)
     fun encrypt(input: String): ByteArray {
         val cipher = Cipher.getInstance(TRANSFORMATION)
         cipher.init(Cipher.ENCRYPT_MODE, getOrCreateSecretKey())
@@ -44,6 +56,7 @@ object EncryptionUtils {
         return iv + encrypted
     }
 
+    @Throws(KeyPermanentlyInvalidatedException::class, UserNotAuthenticatedException::class)
     fun decrypt(encryptedInput: ByteArray): String {
         val cipher = Cipher.getInstance(TRANSFORMATION)
         val iv = encryptedInput.copyOfRange(0, 12)
