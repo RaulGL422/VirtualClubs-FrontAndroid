@@ -208,6 +208,31 @@ Cada pantalla sigue el patrón:
 - `modifier: Modifier = Modifier` como primer parámetro después del estado
 - No llamar ViewModels directamente desde composables hijos — pasar lambdas
 
+### Certificate Pinning
+
+Activado **solo en el flavor `prod`** en `NetworkModule.kt`. Protege contra ataques MITM.
+
+**Pins actuales** (dominio: `virtualclubs-backend.onrender.com`):
+
+| Pin | Tipo | SHA-256 base64 |
+|-----|------|----------------|
+| CA Intermedio | Google Trust Services WE1 | `kIdp6NNEd8wsugYyyIYFsi1ylMCED3hZbSR8ZFsa/A4=` |
+| Root CA | GTS Root R4 | `mEflZT5enoR1FuXLgYYGqnVEoZvmf9c2bVBpiOjYQ0c=` |
+
+**Cómo renovar los pins** (cuando Render cambie de CA):
+```bash
+# 1. Obtener el pin del CA intermedio (posición 2 en la cadena)
+echo "Q" | openssl s_client -connect virtualclubs-backend.onrender.com:443 -showcerts 2>/dev/null \
+  | awk '/BEGIN CERT/{c++} c==2{print}' \
+  | openssl x509 -pubkey -noout | openssl pkey -pubin -outform DER \
+  | openssl dgst -sha256 -binary | openssl enc -base64
+
+# 2. Actualizar los pins en NetworkModule.kt
+# 3. Probar en dispositivo real con flavor prod antes de publicar
+```
+
+**Nota:** Los pins están en `di/NetworkModule.kt`. El flavor `dev` no tiene pinning para facilitar el desarrollo con el emulador.
+
 ### Commits y ramas
 - Commits en español, formato semántico: `[tipo](scope): descripción`
 - Scopes habituales: `auth`, `navigation`, `theme`, `home`, `settings`, `user`, `deps`, `network`, `di`
@@ -275,7 +300,7 @@ Sin Empezar → 💻 En curso → 📬 PR Abierto → 📦 Pendiente debug → �
 |------|---------|
 | Home screen vacía | HomePage actual es placeholder, falta contenido real de clubes |
 | ProGuard no configurado | `isMinifyEnabled = false` en release — falta configurar R8/ProGuard |
-| Certificate pinning ausente | No hay pinning de certificados SSL en OkHttp |
+| Certificate pinning (prod) | Pins configurados para `prod`; renovar cuando Render cambie de CA |
 | Tests sin cobertura | No hay tests unitarios ni de UI implementados |
 | UserApi limitada | `getUserInfo` solo devuelve email — falta expandir para clubs, config, etc. |
 | Credentials API migración | Se usa `play-services-auth` legacy + nuevo `credentials` — consolidar en uno |
