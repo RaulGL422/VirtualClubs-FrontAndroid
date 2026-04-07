@@ -20,6 +20,7 @@ import es.virtualclubs.domain.repository.UserRepository
 import es.virtualclubs.presentation.navigation.SessionManager
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
+import okhttp3.CertificatePinner
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -38,12 +39,25 @@ object NetworkModule {
       else HttpLoggingInterceptor.Level.NONE
     }
 
-    val client = OkHttpClient.Builder()
+    val clientBuilder = OkHttpClient.Builder()
       .addInterceptor(AuthInterceptor {
         runBlocking { secureUserPreferences.accessToken.firstOrNull() }
       })
       .addInterceptor(logging)
-      .build()
+
+    // Certificate pinning solo en prod para proteger contra MITM
+    // Pins: CA intermedio (Google Trust Services WE1) + Root CA (GTS Root R4)
+    // Actualizar cuando Render cambie de CA. Ver sección "Certificate Pinning" en CLAUDE.md
+    if (BuildConfig.FLAVOR == "prod") {
+      clientBuilder.certificatePinner(
+        CertificatePinner.Builder()
+          .add("virtualclubs-backend.onrender.com", "sha256/kIdp6NNEd8wsugYyyIYFsi1ylMCED3hZbSR8ZFsa/A4=")
+          .add("virtualclubs-backend.onrender.com", "sha256/mEflZT5enoR1FuXLgYYGqnVEoZvmf9c2bVBpiOjYQ0c=")
+          .build()
+      )
+    }
+
+    val client = clientBuilder.build()
 
     return Retrofit.Builder()
       .baseUrl(BuildConfig.BASE_URL)

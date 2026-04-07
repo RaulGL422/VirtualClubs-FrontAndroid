@@ -60,7 +60,7 @@ class SafeResponse @Inject constructor(
   }
 
   private fun fallbackErrorTypeFromHttpCode(code: Int): ErrorType = when (code) {
-    400 -> ErrorType.FIELD_NULL
+    400 -> ErrorType.FIELD_BLANK
     403 -> ErrorType.EMAIL_NOT_VERIFIED
     404 -> ErrorType.USER_NOT_FOUND
     409 -> ErrorType.EMAIL_ALREADY_EXISTS
