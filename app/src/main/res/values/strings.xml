@@ -66,6 +66,14 @@
     <string name="verify_email_page">Verificar email</string>
     <string name="verify_email_result_page">Resultado de la verificación</string>
     <string name="home_page">Menú principal</string>
+    <string name="home_greeting">¡Hola, %1$s!</string>
+    <string name="home_greeting_anonymous">¡Hola!</string>
+    <string name="home_clubs_title">Mis clubes</string>
+    <string name="home_no_clubs_title">Aún no tienes clubes</string>
+    <string name="home_no_clubs_subtitle">Crea uno nuevo o únete a un club existente</string>
+    <string name="home_create_club">Crear club</string>
+    <string name="home_join_club">Unirse a un club</string>
+    <string name="home_members">%1$d miembros</string>
     <string name="email">Correo Electronico</string>
     <string name="email_not_verified">Email no verificado</string>
     <string name="email_not_verified_message">Debes verificar tu correo para continuar.</string>
