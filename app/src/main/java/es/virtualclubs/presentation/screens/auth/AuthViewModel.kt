@@ -53,13 +53,15 @@ class AuthViewModel @Inject constructor(
   }
 
   // Google
-  val googleSignInClient: GoogleSignInClient = GoogleSignIn.getClient(
-    context,
-    GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-      .requestIdToken(BuildConfig.GOOGLE_CLIENT_ID) // Web Client ID
-      .requestEmail()
-      .build()
-  )
+  val googleSignInClient: GoogleSignInClient by lazy {
+    GoogleSignIn.getClient(
+      context,
+      GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        .requestIdToken(BuildConfig.GOOGLE_CLIENT_ID) // Web Client ID
+        .requestEmail()
+        .build()
+    )
+  }
 
   // --- Función para iniciar login ---
   fun beginSignInGoogle(
