@@ -1,5 +1,6 @@
 package es.virtualclubs.di
 
+import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -33,9 +34,14 @@ object NetworkModule {
 
   @Provides
   @Singleton
+  fun provideGson(): Gson = Gson()
+
+  @Provides
+  @Singleton
   fun provideRetrofit(
     secureUserPreferences: SecureUserPreferences,
-    refreshRepository: Lazy<RefreshRepository>
+    refreshRepository: Lazy<RefreshRepository>,
+    gson: Gson
   ): Retrofit {
     val logging = HttpLoggingInterceptor().apply {
       level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.HEADERS
@@ -53,7 +59,7 @@ object NetworkModule {
     return Retrofit.Builder()
       .baseUrl(BuildConfig.BASE_URL)
       .client(client)
-      .addConverterFactory(GsonConverterFactory.create())
+      .addConverterFactory(GsonConverterFactory.create(gson))
       .build()
   }
 
@@ -96,6 +102,6 @@ object NetworkModule {
 
   @Provides
   @Singleton
-  fun provideSafeCall(refresh: RefreshRepository): SafeResponse =
-    SafeResponse(refresh)
+  fun provideSafeCall(refresh: RefreshRepository, gson: Gson): SafeResponse =
+    SafeResponse(refresh, gson)
 }
