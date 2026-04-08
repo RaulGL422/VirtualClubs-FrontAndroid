@@ -166,6 +166,30 @@ Base URL: `https://virtualclubs-backend.onrender.com/`
 
 ---
 
+## Tests Unitarios
+
+**Suite base implementada en `app/src/test/java/es/virtualclubs/`:**
+
+| Archivo | Qué cubre |
+|---------|-----------|
+| `data/managers/SafeResponseTest.kt` | Happy path, 401+refresh, IOException, 4xx/5xx fallback |
+| `domain/usecase/AuthUseCaseTest.kt` | Login exitoso, credenciales inválidas, delegación al repositorio |
+| `domain/usecase/RefreshTokenUseCaseTest.kt` | Refresh exitoso, token inválido, `canLogout` flag |
+| `presentation/screens/auth/AuthViewModelTest.kt` | loginUser, autoLogin con/sin token válido |
+| `utils/MainDispatcherRule.kt` | Rule para reemplazar `Dispatchers.Main` en tests con coroutines |
+
+**Dependencias de test:**
+- `mockk` 1.13.13 — mocks en Kotlin
+- `kotlinx-coroutines-test` 1.9.0 — coroutines en tests
+- `testOptions.unitTests.isReturnDefaultValues = true` — evita crash de stubs Android (e.g. `Log.d`) en JVM
+
+**Nota:** `AuthViewModel` usa `by lazy` para `googleSignInClient` para que el test pueda instanciarse sin Play Services en JVM. Los tests de flujo Google Sign-In deben ir en `androidTest/`.
+
+```bash
+```
+
+---
+
 ## Patrones y Convenciones
 
 ### Estructura de un screen nuevo
@@ -276,7 +300,7 @@ Sin Empezar → 💻 En curso → 📬 PR Abierto → 📦 Pendiente debug → �
 | Home screen vacía | HomePage actual es placeholder, falta contenido real de clubes |
 | ProGuard no configurado | `isMinifyEnabled = false` en release — falta configurar R8/ProGuard |
 | Certificate pinning ausente | No hay pinning de certificados SSL en OkHttp |
-| Tests sin cobertura | No hay tests unitarios ni de UI implementados |
+| Tests UI sin cobertura | No hay tests de UI/instrumentación implementados (solo tests unitarios) |
 | UserApi limitada | `getUserInfo` solo devuelve email — falta expandir para clubs, config, etc. |
 | Google Sign-In migrado | Usa `CredentialManager` + `GetGoogleIdOption`; `play-services-auth` eliminado |
 | `prod` flavor sin URL real | Ambos flavors apuntan a Render — falta URL de producción propia |

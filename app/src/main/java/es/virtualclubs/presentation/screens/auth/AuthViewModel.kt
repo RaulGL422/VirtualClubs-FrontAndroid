@@ -19,6 +19,7 @@ import es.virtualclubs.data.local.datastore.UserPreferences
 import es.virtualclubs.data.local.secure.SecureUserPreferences
 import es.virtualclubs.data.managers.GlobalUIManager
 import es.virtualclubs.data.managers.SafeCall
+import es.virtualclubs.data.models.User
 import es.virtualclubs.domain.model.ErrorType
 import es.virtualclubs.domain.repository.AuthRepository
 import es.virtualclubs.domain.repository.RefreshRepository
@@ -82,7 +83,7 @@ class AuthViewModel @Inject constructor(
       if (response.isSuccess) {
         val tokens = response.getOrNull()
         if (tokens != null) {
-          userSession.currentUser = userSession.currentUser.copy(email = googleCredential.id)
+          userSession.updateUser(User(email = googleCredential.id))
           securePreferences.saveTokens(tokens.accessToken, tokens.refreshToken)
           _uiState.value = AuthUiState.Success
         } else {
@@ -109,7 +110,7 @@ class AuthViewModel @Inject constructor(
           val response = SafeCall.safeCall { refreshRepository.refresh(false) }
           val tokens = response.getOrNull()
           _uiState.value = if (response.isSuccess && tokens != null) {
-            userSession.currentUser = userSession.currentUser.copy(email = userPreferences.userEmailFlow.firstOrNull())
+            userSession.updateUser(User(email = userPreferences.userEmailFlow.firstOrNull()))
             AuthUiState.Success
           } else {
             AuthUiState.Idle
@@ -128,7 +129,7 @@ class AuthViewModel @Inject constructor(
         if (tokens != null) {
           securePreferences.saveTokens(tokens.accessToken, tokens.refreshToken)
           userPreferences.saveUser(email, rememberUser)
-          userSession.currentUser = userSession.currentUser.copy(email = email)
+          userSession.updateUser(User(email = email))
           _uiState.value = AuthUiState.Success
         } else {
           GlobalUIManager.setError(ErrorType.MISSING_TOKENS)
@@ -158,7 +159,7 @@ class AuthViewModel @Inject constructor(
         if (tokens != null) {
           userPreferences.saveUser(email, rememberUser)
           securePreferences.saveTokens(tokens.accessToken, tokens.refreshToken)
-          userSession.currentUser = userSession.currentUser.copy(email = email)
+          userSession.updateUser(User(email = tokens.email ?: email))
           _uiState.value = AuthUiState.Success
         } else {
           GlobalUIManager.setError(ErrorType.MISSING_TOKENS)
