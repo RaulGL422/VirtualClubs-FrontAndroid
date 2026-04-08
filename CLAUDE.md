@@ -302,5 +302,5 @@ Sin Empezar → 💻 En curso → 📬 PR Abierto → 📦 Pendiente debug → �
 | Certificate pinning ausente | No hay pinning de certificados SSL en OkHttp |
 | Tests UI sin cobertura | No hay tests de UI/instrumentación implementados (solo tests unitarios) |
 | UserApi limitada | `getUserInfo` solo devuelve email — falta expandir para clubs, config, etc. |
-| Credentials API migración | Se usa `play-services-auth` legacy + nuevo `credentials` — consolidar en uno |
+| Google Sign-In migrado | Usa `CredentialManager` + `GetGoogleIdOption`; `play-services-auth` eliminado |
 | `prod` flavor sin URL real | Ambos flavors apuntan a Render — falta URL de producción propia |

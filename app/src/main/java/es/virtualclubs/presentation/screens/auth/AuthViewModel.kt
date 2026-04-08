@@ -1,19 +1,17 @@
-@file:Suppress("DEPRECATION")
-
 package es.virtualclubs.presentation.screens.auth
 
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
-import android.util.Log
-import androidx.activity.compose.ManagedActivityResultLauncher
-import androidx.activity.result.ActivityResult
+import androidx.credentials.CredentialManager
+import androidx.credentials.CustomCredential
+import androidx.credentials.GetCredentialRequest
+import androidx.credentials.GetCredentialResponse
+import androidx.credentials.exceptions.GetCredentialCancellationException
+import androidx.credentials.exceptions.GetCredentialException
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import es.virtualclubs.BuildConfig
@@ -21,14 +19,12 @@ import es.virtualclubs.data.local.datastore.UserPreferences
 import es.virtualclubs.data.local.secure.SecureUserPreferences
 import es.virtualclubs.data.managers.GlobalUIManager
 import es.virtualclubs.data.managers.SafeCall
-import es.virtualclubs.domain.model.ErrorType
 import es.virtualclubs.data.models.User
+import es.virtualclubs.domain.model.ErrorType
 import es.virtualclubs.domain.repository.AuthRepository
 import es.virtualclubs.domain.repository.RefreshRepository
 import es.virtualclubs.session.UserSession
 import jakarta.inject.Inject
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -53,63 +49,52 @@ class AuthViewModel @Inject constructor(
     tryAutoLogin()
   }
 
-  // Google
-  val googleSignInClient: GoogleSignInClient by lazy {
-    GoogleSignIn.getClient(
-      context,
-      GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-        .requestIdToken(BuildConfig.GOOGLE_CLIENT_ID) // Web Client ID
-        .requestEmail()
-        .build()
-    )
-  }
-
-  // --- Función para iniciar login ---
-  fun beginSignInGoogle(
-    googleSignInLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>
-  ) {
-    val signInIntent: Intent = googleSignInClient.signInIntent
-    googleSignInLauncher.launch(signInIntent)
-  }
-
-  // --- Manejo del resultado ---
-  fun handleSignInResultGoogle(result: ActivityResult) {
-    if (result.resultCode != Activity.RESULT_OK) {
-      Log.e(
-        "GoogleSignIn",
-        "Sign-in con google ha fallado con codigo de error: ${result.resultCode}"
-      )
-      onLoginFailed(ErrorType.GOOGLE_SIGN_IN_FAILED)
-      return
+  fun beginSignInGoogle(activity: Activity) {
+    viewModelScope.launch {
+      try {
+        val credentialManager = CredentialManager.create(context)
+        val googleIdOption = GetGoogleIdOption.Builder()
+          .setFilterByAuthorizedAccounts(false)
+          .setServerClientId(BuildConfig.GOOGLE_CLIENT_ID)
+          .build()
+        val request = GetCredentialRequest.Builder()
+          .addCredentialOption(googleIdOption)
+          .build()
+        val result = credentialManager.getCredential(activity, request)
+        processGoogleCredential(result)
+      } catch (_: GetCredentialCancellationException) {
+        // El usuario canceló el selector — no es un error
+      } catch (_: GetCredentialException) {
+        onLoginFailed(ErrorType.GOOGLE_SIGN_IN_FAILED)
+      } catch (_: Exception) {
+        onLoginFailed(ErrorType.GOOGLE_LOGIN_EXCEPTION)
+      }
     }
+  }
 
-    val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-    try {
-      val account: GoogleSignInAccount = task.getResult(Exception::class.java)
-      val idToken = account.idToken
-      if (idToken != null) {
-        CoroutineScope(Dispatchers.IO).launch {
-          val response = SafeCall.safeCall { repository.google(idToken) }
-          if (response.isSuccess) {
-            val tokens = response.getOrNull()
-            if (tokens != null) {
-              userSession.updateUser(User(email = account.email))
-              _uiState.value = AuthUiState.Success
-              securePreferences.saveTokens(tokens.accessToken, tokens.refreshToken)
-            } else {
-              GlobalUIManager.setError(ErrorType.MISSING_TOKENS)
-              _uiState.value = AuthUiState.Idle
-            }
-          } else {
-            _uiState.value = AuthUiState.Idle
-          }
+  private suspend fun processGoogleCredential(result: GetCredentialResponse) {
+    val credential = result.credential
+    if (credential is CustomCredential &&
+      credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
+    ) {
+      val googleCredential = GoogleIdTokenCredential.createFrom(credential.data)
+      val idToken = googleCredential.idToken
+      val response = SafeCall.safeCall { repository.google(idToken) }
+      if (response.isSuccess) {
+        val tokens = response.getOrNull()
+        if (tokens != null) {
+          userSession.updateUser(User(email = googleCredential.id))
+          securePreferences.saveTokens(tokens.accessToken, tokens.refreshToken)
+          _uiState.value = AuthUiState.Success
+        } else {
+          GlobalUIManager.setError(ErrorType.MISSING_TOKENS)
+          _uiState.value = AuthUiState.Idle
         }
       } else {
-        onLoginFailed(ErrorType.GOOGLE_SIGN_IN_NO_TOKEN)
+        _uiState.value = AuthUiState.Idle
       }
-    } catch (e: Exception) {
-      Log.e("GoogleSignIn", "Error obteniendo cuenta: ${e.message}")
-      onLoginFailed(ErrorType.GOOGLE_LOGIN_EXCEPTION)
+    } else {
+      onLoginFailed(ErrorType.GOOGLE_SIGN_IN_NO_TOKEN)
     }
   }
 
@@ -122,7 +107,6 @@ class AuthViewModel @Inject constructor(
     viewModelScope.launch {
       if (userPreferences.autoLoginFlow.firstOrNull() == true) {
         GlobalUIManager.withLoading {
-          // Try to get a new access token from backend
           val response = SafeCall.safeCall { refreshRepository.refresh(false) }
           val tokens = response.getOrNull()
           _uiState.value = if (response.isSuccess && tokens != null) {
@@ -137,8 +121,6 @@ class AuthViewModel @Inject constructor(
   }
 
   fun loginUser(email: String, password: String, rememberUser: Boolean) {
-    Log.d("Auth", "Login attempt")
-
     viewModelScope.launch {
       _uiState.value = AuthUiState.AttemptingAuth
       val response = SafeCall.safeCall { repository.login(email, password) }
@@ -162,8 +144,6 @@ class AuthViewModel @Inject constructor(
   fun registerUser(
     email: String, password: String, confirmPassword: String, rememberUser: Boolean
   ) {
-    Log.d("Auth", "Register attempt")
-
     viewModelScope.launch {
       _uiState.value = AuthUiState.AttemptingAuth
 
@@ -192,8 +172,6 @@ class AuthViewModel @Inject constructor(
   }
 
   fun requestPasswordReset(email: String) {
-    Log.d("Auth", "Password reset requested")
-
     viewModelScope.launch {
       _passwordResetUiState.value = PasswordResetUiState.Attempting
 

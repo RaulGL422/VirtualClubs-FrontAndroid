@@ -1,7 +1,6 @@
 package es.virtualclubs.presentation.screens.auth
 
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
+import android.app.Activity
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedContent
@@ -115,16 +114,12 @@ fun LoginPage(
     }
   }
 
+  val activity = LocalContext.current as? Activity
+
   VCScaffold(
     snackbarHost = { SnackbarHost(snackbarHostState) },
     topBar = { AuthTopBar(onSettingsTap) }
   ) { padding ->
-    // Google Sign In launcher
-    val googleSignInLauncher = rememberLauncherForActivityResult(
-      contract = ActivityResultContracts.StartActivityForResult(),
-      onResult = { result -> viewModel.handleSignInResultGoogle(result) }
-    )
-
     AnimatedContent(
       targetState = isLogin,
       transitionSpec = {
@@ -148,7 +143,7 @@ fun LoginPage(
             remember
           )
         },
-        onGoogle = { viewModel.beginSignInGoogle(googleSignInLauncher) },
+        onGoogle = { activity?.let { viewModel.beginSignInGoogle(it) } },
         onFacebook = { /* TODO */ },
         onApple = { /* TODO */ },
         onChangeLogin = { isLogin = !isLogin },
