@@ -179,7 +179,7 @@ class AuthViewModel @Inject constructor(
         if (tokens != null) {
           userPreferences.saveUser(email, rememberUser)
           securePreferences.saveTokens(tokens.accessToken, tokens.refreshToken)
-          userSession.updateUser(User(email = email))
+          userSession.updateUser(User(email = tokens.email ?: email))
           _uiState.value = AuthUiState.Success
         } else {
           GlobalUIManager.setError(ErrorType.MISSING_TOKENS)
