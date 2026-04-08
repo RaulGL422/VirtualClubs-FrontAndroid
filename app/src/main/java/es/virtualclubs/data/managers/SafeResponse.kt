@@ -11,7 +11,8 @@ import java.io.IOException
 import kotlin.coroutines.cancellation.CancellationException
 
 class SafeResponse @Inject constructor(
-  private val refreshRepository: RefreshRepository
+  private val refreshRepository: RefreshRepository,
+  private val gson: Gson
 ) {
   suspend fun <T> safeResponse(
     block: suspend () -> Result<T>
@@ -49,7 +50,7 @@ class SafeResponse @Inject constructor(
   private fun parseErrorBody(errorBody: String?): ErrorType? {
     if (errorBody.isNullOrBlank()) return null
     return try {
-      val code = Gson().fromJson(errorBody, ApiResponse::class.java)
+      val code = gson.fromJson(errorBody, ApiResponse::class.java)
         ?.message
         ?.takeIf { it > 0 }
         ?: return null
