@@ -6,20 +6,23 @@ Todas las versiones notables del proyecto. Formato basado en [Keep a Changelog](
 
 ## [Unreleased]
 
-### Por implementar
-- Pantalla VerifyEmailResult completa
-- Pantalla Settings reescrita desde cero
-- Flujo completo getUserInfo (UserRepository → UserSession → HomeViewModel)
-- Tests unitarios base (ViewModels, UseCases, SafeResponse)
-- ProGuard/R8 configurado para release
-- Certificate pinning en OkHttp
+---
 
-### Bugs conocidos
-- `userSession.currentUser.copy()` no asigna — email nunca actualizado en sesión
-- `SafeResponse` descarta resultado real de `block()` tras refresh token exitoso
-- `NavGraph` crash: `getBoolean("status")` en parámetro declarado `StringType`
-- Imports `jakarta.inject` en lugar de `javax.inject` en 4 archivos
-- `SafeCall.exceptionOrNull()!!` NPE potencial
+## [0.1.2] — Alpha — 2026-04-08
+
+### Implementado
+- VC-58: Implementar VerifyEmailResultPage y ViewModel completos (🛠️ Funcionalidad)
+- VC-59: Reescribir SettingsPage y SettingsViewModel desde cero para VirtualClubs (✏️ Diseño)
+- VC-60: Implementar flujo completo de getUserInfo con modelo de usuario real (🛠️ Funcionalidad)
+- VC-62: Refactorizar UserSession para exponer estado reactivo con StateFlow (🛠️ Funcionalidad)
+- VC-63: Reemplazar runBlocking en NetworkModule por caché de token en memoria (📱 Android)
+- VC-66: Añadir certificate pinning en OkHttp para la API de producción (🔒 Autenticación)
+- VC-67: Crear suite de tests unitarios base para ViewModels y UseCases (🔎 Testing)
+- VC-68: Implementar pantalla Home con contenido real de clubes del usuario (🛠️ Funcionalidad)
+- VC-71: Verificar expiración JWT localmente en AuthInterceptor antes de la request (🛠️ Funcionalidad)
+- VC-76: Migrar Google Sign-In a CredentialManager (eliminar legacy play-services-auth) (📱 Android)
+- VC-81: Usar campo email de RegisterResponse para poblar UserSession (🛠️ Funcionalidad)
+- VC-85: Configurar ProGuard/R8 para build release (📱 Android)
 
 ---
 

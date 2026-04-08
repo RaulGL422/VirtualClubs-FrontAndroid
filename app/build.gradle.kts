@@ -16,8 +16,8 @@ android {
         applicationId = "es.virtualclubs"
         minSdk = 30
         targetSdk = 36
-        versionCode = 1
-        versionName = "0.1.1v Alpha"
+        versionCode = 2
+        versionName = "0.1.2v Alpha"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables { useSupportLibrary = true }
     }
