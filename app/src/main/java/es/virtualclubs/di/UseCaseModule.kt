@@ -44,8 +44,8 @@ object UseCaseModule {
 
     @Provides
     @Singleton
-    fun provideLogoutUserUseCase(repository: AuthRepository): LogoutUserUseCase {
-        return LogoutUserUseCase(repository)
+    fun provideLogoutUserUseCase(repository: AuthRepository, userSession: UserSession): LogoutUserUseCase {
+        return LogoutUserUseCase(repository, userSession)
     }
 
     @Provides
@@ -56,8 +56,8 @@ object UseCaseModule {
 
     @Provides
     @Singleton
-    fun provideClearTokensUseCase(securePreferences: SecureUserPreferences): ClearTokensUseCase {
-        return ClearTokensUseCase(securePreferences)
+    fun provideClearTokensUseCase(securePreferences: SecureUserPreferences, userSession: UserSession): ClearTokensUseCase {
+        return ClearTokensUseCase(securePreferences, userSession)
     }
 
     @Provides
@@ -74,8 +74,8 @@ object UseCaseModule {
 
     @Provides
     @Singleton
-    fun provideSaveTokensUseCase(securePreferences: SecureUserPreferences): SaveTokensUseCase {
-        return SaveTokensUseCase(securePreferences)
+    fun provideSaveTokensUseCase(securePreferences: SecureUserPreferences, userSession: UserSession): SaveTokensUseCase {
+        return SaveTokensUseCase(securePreferences, userSession)
     }
 
     @Provides
