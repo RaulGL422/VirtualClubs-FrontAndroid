@@ -12,6 +12,7 @@ import es.virtualclubs.ScreenType
 import es.virtualclubs.presentation.screens.auth.LoginPage
 import es.virtualclubs.presentation.screens.home.HomePage
 import es.virtualclubs.presentation.screens.resetPassword.ResetPasswordPage
+import es.virtualclubs.presentation.screens.settings.SettingsPage
 import es.virtualclubs.presentation.screens.verifyemailresult.VerifyEmailResultPage
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
@@ -43,6 +44,10 @@ fun AppNavHost(
 
     composable(Screen.Home.route) {
       HomePage()
+    }
+
+    composable(Screen.Settings.route) {
+      SettingsPage(onBack = { AppNavigator.navigateBack() })
     }
 
     composable(
