@@ -166,6 +166,30 @@ Base URL: `https://virtualclubs-backend.onrender.com/`
 
 ---
 
+## Tests Unitarios
+
+**Suite base implementada en `app/src/test/java/es/virtualclubs/`:**
+
+| Archivo | Qué cubre |
+|---------|-----------|
+| `data/managers/SafeResponseTest.kt` | Happy path, 401+refresh, IOException, 4xx/5xx fallback |
+| `domain/usecase/AuthUseCaseTest.kt` | Login exitoso, credenciales inválidas, delegación al repositorio |
+| `domain/usecase/RefreshTokenUseCaseTest.kt` | Refresh exitoso, token inválido, `canLogout` flag |
+| `presentation/screens/auth/AuthViewModelTest.kt` | loginUser, autoLogin con/sin token válido |
+| `utils/MainDispatcherRule.kt` | Rule para reemplazar `Dispatchers.Main` en tests con coroutines |
+
+**Dependencias de test:**
+- `mockk` 1.13.13 — mocks en Kotlin
+- `kotlinx-coroutines-test` 1.9.0 — coroutines en tests
+- `testOptions.unitTests.isReturnDefaultValues = true` — evita crash de stubs Android (e.g. `Log.d`) en JVM
+
+**Nota:** `AuthViewModel` usa `by lazy` para `googleSignInClient` para que el test pueda instanciarse sin Play Services en JVM. Los tests de flujo Google Sign-In deben ir en `androidTest/`.
+
+```bash
+```
+
+---
+
 ## Patrones y Convenciones
 
 ### Estructura de un screen nuevo
@@ -207,31 +231,6 @@ Cada pantalla sigue el patrón:
 - `@Preview` en todos los composables reutilizables
 - `modifier: Modifier = Modifier` como primer parámetro después del estado
 - No llamar ViewModels directamente desde composables hijos — pasar lambdas
-
-### Certificate Pinning
-
-Activado **solo en el flavor `prod`** en `NetworkModule.kt`. Protege contra ataques MITM.
-
-**Pins actuales** (dominio: `virtualclubs-backend.onrender.com`):
-
-| Pin | Tipo | SHA-256 base64 |
-|-----|------|----------------|
-| CA Intermedio | Google Trust Services WE1 | `kIdp6NNEd8wsugYyyIYFsi1ylMCED3hZbSR8ZFsa/A4=` |
-| Root CA | GTS Root R4 | `mEflZT5enoR1FuXLgYYGqnVEoZvmf9c2bVBpiOjYQ0c=` |
-
-**Cómo renovar los pins** (cuando Render cambie de CA):
-```bash
-# 1. Obtener el pin del CA intermedio (posición 2 en la cadena)
-echo "Q" | openssl s_client -connect virtualclubs-backend.onrender.com:443 -showcerts 2>/dev/null \
-  | awk '/BEGIN CERT/{c++} c==2{print}' \
-  | openssl x509 -pubkey -noout | openssl pkey -pubin -outform DER \
-  | openssl dgst -sha256 -binary | openssl enc -base64
-
-# 2. Actualizar los pins en NetworkModule.kt
-# 3. Probar en dispositivo real con flavor prod antes de publicar
-```
-
-**Nota:** Los pins están en `di/NetworkModule.kt`. El flavor `dev` no tiene pinning para facilitar el desarrollo con el emulador.
 
 ### Commits y ramas
 - Commits en español, formato semántico: `[tipo](scope): descripción`
@@ -300,8 +299,8 @@ Sin Empezar → 💻 En curso → 📬 PR Abierto → 📦 Pendiente debug → �
 |------|---------|
 | Home screen vacía | HomePage actual es placeholder, falta contenido real de clubes |
 | ProGuard no configurado | `isMinifyEnabled = false` en release — falta configurar R8/ProGuard |
-| Certificate pinning (prod) | Pins configurados para `prod`; renovar cuando Render cambie de CA |
-| Tests sin cobertura | No hay tests unitarios ni de UI implementados |
+| Certificate pinning ausente | No hay pinning de certificados SSL en OkHttp |
+| Tests UI sin cobertura | No hay tests de UI/instrumentación implementados (solo tests unitarios) |
 | UserApi limitada | `getUserInfo` solo devuelve email — falta expandir para clubs, config, etc. |
 | Credentials API migración | Se usa `play-services-auth` legacy + nuevo `credentials` — consolidar en uno |
 | `prod` flavor sin URL real | Ambos flavors apuntan a Render — falta URL de producción propia |

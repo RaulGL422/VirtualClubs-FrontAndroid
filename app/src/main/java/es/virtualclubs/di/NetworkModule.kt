@@ -1,5 +1,7 @@
 package es.virtualclubs.di
 
+import com.google.gson.Gson
+import dagger.Lazy
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,7 +20,7 @@ import es.virtualclubs.domain.repository.AuthRepository
 import es.virtualclubs.domain.repository.RefreshRepository
 import es.virtualclubs.domain.repository.UserRepository
 import es.virtualclubs.presentation.navigation.SessionManager
-import kotlinx.coroutines.flow.firstOrNull
+import es.virtualclubs.session.UserSession
 import kotlinx.coroutines.runBlocking
 import okhttp3.CertificatePinner
 import okhttp3.OkHttpClient
@@ -33,16 +35,25 @@ object NetworkModule {
 
   @Provides
   @Singleton
-  fun provideRetrofit(secureUserPreferences: SecureUserPreferences): Retrofit {
+  fun provideGson(): Gson = Gson()
+
+  @Provides
+  @Singleton
+  fun provideRetrofit(
+    userSession: UserSession,
+    refreshRepository: Lazy<RefreshRepository>,
+    gson: Gson
+  ): Retrofit {
     val logging = HttpLoggingInterceptor().apply {
       level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.HEADERS
       else HttpLoggingInterceptor.Level.NONE
     }
 
     val clientBuilder = OkHttpClient.Builder()
-      .addInterceptor(AuthInterceptor {
-        runBlocking { secureUserPreferences.accessToken.firstOrNull() }
-      })
+      .addInterceptor(AuthInterceptor(
+        tokenProvider = { userSession.cachedAccessToken },
+        onTokenExpired = { runBlocking { refreshRepository.get().refresh(false) } }
+      ))
       .addInterceptor(logging)
 
     // Certificate pinning solo en prod para proteger contra MITM
@@ -62,7 +73,7 @@ object NetworkModule {
     return Retrofit.Builder()
       .baseUrl(BuildConfig.BASE_URL)
       .client(client)
-      .addConverterFactory(GsonConverterFactory.create())
+      .addConverterFactory(GsonConverterFactory.create(gson))
       .build()
   }
 
@@ -86,9 +97,10 @@ object NetworkModule {
   fun provideRefreshRepository(
     api: RefreshApi,
     sessionManager: SessionManager,
-    secureUserPreferences: SecureUserPreferences
+    secureUserPreferences: SecureUserPreferences,
+    userSession: UserSession
   ): RefreshRepository =
-    RefreshRepositoryImpl(api, sessionManager, secureUserPreferences = secureUserPreferences)
+    RefreshRepositoryImpl(api, sessionManager, secureUserPreferences, userSession)
 
   @Provides
   @Singleton
@@ -105,6 +117,6 @@ object NetworkModule {
 
   @Provides
   @Singleton
-  fun provideSafeCall(refresh: RefreshRepository): SafeResponse =
-    SafeResponse(refresh)
+  fun provideSafeCall(refresh: RefreshRepository, gson: Gson): SafeResponse =
+    SafeResponse(refresh, gson)
 }
