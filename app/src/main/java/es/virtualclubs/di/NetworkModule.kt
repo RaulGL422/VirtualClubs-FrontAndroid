@@ -1,6 +1,7 @@
 package es.virtualclubs.di
 
 import com.google.gson.Gson
+import dagger.Lazy
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,9 +19,8 @@ import es.virtualclubs.domain.model.AuthInterceptor
 import es.virtualclubs.domain.repository.AuthRepository
 import es.virtualclubs.domain.repository.RefreshRepository
 import es.virtualclubs.domain.repository.UserRepository
-import dagger.Lazy
 import es.virtualclubs.presentation.navigation.SessionManager
-import kotlinx.coroutines.flow.firstOrNull
+import es.virtualclubs.session.UserSession
 import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -39,7 +39,7 @@ object NetworkModule {
   @Provides
   @Singleton
   fun provideRetrofit(
-    secureUserPreferences: SecureUserPreferences,
+    userSession: UserSession,
     refreshRepository: Lazy<RefreshRepository>,
     gson: Gson
   ): Retrofit {
@@ -50,7 +50,7 @@ object NetworkModule {
 
     val client = OkHttpClient.Builder()
       .addInterceptor(AuthInterceptor(
-        tokenProvider = { runBlocking { secureUserPreferences.accessToken.firstOrNull() } },
+        tokenProvider = { userSession.cachedAccessToken },
         onTokenExpired = { runBlocking { refreshRepository.get().refresh(false) } }
       ))
       .addInterceptor(logging)
@@ -83,9 +83,10 @@ object NetworkModule {
   fun provideRefreshRepository(
     api: RefreshApi,
     sessionManager: SessionManager,
-    secureUserPreferences: SecureUserPreferences
+    secureUserPreferences: SecureUserPreferences,
+    userSession: UserSession
   ): RefreshRepository =
-    RefreshRepositoryImpl(api, sessionManager, secureUserPreferences = secureUserPreferences)
+    RefreshRepositoryImpl(api, sessionManager, secureUserPreferences, userSession)
 
   @Provides
   @Singleton
