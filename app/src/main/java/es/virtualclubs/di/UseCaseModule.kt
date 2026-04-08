@@ -8,6 +8,7 @@ import es.virtualclubs.data.local.secure.SecureUserPreferences
 import es.virtualclubs.domain.repository.AuthRepository
 import es.virtualclubs.domain.repository.RefreshRepository
 import es.virtualclubs.domain.usecase.AuthUseCase
+import es.virtualclubs.session.UserSession
 import es.virtualclubs.domain.usecase.GoogleUseCase
 import es.virtualclubs.domain.usecase.LogoutUserUseCase
 import es.virtualclubs.domain.usecase.RefreshTokenUseCase
@@ -41,8 +42,8 @@ object UseCaseModule {
 
     @Provides
     @Singleton
-    fun provideLogoutUserUseCase(repository: AuthRepository): LogoutUserUseCase {
-        return LogoutUserUseCase(repository)
+    fun provideLogoutUserUseCase(repository: AuthRepository, userSession: UserSession): LogoutUserUseCase {
+        return LogoutUserUseCase(repository, userSession)
     }
 
     @Provides
