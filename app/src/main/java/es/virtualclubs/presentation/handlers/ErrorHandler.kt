@@ -1,11 +1,9 @@
 package es.virtualclubs.presentation.handlers
 
-import androidx.compose.runtime.Composable
 import es.virtualclubs.R
 import es.virtualclubs.domain.model.ErrorType
 
 object ErrorHandler {
-  @Composable
   fun getErrorMessage(errorCode: ErrorType): Int {
     return when (errorCode) {
       ErrorType.INTERNAL_ERROR -> R.string.internal_error
