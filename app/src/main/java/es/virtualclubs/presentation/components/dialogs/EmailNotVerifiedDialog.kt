@@ -13,13 +13,9 @@ import androidx.compose.ui.res.stringResource
 import es.virtualclubs.R
 import es.virtualclubs.data.managers.GlobalUIManager
 import es.virtualclubs.data.managers.GlobalUIManager.showDialog
-import es.virtualclubs.data.managers.SafeCall
 import es.virtualclubs.presentation.components.VCButton
 import es.virtualclubs.presentation.components.VCButtonContent
 import es.virtualclubs.presentation.theme.VCTheme
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 fun showEmailNotVerifiedDialog() {
   showDialog(
@@ -36,10 +32,7 @@ fun showEmailNotVerifiedDialog() {
           content = VCButtonContent.Text(R.string.send_verification_email),
           height = VCTheme.sizes.buttonHeightMd
         ) {
-          val authRepository = GlobalUIManager.getEntryPoint().authRepository()
-          CoroutineScope(Dispatchers.IO).launch {
-            SafeCall.safeCall { authRepository.requestVerify() }
-          }
+          GlobalUIManager.requestVerifyEmail()
         }
       }
     },

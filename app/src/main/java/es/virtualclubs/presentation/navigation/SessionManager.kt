@@ -2,7 +2,7 @@ package es.virtualclubs.presentation.navigation
 
 import es.virtualclubs.data.local.datastore.UserPreferences
 import es.virtualclubs.data.local.secure.SecureUserPreferences
-import jakarta.inject.Inject
+import javax.inject.Inject
 
 class SessionManager @Inject constructor(
   private val userPreferences: UserPreferences,
