@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import es.virtualclubs.data.local.datastore.AppPreferences
 import es.virtualclubs.data.local.datastore.UserPreferences
-import es.virtualclubs.data.managers.GlobalUIManager
+import es.virtualclubs.presentation.managers.GlobalUIManager
 import es.virtualclubs.domain.usecase.LogoutUserUseCase
 import es.virtualclubs.domain.usecase.token.ClearTokensUseCase
 import es.virtualclubs.presentation.navigation.AppNavigator

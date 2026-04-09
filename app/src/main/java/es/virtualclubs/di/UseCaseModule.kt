@@ -18,7 +18,7 @@ import es.virtualclubs.domain.usecase.token.ClearTokensUseCase
 import es.virtualclubs.domain.usecase.token.GetAccessTokenUseCase
 import es.virtualclubs.domain.usecase.token.GetRefreshTokenUseCase
 import es.virtualclubs.domain.usecase.token.SaveTokensUseCase
-import es.virtualclubs.session.UserSession
+import es.virtualclubs.data.session.UserSession
 import javax.inject.Singleton
 
 @Module

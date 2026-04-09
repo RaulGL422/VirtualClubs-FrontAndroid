@@ -9,7 +9,7 @@ import es.virtualclubs.domain.model.ErrorType
 import es.virtualclubs.domain.model.VirtualClubException
 import es.virtualclubs.domain.repository.AuthRepository
 import es.virtualclubs.domain.repository.RefreshRepository
-import es.virtualclubs.session.UserSession
+import es.virtualclubs.data.session.UserSession
 import es.virtualclubs.utils.MainDispatcherRule
 import io.mockk.coEvery
 import io.mockk.every

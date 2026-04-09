@@ -6,7 +6,7 @@ import es.virtualclubs.data.remote.dto.RefreshRequest
 import es.virtualclubs.data.remote.dto.getOrThrow
 import es.virtualclubs.domain.repository.RefreshRepository
 import es.virtualclubs.presentation.navigation.SessionManager
-import es.virtualclubs.session.UserSession
+import es.virtualclubs.data.session.UserSession
 import javax.inject.Inject
 import kotlinx.coroutines.flow.firstOrNull
 

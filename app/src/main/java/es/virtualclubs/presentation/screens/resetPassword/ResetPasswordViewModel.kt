@@ -3,8 +3,8 @@ package es.virtualclubs.presentation.screens.resetPassword
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import es.virtualclubs.data.managers.GlobalUIManager
 import es.virtualclubs.data.managers.SafeCall
+import es.virtualclubs.presentation.managers.GlobalUIManager
 import es.virtualclubs.domain.model.ErrorType
 import es.virtualclubs.domain.repository.AuthRepository
 import javax.inject.Inject
@@ -15,7 +15,8 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class ResetPasswordViewModel @Inject constructor(
-  private val repository: AuthRepository
+  private val repository: AuthRepository,
+  private val safeCall: SafeCall
 ) : ViewModel() {
   private val _uiState = MutableStateFlow<ResetPasswordUiState>(ResetPasswordUiState.Idle)
   val uiState: StateFlow<ResetPasswordUiState> = _uiState.asStateFlow()
@@ -30,7 +31,7 @@ class ResetPasswordViewModel @Inject constructor(
         return@launch
       }
 
-      val response = SafeCall.safeCall { repository.resetPassword(token, newPassword) }
+      val response = safeCall.safeCall { repository.resetPassword(token, newPassword) }
       _uiState.value = if (response.isSuccess) {
         ResetPasswordUiState.Success
       } else {

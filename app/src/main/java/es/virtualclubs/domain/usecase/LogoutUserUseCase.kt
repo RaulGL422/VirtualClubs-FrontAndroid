@@ -1,7 +1,7 @@
 package es.virtualclubs.domain.usecase
 
 import es.virtualclubs.domain.repository.AuthRepository
-import es.virtualclubs.session.UserSession
+import es.virtualclubs.data.session.UserSession
 import javax.inject.Inject
 
 class LogoutUserUseCase @Inject constructor(

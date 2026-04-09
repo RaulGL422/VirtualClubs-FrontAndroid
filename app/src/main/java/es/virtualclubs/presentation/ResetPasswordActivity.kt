@@ -1,4 +1,4 @@
-package es.virtualclubs
+package es.virtualclubs.presentation
 
 import android.content.Intent
 import android.os.Bundle
@@ -11,6 +11,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
+import es.virtualclubs.VirtualClubsMainApp
 import es.virtualclubs.data.local.datastore.AppPreferences
 import es.virtualclubs.presentation.theme.VirtualClubsTheme
 import javax.inject.Inject

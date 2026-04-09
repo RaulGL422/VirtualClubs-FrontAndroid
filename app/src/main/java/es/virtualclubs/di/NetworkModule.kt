@@ -20,7 +20,7 @@ import es.virtualclubs.domain.repository.AuthRepository
 import es.virtualclubs.domain.repository.RefreshRepository
 import es.virtualclubs.domain.repository.UserRepository
 import es.virtualclubs.presentation.navigation.SessionManager
-import es.virtualclubs.session.UserSession
+import es.virtualclubs.data.session.UserSession
 import kotlinx.coroutines.runBlocking
 import okhttp3.CertificatePinner
 import okhttp3.OkHttpClient
