@@ -71,7 +71,6 @@ android {
         compose = true
         buildConfig = true
     }
-    composeOptions { kotlinCompilerExtensionVersion = "2.1.10" }
     packaging { resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" } }
 }
 
@@ -107,7 +106,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
 
     implementation(libs.dagger.hilt.android)
-    annotationProcessor(libs.dagger.hilt.compiler)
     kapt(libs.dagger.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.navigation.compose)
