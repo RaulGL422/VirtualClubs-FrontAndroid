@@ -48,8 +48,6 @@ class ResetPasswordActivity : ComponentActivity() {
 
   override fun onNewIntent(intent: Intent) {
     super.onNewIntent(intent)
-    intent.let {
-      navController?.handleDeepLink(it)
-    }
+    navController?.handleDeepLink(intent)
   }
 }

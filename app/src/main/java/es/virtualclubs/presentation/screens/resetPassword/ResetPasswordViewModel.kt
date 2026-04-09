@@ -7,7 +7,7 @@ import es.virtualclubs.data.managers.GlobalUIManager
 import es.virtualclubs.data.managers.SafeCall
 import es.virtualclubs.domain.model.ErrorType
 import es.virtualclubs.domain.repository.AuthRepository
-import jakarta.inject.Inject
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

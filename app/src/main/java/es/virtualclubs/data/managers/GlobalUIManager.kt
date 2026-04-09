@@ -10,8 +10,11 @@ import es.virtualclubs.domain.model.VirtualClubException
 import es.virtualclubs.presentation.components.dialogs.showEmailNotVerifiedDialog
 import es.virtualclubs.presentation.handlers.ErrorHandler
 import es.virtualclubs.presentation.navigation.AppNavigator
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 object GlobalUIManager {
 
@@ -95,6 +98,14 @@ object GlobalUIManager {
 
     if (code == ErrorType.MISSING_TOKENS) {
       AppNavigator.navigateToLoginAndClearStack()
+    }
+  }
+
+  fun requestVerifyEmail() {
+    CoroutineScope(Dispatchers.IO).launch {
+      try {
+        getEntryPoint().authRepository().requestVerify()
+      } catch (_: Exception) { }
     }
   }
 
