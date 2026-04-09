@@ -38,7 +38,7 @@ class HomeViewModel @Inject constructor(
             GlobalUIManager.withLoading {
                 val result = SafeCall.safeCall { repository.getUserInfo() }
                 if (result.isSuccess) {
-                    _uiState.update { it.copy(userEmail = userSession.currentUser.email) }
+                    _uiState.update { it.copy(userEmail = userSession.currentUser.value.email) }
                 }
             }
         }
