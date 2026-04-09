@@ -62,7 +62,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import es.virtualclubs.R
 import es.virtualclubs.ScreenType
-import es.virtualclubs.data.managers.GlobalUIManager
+import es.virtualclubs.presentation.managers.GlobalUIManager
 import es.virtualclubs.presentation.components.RoundedTextField
 import es.virtualclubs.presentation.components.VCButton
 import es.virtualclubs.presentation.components.VCButtonContent

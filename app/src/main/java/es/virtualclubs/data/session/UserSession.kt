@@ -1,4 +1,4 @@
-package es.virtualclubs.session
+package es.virtualclubs.data.session
 
 import es.virtualclubs.data.models.User
 import javax.inject.Inject

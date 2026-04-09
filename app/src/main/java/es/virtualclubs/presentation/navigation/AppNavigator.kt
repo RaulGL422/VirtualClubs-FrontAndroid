@@ -2,7 +2,7 @@ package es.virtualclubs.presentation.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavOptionsBuilder
-import es.virtualclubs.data.managers.GlobalUIManager
+import es.virtualclubs.presentation.managers.GlobalUIManager
 
 object AppNavigator {
   private var navController: NavController? = null

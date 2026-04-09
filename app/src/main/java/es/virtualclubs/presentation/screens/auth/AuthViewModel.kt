@@ -17,13 +17,13 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import es.virtualclubs.BuildConfig
 import es.virtualclubs.data.local.datastore.UserPreferences
 import es.virtualclubs.data.local.secure.SecureUserPreferences
-import es.virtualclubs.data.managers.GlobalUIManager
 import es.virtualclubs.data.managers.SafeCall
+import es.virtualclubs.presentation.managers.GlobalUIManager
 import es.virtualclubs.data.models.User
 import es.virtualclubs.domain.model.ErrorType
 import es.virtualclubs.domain.repository.AuthRepository
 import es.virtualclubs.domain.repository.RefreshRepository
-import es.virtualclubs.session.UserSession
+import es.virtualclubs.data.session.UserSession
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -38,6 +38,7 @@ class AuthViewModel @Inject constructor(
   private val userPreferences: UserPreferences,
   private val securePreferences: SecureUserPreferences,
   private val userSession: UserSession,
+  private val safeCall: SafeCall,
   @param:ApplicationContext private val context: Context
 ) : ViewModel() {
   private val _uiState = MutableStateFlow<AuthUiState>(AuthUiState.Idle)
@@ -79,7 +80,7 @@ class AuthViewModel @Inject constructor(
     ) {
       val googleCredential = GoogleIdTokenCredential.createFrom(credential.data)
       val idToken = googleCredential.idToken
-      val response = SafeCall.safeCall { repository.google(idToken) }
+      val response = safeCall.safeCall { repository.google(idToken) }
       if (response.isSuccess) {
         val tokens = response.getOrNull()
         if (tokens != null) {
@@ -107,7 +108,7 @@ class AuthViewModel @Inject constructor(
     viewModelScope.launch {
       if (userPreferences.autoLoginFlow.firstOrNull() == true) {
         GlobalUIManager.withLoading {
-          val response = SafeCall.safeCall { refreshRepository.refresh(false) }
+          val response = safeCall.safeCall { refreshRepository.refresh(false) }
           val tokens = response.getOrNull()
           _uiState.value = if (response.isSuccess && tokens != null) {
             userSession.updateUser(User(email = userPreferences.userEmailFlow.firstOrNull()))
@@ -123,7 +124,7 @@ class AuthViewModel @Inject constructor(
   fun loginUser(email: String, password: String, rememberUser: Boolean) {
     viewModelScope.launch {
       _uiState.value = AuthUiState.AttemptingAuth
-      val response = SafeCall.safeCall { repository.login(email, password) }
+      val response = safeCall.safeCall { repository.login(email, password) }
       if (response.isSuccess) {
         val tokens = response.getOrNull()
         if (tokens != null) {
@@ -153,7 +154,7 @@ class AuthViewModel @Inject constructor(
         return@launch
       }
 
-      val response = SafeCall.safeCall { repository.register(email, password) }
+      val response = safeCall.safeCall { repository.register(email, password) }
       if (response.isSuccess) {
         val tokens = response.getOrNull()
         if (tokens != null) {
@@ -175,7 +176,7 @@ class AuthViewModel @Inject constructor(
     viewModelScope.launch {
       _passwordResetUiState.value = PasswordResetUiState.Attempting
 
-      val response = SafeCall.safeCall { repository.requestPasswordReset(email) }
+      val response = safeCall.safeCall { repository.requestPasswordReset(email) }
       if (response.isSuccess) {
         _passwordResetUiState.value = PasswordResetUiState.Success
       } else {

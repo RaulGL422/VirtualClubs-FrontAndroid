@@ -2,7 +2,7 @@ package es.virtualclubs.domain.usecase
 
 import es.virtualclubs.data.models.User
 import es.virtualclubs.domain.repository.UserRepository
-import es.virtualclubs.session.UserSession
+import es.virtualclubs.data.session.UserSession
 import javax.inject.Inject
 
 class GetUserInfoUseCase @Inject constructor(

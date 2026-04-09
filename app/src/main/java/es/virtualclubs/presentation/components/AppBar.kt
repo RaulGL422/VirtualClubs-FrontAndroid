@@ -24,7 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import es.virtualclubs.R
-import es.virtualclubs.data.managers.GlobalUIManager
+import es.virtualclubs.presentation.managers.GlobalUIManager
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
