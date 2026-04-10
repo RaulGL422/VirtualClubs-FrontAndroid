@@ -26,7 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.window.DialogProperties
 import es.virtualclubs.R
-import es.virtualclubs.data.managers.GlobalUIManager
+import es.virtualclubs.presentation.managers.LocalGlobalUIManager
 import es.virtualclubs.presentation.theme.VCTheme
 import es.virtualclubs.presentation.theme.VirtualClubsTheme
 
@@ -46,8 +46,9 @@ fun VCScaffold(
   contentWindowInsets: WindowInsets = ScaffoldDefaults.contentWindowInsets,
   content: @Composable (PaddingValues) -> Unit
 ) {
-  val loading by GlobalUIManager.isLoading.collectAsState()
-  val dialog by GlobalUIManager.dialogState.collectAsState()
+  val globalUIManager = LocalGlobalUIManager.current
+  val loading by globalUIManager.isLoading.collectAsState()
+  val dialog by globalUIManager.dialogState.collectAsState()
 
   Box {
     Scaffold(
@@ -86,36 +87,28 @@ fun VCScaffold(
       }
 
       if (dialog.visible) {
-        AlertDialog(
-          onDismissRequest = {
-            if (!dialog.blockDialog) {
-              GlobalUIManager.hideDialog()
-            }
-          },
-          title = { dialog.title?.let { text -> Text(stringResource(text)) } },
-          text = { dialog.content?.let { content ->
-            Column {
-              content()
-            }
-          } },
-          confirmButton = {
-            if (!dialog.blockDialog) {
-              dialog.onConfirm?.let { onConfirm ->
-                TextButton(onClick = {
-                  onConfirm()
-                  GlobalUIManager.hideDialog()
-                }) {
-                  Text(stringResource(dialog.confirmText ?: R.string.confirm))
+        val vcDialog = dialog.dialog
+        if (vcDialog != null) {
+          AlertDialog(
+            onDismissRequest = { if (!vcDialog.blockDialog) globalUIManager.hideDialog() },
+            title = { vcDialog.titleRes?.let { Text(stringResource(it)) } },
+            text = { Column { vcDialog.run { Content() } } },
+            confirmButton = {
+              if (!vcDialog.blockDialog) {
+                vcDialog.onConfirm?.let { onConfirm ->
+                  TextButton(onClick = { onConfirm(); globalUIManager.hideDialog() }) {
+                    Text(stringResource(vcDialog.confirmTextRes ?: R.string.confirm))
+                  }
                 }
               }
-            }
-          },
-          properties = DialogProperties(
-            dismissOnBackPress = dialog.dismissible,
-            dismissOnClickOutside = dialog.dismissible
-          ),
+            },
+            properties = DialogProperties(
+              dismissOnBackPress = vcDialog.dismissible,
+              dismissOnClickOutside = vcDialog.dismissible
+            ),
             modifier = Modifier.padding(VCTheme.spacing.dialogPadding)
-        )
+          )
+        }
       }
     }
   }

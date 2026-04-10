@@ -54,9 +54,9 @@ fun SettingsPage(
       // ----- Cuenta -----
       SectionTitle(stringResource(R.string.settings_account))
 
-      if (uiState.email != null) {
+      uiState.email?.let { email ->
         Text(
-          text = uiState.email!!,
+          text = email,
           style = MaterialTheme.typography.bodyMedium,
           color = MaterialTheme.colorScheme.onSurfaceVariant
         )

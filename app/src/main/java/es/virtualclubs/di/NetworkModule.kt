@@ -10,7 +10,6 @@ import es.virtualclubs.BuildConfig
 import es.virtualclubs.data.local.secure.SecureUserPreferences
 import es.virtualclubs.data.managers.SafeResponse
 import es.virtualclubs.data.remote.api.AuthApi
-import es.virtualclubs.data.remote.api.RefreshApi
 import es.virtualclubs.data.remote.api.UserApi
 import es.virtualclubs.data.repository.AuthRepositoryImpl
 import es.virtualclubs.data.repository.RefreshRepositoryImpl
@@ -19,10 +18,10 @@ import es.virtualclubs.domain.model.AuthInterceptor
 import es.virtualclubs.domain.repository.AuthRepository
 import es.virtualclubs.domain.repository.RefreshRepository
 import es.virtualclubs.domain.repository.UserRepository
-import es.virtualclubs.presentation.navigation.SessionManager
-import es.virtualclubs.session.UserSession
+import es.virtualclubs.data.session.UserSession
 import kotlinx.coroutines.runBlocking
 import okhttp3.CertificatePinner
+import java.util.concurrent.atomic.AtomicBoolean
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -49,10 +48,20 @@ object NetworkModule {
       else HttpLoggingInterceptor.Level.NONE
     }
 
+    // AtomicBoolean evita que múltiples hilos de OkHttp lancen refreshes simultáneos.
+    // runBlocking es intencional: AuthInterceptor es un Interceptor síncrono de OkHttp
+    // que corre en el hilo de red (no el principal), por lo que no puede causar ANR.
+    val isProactivelyRefreshing = AtomicBoolean(false)
+
     val clientBuilder = OkHttpClient.Builder()
       .addInterceptor(AuthInterceptor(
         tokenProvider = { userSession.cachedAccessToken },
-        onTokenExpired = { runBlocking { refreshRepository.get().refresh(false) } }
+        onTokenExpired = {
+          if (isProactivelyRefreshing.compareAndSet(false, true)) {
+            try { runBlocking { refreshRepository.get().refresh() } }
+            finally { isProactivelyRefreshing.set(false) }
+          }
+        }
       ))
       .addInterceptor(logging)
 
@@ -89,18 +98,12 @@ object NetworkModule {
 
   @Provides
   @Singleton
-  fun provideRefreshApi(retrofit: Retrofit): RefreshApi =
-    retrofit.create(RefreshApi::class.java)
-
-  @Provides
-  @Singleton
   fun provideRefreshRepository(
-    api: RefreshApi,
-    sessionManager: SessionManager,
+    api: AuthApi,
     secureUserPreferences: SecureUserPreferences,
     userSession: UserSession
   ): RefreshRepository =
-    RefreshRepositoryImpl(api, sessionManager, secureUserPreferences, userSession)
+    RefreshRepositoryImpl(api, secureUserPreferences, userSession)
 
   @Provides
   @Singleton

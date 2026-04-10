@@ -4,6 +4,7 @@ import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyPermanentlyInvalidatedException
 import android.security.keystore.KeyProperties
 import android.security.keystore.UserNotAuthenticatedException
+import android.util.Log
 import java.nio.charset.StandardCharsets
 import java.security.KeyStore
 import javax.crypto.Cipher
@@ -11,6 +12,14 @@ import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 import javax.crypto.spec.GCMParameterSpec
 
+/**
+ * Utilidad de cifrado AES/GCM usando AndroidKeyStore.
+ *
+ * El IV (12 bytes) generado por Android en cada cifrado se **prefija** al ciphertext,
+ * de modo que [decrypt] puede extraerlo sin necesidad de almacenarlo por separado.
+ *
+ * Todas las operaciones son síncronas y deben llamarse desde un hilo de I/O.
+ */
 object EncryptionUtils {
     private const val KEY_ALIAS = "secure_user_key"
     private const val TRANSFORMATION = "AES/GCM/NoPadding"
@@ -44,7 +53,9 @@ object EncryptionUtils {
             if (keyStore.containsAlias(KEY_ALIAS)) {
                 keyStore.deleteEntry(KEY_ALIAS)
             }
-        } catch (_: Exception) { }
+        } catch (e: Exception) {
+            Log.e("EncryptionUtils", "Error deleting key '$KEY_ALIAS' from keystore", e)
+        }
     }
 
     @Throws(KeyPermanentlyInvalidatedException::class, UserNotAuthenticatedException::class)

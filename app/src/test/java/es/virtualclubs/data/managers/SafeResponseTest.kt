@@ -1,5 +1,6 @@
 package es.virtualclubs.data.managers
 
+import com.google.gson.Gson
 import es.virtualclubs.domain.model.ErrorType
 import es.virtualclubs.domain.model.VirtualClubException
 import es.virtualclubs.domain.repository.RefreshRepository
@@ -24,7 +25,7 @@ class SafeResponseTest {
     @Before
     fun setUp() {
         refreshRepository = mockk()
-        safeResponse = SafeResponse(refreshRepository)
+        safeResponse = SafeResponse(refreshRepository, Gson())
     }
 
     // ─── Happy path ───────────────────────────────────────────────────────────
@@ -49,7 +50,7 @@ class SafeResponseTest {
     @Test
     fun `HTTP 401 dispara refresh y reintenta devolviendo el resultado correcto`() = runTest {
         var intentos = 0
-        coEvery { refreshRepository.refresh(true) } returns Result.success(Unit)
+        coEvery { refreshRepository.refresh() } returns Result.success(Unit)
 
         val result = safeResponse.safeResponse {
             intentos++
@@ -59,12 +60,12 @@ class SafeResponseTest {
 
         assertTrue(result.isSuccess)
         assertEquals("reintentado", result.getOrNull())
-        coVerify(exactly = 1) { refreshRepository.refresh(true) }
+        coVerify(exactly = 1) { refreshRepository.refresh() }
     }
 
     @Test
     fun `HTTP 401 con refresh fallido devuelve INVALID_REFRESH_TOKEN`() = runTest {
-        coEvery { refreshRepository.refresh(true) } throws
+        coEvery { refreshRepository.refresh() } throws
             VirtualClubException(ErrorType.INVALID_REFRESH_TOKEN)
 
         val result = safeResponse.safeResponse<String> { throw httpException(401) }

@@ -10,10 +10,24 @@ import retrofit2.HttpException
 import java.io.IOException
 import kotlin.coroutines.cancellation.CancellationException
 
+/**
+ * Wrapper de red que centraliza el manejo de errores HTTP y el refresco automático de tokens.
+ *
+ * - **401**: intenta refrescar el access token vía [RefreshRepository] y reintenta [block].
+ *   Si el refresh también falla, retorna [ErrorType.INVALID_REFRESH_TOKEN].
+ * - **5xx**: retorna [ErrorType.INTERNAL_ERROR].
+ * - **4xx**: parsea el body de error con Gson; si falla, usa [fallbackErrorTypeFromHttpCode].
+ * - **IOException**: retorna [ErrorType.CANT_CONNECT_SERVER].
+ * - **CancellationException**: se propaga sin capturar (no interrumpir coroutines).
+ */
 class SafeResponse @Inject constructor(
   private val refreshRepository: RefreshRepository,
   private val gson: Gson
 ) {
+  /**
+   * Ejecuta [block] con manejo centralizado de errores de red.
+   * @param block Llamada suspendida que retorna [Result].
+   */
   suspend fun <T> safeResponse(
     block: suspend () -> Result<T>
   ): Result<T> {
@@ -27,7 +41,7 @@ class SafeResponse @Inject constructor(
       when {
         e.code() == 401 -> {
           try {
-            refreshRepository.refresh(true).getOrThrow()
+            refreshRepository.refresh().getOrThrow()
             block()
           } catch (ex: VirtualClubException) {
             Result.failure(ex)

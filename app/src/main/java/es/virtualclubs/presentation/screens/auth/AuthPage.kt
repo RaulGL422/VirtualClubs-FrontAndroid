@@ -62,7 +62,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import es.virtualclubs.R
 import es.virtualclubs.ScreenType
-import es.virtualclubs.data.managers.GlobalUIManager
+import es.virtualclubs.presentation.managers.LocalGlobalUIManager
 import es.virtualclubs.presentation.components.RoundedTextField
 import es.virtualclubs.presentation.components.VCButton
 import es.virtualclubs.presentation.components.VCButtonContent
@@ -199,6 +199,7 @@ fun LoginContent(
   val passwordFocusRequester = remember { FocusRequester() }
   val confirmPasswordFocusRequester = remember { FocusRequester() }
   val focusManager = LocalFocusManager.current
+  val globalUIManager = LocalGlobalUIManager.current
 
   val columnWidthFraction = when (screenType) {
     ScreenType.Small -> 0.90f
@@ -300,9 +301,9 @@ fun LoginContent(
         }
       }
 
-      if (GlobalUIManager.haveError()) {
+      if (globalUIManager.haveError()) {
         Text(
-          text = stringResource(GlobalUIManager.getErrorId()),
+          text = stringResource(globalUIManager.getErrorId()),
           color = VCTheme.colors.error
         )
       }
@@ -398,6 +399,7 @@ fun ForgotPasswordDialog(
   onConfirm: (String) -> Unit
 ) {
   var email by remember { mutableStateOf("") }
+  val globalUIManager = LocalGlobalUIManager.current
 
   if (passwordResetUiState is PasswordResetUiState.Success) onDismiss()
 
@@ -419,9 +421,9 @@ fun ForgotPasswordDialog(
           keyboardType = KeyboardType.Email,
           modifier = Modifier.fillMaxWidth()
         )
-        if (GlobalUIManager.haveError()) {
+        if (globalUIManager.haveError()) {
           Text(
-            text = stringResource(GlobalUIManager.getErrorId()),
+            text = stringResource(globalUIManager.getErrorId()),
             color = MaterialTheme.colorScheme.error,
             modifier = Modifier.padding(vertical = 8.dp)
           )

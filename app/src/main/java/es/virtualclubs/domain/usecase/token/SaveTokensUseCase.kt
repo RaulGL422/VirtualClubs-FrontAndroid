@@ -1,9 +1,11 @@
 package es.virtualclubs.domain.usecase.token
 
 import es.virtualclubs.data.local.secure.SecureUserPreferences
-import es.virtualclubs.session.UserSession
+import es.virtualclubs.data.session.UserSession
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class SaveTokensUseCase @Inject constructor(
     private val securePrefs: SecureUserPreferences,
     private val userSession: UserSession
