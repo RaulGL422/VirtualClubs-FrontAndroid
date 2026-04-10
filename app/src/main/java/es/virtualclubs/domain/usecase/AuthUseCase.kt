@@ -2,8 +2,10 @@ package es.virtualclubs.domain.usecase
 
 import es.virtualclubs.domain.repository.AuthRepository
 import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Caso de uso para autenticar un usuario con email y contraseña. */
+@Singleton
 class AuthUseCase @Inject constructor(
     private val repository: AuthRepository
 ) {

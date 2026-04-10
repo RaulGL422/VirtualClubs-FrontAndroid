@@ -19,5 +19,5 @@ object DispatcherModule {
 
     @Provides
     @Singleton
-    fun provideErrorDispatcher(): ErrorDispatcher = GlobalUIManager
+    fun provideErrorDispatcher(globalUIManager: GlobalUIManager): ErrorDispatcher = globalUIManager
 }

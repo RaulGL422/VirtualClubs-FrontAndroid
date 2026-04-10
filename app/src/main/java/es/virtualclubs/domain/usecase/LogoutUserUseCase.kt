@@ -3,7 +3,9 @@ package es.virtualclubs.domain.usecase
 import es.virtualclubs.domain.repository.AuthRepository
 import es.virtualclubs.data.session.UserSession
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class LogoutUserUseCase @Inject constructor(
     private val repository: AuthRepository,
     private val userSession: UserSession

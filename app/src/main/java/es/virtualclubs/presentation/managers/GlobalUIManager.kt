@@ -1,39 +1,46 @@
 package es.virtualclubs.presentation.managers
 
-import dagger.hilt.android.EntryPointAccessors
-import es.virtualclubs.App
-import es.virtualclubs.di.GlobalUIEntryPoint
-import es.virtualclubs.domain.dialogs.VCDialog
+import androidx.compose.runtime.staticCompositionLocalOf
+import dagger.Lazy
 import es.virtualclubs.domain.model.ErrorDispatcher
 import es.virtualclubs.domain.model.ErrorType
 import es.virtualclubs.domain.model.VirtualClubException
+import es.virtualclubs.domain.repository.AuthRepository
 import es.virtualclubs.presentation.components.dialogs.EmailNotVerifiedDialog
+import es.virtualclubs.presentation.dialogs.VCDialog
 import es.virtualclubs.presentation.handlers.ErrorHandler
 import es.virtualclubs.presentation.navigation.AppNavigator
+import es.virtualclubs.presentation.navigation.SessionManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Gestor global de estado de UI: loading, diálogos y errores.
  *
- * Es un singleton (`object`) que implementa [ErrorDispatcher], permitiendo que
+ * Singleton inyectable por Hilt que implementa [ErrorDispatcher], permitiendo que
  * la capa de datos ([SafeCall]) notifique errores sin depender de la presentación.
  * Se vincula en el grafo de Hilt a través de [DispatcherModule].
+ *
+ * En composables, acceder vía [LocalGlobalUIManager].current.
  *
  * Responsabilidades:
  * - Estado de carga global ([isLoading])
  * - Mostrar/ocultar diálogos tipados ([VCDialog])
  * - Centralizar errores y enrutarlos a la UI o a [AppNavigator]
  */
-object GlobalUIManager : ErrorDispatcher {
+@Singleton
+class GlobalUIManager @Inject constructor(
+    private val appNavigator: Lazy<AppNavigator>,
+    private val authRepository: Lazy<AuthRepository>,
+    private val sessionManager: Lazy<SessionManager>
+) : ErrorDispatcher {
 
-    private fun entryPoint(): GlobalUIEntryPoint =
-        EntryPointAccessors.fromApplication(App.appContext, GlobalUIEntryPoint::class.java)
-
-    // ----- Loading -----
+    // ─── Loading ─────────────────────────────────────────────────────────────
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
@@ -50,7 +57,7 @@ object GlobalUIManager : ErrorDispatcher {
         return try { block() } finally { hideLoading() }
     }
 
-    // ----- Dialogs -----
+    // ─── Dialogs ─────────────────────────────────────────────────────────────
 
     data class DialogState(
         val visible: Boolean = false,
@@ -69,7 +76,7 @@ object GlobalUIManager : ErrorDispatcher {
         _dialogState.value = DialogState()
     }
 
-    // ----- Errors -----
+    // ─── Errors ──────────────────────────────────────────────────────────────
 
     private val _errorState = MutableStateFlow(ErrorUiState())
     val errorState: StateFlow<ErrorUiState> = _errorState
@@ -79,8 +86,11 @@ object GlobalUIManager : ErrorDispatcher {
         _errorState.value = ErrorUiState(code)
 
         when (code) {
-            ErrorType.EMAIL_NOT_VERIFIED -> showDialog(EmailNotVerifiedDialog)
-            ErrorType.MISSING_TOKENS -> AppNavigator.navigateToLoginAndClearStack()
+            ErrorType.EMAIL_NOT_VERIFIED -> showDialog(EmailNotVerifiedDialog { requestVerifyEmail() })
+            ErrorType.INVALID_REFRESH_TOKEN,
+            ErrorType.MISSING_TOKENS -> CoroutineScope(Dispatchers.IO).launch {
+                sessionManager.get().logout()
+            }
             else -> Unit
         }
     }
@@ -100,9 +110,20 @@ object GlobalUIManager : ErrorDispatcher {
     /** Solicita al backend el reenvío del email de verificación. */
     fun requestVerifyEmail() {
         CoroutineScope(Dispatchers.IO).launch {
-            try { entryPoint().authRepository().requestVerify() } catch (_: Exception) { }
+            try { authRepository.get().requestVerify() } catch (_: Exception) { }
         }
     }
 }
 
 data class ErrorUiState(val code: ErrorType? = null)
+
+/**
+ * CompositionLocal para acceder a [GlobalUIManager] desde composables sin prop-drilling.
+ *
+ * Provisto en [VirtualClubsMainApp] mediante [CompositionLocalProvider].
+ *
+ * Uso: `val globalUI = LocalGlobalUIManager.current`
+ */
+val LocalGlobalUIManager = staticCompositionLocalOf<GlobalUIManager> {
+    error("No GlobalUIManager provided. Wrap your composables with CompositionLocalProvider(LocalGlobalUIManager provides ...)")
+}

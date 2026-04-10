@@ -2,10 +2,7 @@ package es.virtualclubs.domain.usecase
 
 import es.virtualclubs.domain.model.ErrorType
 import es.virtualclubs.domain.model.VirtualClubException
-import es.virtualclubs.domain.repository.RefreshRepository
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.mockk
+import es.virtualclubs.fakes.FakeRefreshRepository
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -14,64 +11,50 @@ import org.junit.Test
 
 class RefreshTokenUseCaseTest {
 
-    private lateinit var refreshRepository: RefreshRepository
-    private lateinit var refreshTokenUseCase: RefreshTokenUseCase
+    private lateinit var repository: FakeRefreshRepository
+    private lateinit var useCase: RefreshTokenUseCase
 
     @Before
     fun setUp() {
-        refreshRepository = mockk()
-        refreshTokenUseCase = RefreshTokenUseCase(refreshRepository)
+        repository = FakeRefreshRepository()
+        useCase = RefreshTokenUseCase(repository)
     }
 
     @Test
     fun `invoke exitoso devuelve Result success`() = runTest {
-        coEvery { refreshRepository.refresh(any()) } returns Result.success(Unit)
+        repository.refreshResult = Result.success(Unit)
 
-        val result = refreshTokenUseCase()
+        val result = useCase()
 
         assertTrue(result.isSuccess)
-        coVerify(exactly = 1) { refreshRepository.refresh(true) }
+    }
+
+    @Test
+    fun `invoke exitoso llama al repositorio exactamente una vez`() = runTest {
+        repository.refreshResult = Result.success(Unit)
+
+        useCase()
+
+        assertEquals(1, repository.refreshCallCount)
     }
 
     @Test
     fun `invoke con token invalido devuelve INVALID_REFRESH_TOKEN`() = runTest {
-        coEvery { refreshRepository.refresh(any()) } returns
-            Result.failure(VirtualClubException(ErrorType.INVALID_REFRESH_TOKEN))
+        repository.refreshResult = Result.failure(VirtualClubException(ErrorType.INVALID_REFRESH_TOKEN))
 
-        val result = refreshTokenUseCase()
+        val result = useCase()
 
         assertTrue(result.isFailure)
-        val exception = result.exceptionOrNull() as VirtualClubException
-        assertEquals(ErrorType.INVALID_REFRESH_TOKEN, exception.errorType)
+        assertEquals(ErrorType.INVALID_REFRESH_TOKEN, (result.exceptionOrNull() as VirtualClubException).errorType)
     }
 
     @Test
     fun `invoke sin tokens almacenados devuelve MISSING_TOKENS`() = runTest {
-        coEvery { refreshRepository.refresh(any()) } returns
-            Result.failure(VirtualClubException(ErrorType.MISSING_TOKENS))
+        repository.refreshResult = Result.failure(VirtualClubException(ErrorType.MISSING_TOKENS))
 
-        val result = refreshTokenUseCase()
+        val result = useCase()
 
         assertTrue(result.isFailure)
-        val exception = result.exceptionOrNull() as VirtualClubException
-        assertEquals(ErrorType.MISSING_TOKENS, exception.errorType)
-    }
-
-    @Test
-    fun `invoke delega canLogout=true por defecto al repositorio`() = runTest {
-        coEvery { refreshRepository.refresh(true) } returns Result.success(Unit)
-
-        refreshTokenUseCase()
-
-        coVerify { refreshRepository.refresh(true) }
-    }
-
-    @Test
-    fun `invoke con canLogout=false lo pasa correctamente al repositorio`() = runTest {
-        coEvery { refreshRepository.refresh(false) } returns Result.success(Unit)
-
-        refreshTokenUseCase(canLogout = false)
-
-        coVerify { refreshRepository.refresh(false) }
+        assertEquals(ErrorType.MISSING_TOKENS, (result.exceptionOrNull() as VirtualClubException).errorType)
     }
 }

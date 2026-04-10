@@ -3,6 +3,7 @@ package es.virtualclubs.data.remote.api
 import es.virtualclubs.data.remote.dto.ApiResponse
 import es.virtualclubs.data.remote.dto.AuthRequest
 import es.virtualclubs.data.remote.dto.GoogleAuthRequest
+import es.virtualclubs.data.remote.dto.RefreshRequest
 import es.virtualclubs.data.remote.dto.RegisterRequest
 import es.virtualclubs.data.remote.dto.RequestPasswordResetRequest
 import es.virtualclubs.data.remote.dto.ResetPasswordRequest
@@ -33,4 +34,7 @@ interface AuthApi {
 
     @POST(Endpoint.requestVerify)
     suspend fun requestVerify(): ApiResponse<Unit>
+
+    @POST(Endpoint.refresh)
+    suspend fun refresh(@Body request: RefreshRequest): ApiResponse<AuthTokens>
 }
