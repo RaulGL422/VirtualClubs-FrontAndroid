@@ -4,7 +4,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import es.virtualclubs.session.UserSession
+import es.virtualclubs.data.session.UserSession
 import javax.inject.Singleton
 
 @Module

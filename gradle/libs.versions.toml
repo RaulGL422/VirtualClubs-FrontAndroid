@@ -6,7 +6,6 @@ cameraLifecycle = "1.5.1"
 converterGson = "3.0.0"
 core = "3.5.3"
 credentials = "1.5.0"
-googlePlayServicesAuth = "21.4.0"
 hilt = "2.57"
 hiltAndroidX = "1.2.0"
 kotlin = "2.2.10"
@@ -61,7 +60,6 @@ androidx-compose-ui-unit = { group = "androidx.compose.ui", name = "ui-unit" }
 androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastorePreferences" }
 androidx-hilt-common = { group = "androidx.hilt", name = "hilt-common", version.ref = "hiltAndroidX" }
 logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "loggingInterceptor" }
-play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "googlePlayServicesAuth" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "converterGson" }
 androidx-foundation-layout-android = { group = "androidx.compose.foundation", name = "foundation-layout-android" }
 androidx-foundation-android = { group = "androidx.compose.foundation", name = "foundation-android" }

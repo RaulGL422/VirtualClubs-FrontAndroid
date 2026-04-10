@@ -19,7 +19,7 @@
 
         <!-- Main launcher activity -->
         <activity
-            android:name=".MainActivity"
+            android:name=".presentation.MainActivity"
             android:launchMode="singleTask"
             android:exported="true"
             android:theme="@style/Theme.VirtualClubs">
@@ -33,7 +33,7 @@
         </activity>
 
         <activity
-            android:name=".ResetPasswordActivity"
+            android:name=".presentation.ResetPasswordActivity"
             android:launchMode="singleTask"
             android:exported="true"
             android:theme="@style/Theme.VirtualClubs">
@@ -42,12 +42,12 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="virtualclubs" android:host="pass" android:path="/resetPassword" />
+                <data android:scheme="virtualclubs" android:host="pass" android:path="/reset-password" />
             </intent-filter>
         </activity>
 
         <activity
-            android:name=".VerifyEmailActivity"
+            android:name=".presentation.VerifyEmailActivity"
             android:launchMode="singleTask"
             android:exported="true"
             android:theme="@style/Theme.VirtualClubs">
@@ -56,7 +56,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="virtualclubs" android:host="email" android:path="/verifyEmail" />
+                <data android:scheme="virtualclubs" android:host="email" android:path="/verify-email" />
             </intent-filter>
         </activity>
     </application>

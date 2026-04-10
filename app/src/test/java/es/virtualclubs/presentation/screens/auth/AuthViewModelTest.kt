@@ -3,20 +3,19 @@ package es.virtualclubs.presentation.screens.auth
 import android.content.Context
 import es.virtualclubs.data.local.datastore.UserPreferences
 import es.virtualclubs.data.local.secure.SecureUserPreferences
-import es.virtualclubs.data.managers.GlobalUIManager
+import es.virtualclubs.data.managers.SafeCall
+import es.virtualclubs.data.session.UserSession
 import es.virtualclubs.domain.model.AuthTokens
+import es.virtualclubs.domain.model.ErrorDispatcher
 import es.virtualclubs.domain.model.ErrorType
 import es.virtualclubs.domain.model.VirtualClubException
-import es.virtualclubs.domain.repository.AuthRepository
-import es.virtualclubs.domain.repository.RefreshRepository
-import es.virtualclubs.session.UserSession
+import es.virtualclubs.fakes.FakeAuthRepository
+import es.virtualclubs.fakes.FakeRefreshRepository
+import es.virtualclubs.presentation.managers.GlobalUIManager
 import es.virtualclubs.utils.MainDispatcherRule
 import io.mockk.coEvery
 import io.mockk.every
-import io.mockk.just
 import io.mockk.mockk
-import io.mockk.mockkObject
-import io.mockk.Runs
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
@@ -30,10 +29,12 @@ class AuthViewModelTest {
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
-    private lateinit var authRepository: AuthRepository
-    private lateinit var refreshRepository: RefreshRepository
+    private lateinit var authRepository: FakeAuthRepository
+    private lateinit var refreshRepository: FakeRefreshRepository
     private lateinit var userPreferences: UserPreferences
     private lateinit var securePreferences: SecureUserPreferences
+    private lateinit var safeCall: SafeCall
+    private lateinit var globalUIManager: GlobalUIManager
 
     private val validTokens = AuthTokens(
         accessToken = "access-token-test",
@@ -42,21 +43,19 @@ class AuthViewModelTest {
 
     @Before
     fun setUp() {
-        authRepository = mockk()
-        refreshRepository = mockk()
+        authRepository = FakeAuthRepository()
+        refreshRepository = FakeRefreshRepository()
         userPreferences = mockk(relaxed = true)
         securePreferences = mockk(relaxed = true)
+        safeCall = SafeCall(mockk<ErrorDispatcher>(relaxed = true))
 
-        // Mock GlobalUIManager para evitar dependencia de App.appContext
-        mockkObject(GlobalUIManager)
-        every { GlobalUIManager.setError(any()) } just Runs
-        every { GlobalUIManager.handleError(any()) } just Runs
-        coEvery { GlobalUIManager.withLoading<Unit>(any()) } coAnswers {
+        // GlobalUIManager ahora es una clase — se mockea como cualquier otra
+        globalUIManager = mockk(relaxed = true)
+        coEvery { globalUIManager.withLoading<Unit>(any()) } coAnswers {
             @Suppress("UNCHECKED_CAST")
             (args[0] as suspend () -> Unit).invoke()
         }
 
-        // autoLogin desactivado por defecto para que init no dispare refresh
         every { userPreferences.autoLoginFlow } returns flowOf(false)
     }
 
@@ -74,6 +73,8 @@ class AuthViewModelTest {
             userPreferences = userPreferences,
             securePreferences = securePreferences,
             userSession = UserSession(),
+            safeCall = safeCall,
+            globalUIManager = globalUIManager,
             context = mockk<Context>(relaxed = true)
         )
     }
@@ -91,7 +92,7 @@ class AuthViewModelTest {
 
     @Test
     fun `loginUser exitoso actualiza estado a Success`() = runTest {
-        coEvery { authRepository.login(any(), any()) } returns Result.success(validTokens)
+        authRepository.loginResult = Result.success(validTokens)
         val vm = buildViewModel()
         advanceUntilIdle()
 
@@ -103,8 +104,7 @@ class AuthViewModelTest {
 
     @Test
     fun `loginUser con credenciales invalidas mantiene estado en Idle`() = runTest {
-        coEvery { authRepository.login(any(), any()) } returns
-            Result.failure(VirtualClubException(ErrorType.INVALID_CREDENTIALS))
+        authRepository.loginResult = Result.failure(VirtualClubException(ErrorType.INVALID_CREDENTIALS))
         val vm = buildViewModel()
         advanceUntilIdle()
 
@@ -118,7 +118,7 @@ class AuthViewModelTest {
 
     @Test
     fun `autoLogin activo con refresh exitoso actualiza estado a Success`() = runTest {
-        coEvery { refreshRepository.refresh(false) } returns Result.success(Unit)
+        refreshRepository.refreshResult = Result.success(Unit)
         val vm = buildViewModel(autoLogin = true, email = "user@test.com")
         advanceUntilIdle()
 
@@ -127,8 +127,7 @@ class AuthViewModelTest {
 
     @Test
     fun `autoLogin activo con refresh fallido mantiene estado en Idle`() = runTest {
-        coEvery { refreshRepository.refresh(false) } returns
-            Result.failure(VirtualClubException(ErrorType.INVALID_REFRESH_TOKEN))
+        refreshRepository.refreshResult = Result.failure(VirtualClubException(ErrorType.INVALID_REFRESH_TOKEN))
         val vm = buildViewModel(autoLogin = true)
         advanceUntilIdle()
 

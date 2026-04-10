@@ -79,3 +79,20 @@
 # AndroidX Security (EncryptedSharedPreferences / EncryptedFile)
 # =====================================================================
 -keep class androidx.security.crypto.** { *; }
+
+# =====================================================================
+# ViewModels — preservar constructores para Hilt
+# =====================================================================
+-keepclasseswithmembers class * extends androidx.lifecycle.ViewModel {
+    <init>(...);
+}
+
+# =====================================================================
+# Hilt EarlyEntryPoint
+# =====================================================================
+-keep @dagger.hilt.android.EarlyEntryPoint class * { *; }
+
+# =====================================================================
+# BuildConfig — accedido en tiempo de ejecución (NetworkModule, AuthViewModel)
+# =====================================================================
+-keep class es.virtualclubs.BuildConfig { *; }

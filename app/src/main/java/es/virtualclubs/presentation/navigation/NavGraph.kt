@@ -19,72 +19,71 @@ import java.nio.charset.StandardCharsets
 
 @Composable
 fun AppNavHost(
-  navController: NavHostController,
-  screenType: ScreenType
+    navController: NavHostController,
+    screenType: ScreenType,
+    appNavigator: AppNavigator
 ) {
-  LaunchedEffect(navController) {
-    AppNavigator.setNavController(navController)
-  }
-
-  NavHost(
-    navController = navController,
-    startDestination = Screen.Auth.route
-  ) {
-    composable(
-      Screen.Auth.route
-    ) { backStackEntry ->
-      val message = backStackEntry.arguments?.getString("message")
-      LoginPage(
-        onSettingsTap = { AppNavigator.navigateToSettings() },
-        screenType = screenType,
-        message = message,
-        onLogged = { AppNavigator.navigateToHome() }
-      )
+    LaunchedEffect(navController) {
+        appNavigator.setNavController(navController)
     }
 
-    composable(Screen.Home.route) {
-      HomePage()
-    }
-
-    composable(Screen.Settings.route) {
-      SettingsPage(onBack = { AppNavigator.navigateBack() })
-    }
-
-    composable(
-      route = Screen.ResetPassword.route,
-      arguments = listOf(navArgument("token") { type = NavType.StringType }),
-      deepLinks = listOf(
-        navDeepLink {
-          uriPattern = "virtualclubs://pass/reset-password?token={token}"
-        }
-      )
-    ) { backStackEntry ->
-      val token = backStackEntry.arguments?.getString("token")?.let {
-        URLDecoder.decode(it, StandardCharsets.UTF_8.toString())
-      } ?: ""
-      ResetPasswordPage(
-        titlePage = Screen.ResetPassword.nameId,
-        token = token,
-        screenType = screenType,
-        onSettingsTap = { AppNavigator.navigateToSettings() },
-        onBack = { AppNavigator.navigateBack() },
-        onPasswordResetSuccess = { AppNavigator.navigateToLoginAndClearStackWithMessage(it) }
-      )
-    }
-
-    composable(
-      route = Screen.VerifyEmailResult.route,
-      arguments = listOf(navArgument("status") { type = NavType.StringType }),
-      deepLinks = listOf(
-        navDeepLink {
-          uriPattern = "virtualclubs://email/verify-email?status={status}"
-        }
-      )
+    NavHost(
+        navController = navController,
+        startDestination = Screen.Auth.route
     ) {
-      VerifyEmailResultPage(
-        onGoToLogin = { AppNavigator.navigateToLoginAndClearStack() },
-        onSettingsTap = { AppNavigator.navigateToSettings() }
-      )
+        composable(Screen.Auth.route) { backStackEntry ->
+            val message = backStackEntry.arguments?.getString("message")
+            LoginPage(
+                onSettingsTap = { appNavigator.navigateToSettings() },
+                screenType = screenType,
+                message = message,
+                onLogged = { appNavigator.navigateToHome() }
+            )
+        }
+
+        composable(Screen.Home.route) {
+            HomePage()
+        }
+
+        composable(Screen.Settings.route) {
+            SettingsPage(onBack = { appNavigator.navigateBack() })
+        }
+
+        composable(
+            route = Screen.ResetPassword.route,
+            arguments = listOf(navArgument("token") { type = NavType.StringType }),
+            deepLinks = listOf(
+                navDeepLink {
+                    uriPattern = "virtualclubs://pass/reset-password?token={token}"
+                }
+            )
+        ) { backStackEntry ->
+            val token = backStackEntry.arguments?.getString("token")?.let {
+                URLDecoder.decode(it, StandardCharsets.UTF_8.toString())
+            } ?: ""
+            ResetPasswordPage(
+                titlePage = Screen.ResetPassword.nameId,
+                token = token,
+                screenType = screenType,
+                onSettingsTap = { appNavigator.navigateToSettings() },
+                onBack = { appNavigator.navigateBack() },
+                onPasswordResetSuccess = { appNavigator.navigateToLoginAndClearStackWithMessage(it) }
+            )
+        }
+
+        composable(
+            route = Screen.VerifyEmailResult.route,
+            arguments = listOf(navArgument("status") { type = NavType.StringType }),
+            deepLinks = listOf(
+                navDeepLink {
+                    uriPattern = "virtualclubs://email/verify-email?status={status}"
+                }
+            )
+        ) {
+            VerifyEmailResultPage(
+                onGoToLogin = { appNavigator.navigateToLoginAndClearStack() },
+                onSettingsTap = { appNavigator.navigateToSettings() }
+            )
+        }
     }
-  }
 }
