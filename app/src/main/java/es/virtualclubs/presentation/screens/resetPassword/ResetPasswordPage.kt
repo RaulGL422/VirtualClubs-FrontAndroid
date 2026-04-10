@@ -42,7 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import es.virtualclubs.R
 import es.virtualclubs.ScreenType
-import es.virtualclubs.presentation.managers.GlobalUIManager
+import es.virtualclubs.presentation.managers.LocalGlobalUIManager
 import es.virtualclubs.presentation.components.RoundedTextField
 import es.virtualclubs.presentation.components.VCButton
 import es.virtualclubs.presentation.components.VCButtonContent
@@ -68,6 +68,7 @@ fun ResetPasswordPage(
   val newPasswordFocusRequester = remember { FocusRequester() }
   val confirmPasswordFocusRequester = remember { FocusRequester() }
   val focusManager = LocalFocusManager.current
+  val globalUIManager = LocalGlobalUIManager.current
 
   if (uiState is ResetPasswordUiState.Success) onPasswordResetSuccess(stringResource(R.string.password_reset_success))
 
@@ -128,9 +129,9 @@ fun ResetPasswordPage(
 
         Spacer(modifier = Modifier.height(VCTheme.spacing.sectionSpacingCompact))
 
-        AnimatedVisibility(visible = GlobalUIManager.haveError()) {
+        AnimatedVisibility(visible = globalUIManager.haveError()) {
           Text(
-            text = stringResource(GlobalUIManager.getErrorId()),
+            text = stringResource(globalUIManager.getErrorId()),
             color = VCTheme.colors.error,
             modifier = Modifier.padding(vertical = 8.dp)
           )

@@ -41,7 +41,7 @@ class SafeResponse @Inject constructor(
       when {
         e.code() == 401 -> {
           try {
-            refreshRepository.refresh(true).getOrThrow()
+            refreshRepository.refresh().getOrThrow()
             block()
           } catch (ex: VirtualClubException) {
             Result.failure(ex)

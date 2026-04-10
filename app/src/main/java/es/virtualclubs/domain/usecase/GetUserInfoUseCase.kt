@@ -4,7 +4,9 @@ import es.virtualclubs.data.models.User
 import es.virtualclubs.domain.repository.UserRepository
 import es.virtualclubs.data.session.UserSession
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class GetUserInfoUseCase @Inject constructor(
   private val userRepository: UserRepository,
   private val userSession: UserSession

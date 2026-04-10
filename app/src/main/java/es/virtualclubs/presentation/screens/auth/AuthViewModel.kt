@@ -18,8 +18,8 @@ import es.virtualclubs.BuildConfig
 import es.virtualclubs.data.local.datastore.UserPreferences
 import es.virtualclubs.data.local.secure.SecureUserPreferences
 import es.virtualclubs.data.managers.SafeCall
-import es.virtualclubs.presentation.managers.GlobalUIManager
 import es.virtualclubs.data.models.User
+import es.virtualclubs.presentation.managers.GlobalUIManager
 import es.virtualclubs.domain.model.ErrorType
 import es.virtualclubs.domain.repository.AuthRepository
 import es.virtualclubs.domain.repository.RefreshRepository
@@ -33,13 +33,14 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-  private val repository: AuthRepository,
-  private val refreshRepository: RefreshRepository,
-  private val userPreferences: UserPreferences,
-  private val securePreferences: SecureUserPreferences,
-  private val userSession: UserSession,
-  private val safeCall: SafeCall,
-  @param:ApplicationContext private val context: Context
+    private val repository: AuthRepository,
+    private val refreshRepository: RefreshRepository,
+    private val userPreferences: UserPreferences,
+    private val securePreferences: SecureUserPreferences,
+    private val userSession: UserSession,
+    private val safeCall: SafeCall,
+    private val globalUIManager: GlobalUIManager,
+    @param:ApplicationContext private val context: Context
 ) : ViewModel() {
   private val _uiState = MutableStateFlow<AuthUiState>(AuthUiState.Idle)
   val uiState: StateFlow<AuthUiState> = _uiState.asStateFlow()
@@ -88,7 +89,7 @@ class AuthViewModel @Inject constructor(
           securePreferences.saveTokens(tokens.accessToken, tokens.refreshToken)
           _uiState.value = AuthUiState.Success
         } else {
-          GlobalUIManager.setError(ErrorType.MISSING_TOKENS)
+          globalUIManager.setError(ErrorType.MISSING_TOKENS)
           _uiState.value = AuthUiState.Idle
         }
       } else {
@@ -100,17 +101,18 @@ class AuthViewModel @Inject constructor(
   }
 
   fun onLoginFailed(errorType: ErrorType) {
-    GlobalUIManager.setError(errorType)
+    globalUIManager.setError(errorType)
     _uiState.value = AuthUiState.Idle
   }
 
   private fun tryAutoLogin() {
     viewModelScope.launch {
       if (userPreferences.autoLoginFlow.firstOrNull() == true) {
-        GlobalUIManager.withLoading {
-          val response = safeCall.safeCall { refreshRepository.refresh(false) }
-          val tokens = response.getOrNull()
-          _uiState.value = if (response.isSuccess && tokens != null) {
+        globalUIManager.withLoading {
+          // Llamada directa — no pasa por safeCall para que un fallo silencioso
+          // no dispare logout ni navegación. El usuario simplemente ve la pantalla de login.
+          val response = refreshRepository.refresh()
+          _uiState.value = if (response.isSuccess) {
             userSession.updateUser(User(email = userPreferences.userEmailFlow.firstOrNull()))
             AuthUiState.Success
           } else {
@@ -133,7 +135,7 @@ class AuthViewModel @Inject constructor(
           userSession.updateUser(User(email = email))
           _uiState.value = AuthUiState.Success
         } else {
-          GlobalUIManager.setError(ErrorType.MISSING_TOKENS)
+          globalUIManager.setError(ErrorType.MISSING_TOKENS)
           _uiState.value = AuthUiState.Idle
         }
       } else {
@@ -149,7 +151,7 @@ class AuthViewModel @Inject constructor(
       _uiState.value = AuthUiState.AttemptingAuth
 
       if (password != confirmPassword) {
-        GlobalUIManager.setError(ErrorType.PASSWORD_NOT_EQUALS)
+        globalUIManager.setError(ErrorType.PASSWORD_NOT_EQUALS)
         _uiState.value = AuthUiState.Idle
         return@launch
       }
@@ -163,7 +165,7 @@ class AuthViewModel @Inject constructor(
           userSession.updateUser(User(email = tokens.email ?: email))
           _uiState.value = AuthUiState.Success
         } else {
-          GlobalUIManager.setError(ErrorType.MISSING_TOKENS)
+          globalUIManager.setError(ErrorType.MISSING_TOKENS)
           _uiState.value = AuthUiState.Idle
         }
       } else {

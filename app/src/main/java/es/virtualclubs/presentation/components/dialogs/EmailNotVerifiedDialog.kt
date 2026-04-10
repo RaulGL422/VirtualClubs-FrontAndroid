@@ -10,17 +10,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import es.virtualclubs.R
-import es.virtualclubs.domain.dialogs.VCDialog
 import es.virtualclubs.presentation.components.VCButton
 import es.virtualclubs.presentation.components.VCButtonContent
-import es.virtualclubs.presentation.managers.GlobalUIManager
+import es.virtualclubs.presentation.dialogs.VCDialog
 import es.virtualclubs.presentation.theme.VCTheme
 
 /**
  * Diálogo que se muestra cuando el usuario intenta realizar una acción
  * con el email sin verificar. Permite reenviar el correo de verificación.
+ *
+ * @param onRequestVerify Acción a ejecutar al pulsar el botón de reenvío.
+ *                        Provisto por [GlobalUIManager] que ya tiene acceso al repositorio.
  */
-object EmailNotVerifiedDialog : VCDialog {
+class EmailNotVerifiedDialog(private val onRequestVerify: () -> Unit) : VCDialog {
     override val titleRes = R.string.email_not_verified
     override val dismissible = false
     override val blockDialog = true
@@ -38,7 +40,7 @@ object EmailNotVerifiedDialog : VCDialog {
                 content = VCButtonContent.Text(R.string.send_verification_email),
                 height = VCTheme.sizes.buttonHeightMd
             ) {
-                GlobalUIManager.requestVerifyEmail()
+                onRequestVerify()
             }
         }
     }

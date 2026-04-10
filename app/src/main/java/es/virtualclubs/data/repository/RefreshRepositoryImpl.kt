@@ -1,38 +1,37 @@
 package es.virtualclubs.data.repository
 
 import es.virtualclubs.data.local.secure.SecureUserPreferences
-import es.virtualclubs.data.remote.api.RefreshApi
+import es.virtualclubs.data.remote.api.AuthApi
 import es.virtualclubs.data.remote.dto.RefreshRequest
 import es.virtualclubs.data.remote.dto.getOrThrow
-import es.virtualclubs.domain.repository.RefreshRepository
-import es.virtualclubs.presentation.navigation.SessionManager
 import es.virtualclubs.data.session.UserSession
-import javax.inject.Inject
+import es.virtualclubs.domain.model.ErrorType
+import es.virtualclubs.domain.model.VirtualClubException
+import es.virtualclubs.domain.repository.RefreshRepository
 import kotlinx.coroutines.flow.firstOrNull
+import javax.inject.Inject
 
 class RefreshRepositoryImpl @Inject constructor(
-  private val api: RefreshApi,
-  private val sessionManager: SessionManager,
+  private val api: AuthApi,
   private val secureUserPreferences: SecureUserPreferences,
   private val userSession: UserSession
 ) : RefreshRepository {
-  override suspend fun refresh(canLogout: Boolean): Result<Unit> {
+
+  override suspend fun refresh(): Result<Unit> {
     val token = secureUserPreferences.refreshToken.firstOrNull()
+      ?: return Result.failure(VirtualClubException(ErrorType.MISSING_TOKENS))
 
     return try {
-      if (token == null)
-        throw Exception()
-
-      val result = api.refresh(RefreshRequest(token)).getOrThrow() ?: throw Exception()
+      val result = api.refresh(RefreshRequest(token)).getOrThrow()
+        ?: return Result.failure(VirtualClubException(ErrorType.MISSING_TOKENS))
 
       secureUserPreferences.saveTokens(result.accessToken, result.refreshToken)
       userSession.cacheAccessToken(result.accessToken)
       Result.success(Unit)
-    } catch (e: Exception) {
-      if (canLogout)
-        sessionManager.logout()
-
-      Result.failure(e)
+    } catch (_: VirtualClubException) {
+      Result.failure(VirtualClubException(ErrorType.INVALID_REFRESH_TOKEN))
+    } catch (_: Exception) {
+      Result.failure(VirtualClubException(ErrorType.INVALID_REFRESH_TOKEN))
     }
   }
 }
