@@ -13,6 +13,14 @@
 .externalNativeBuild
 .cxx
 local.properties
-secrets.properties
 
-.claude/settings.local.json
+# Secretos y credenciales
+secrets.properties
+**/secrets.properties
+google-services.json
+*.jks
+*.keystore
+
+# Configuración interna de Claude Code
+.claude/
+CLAUDE.md
