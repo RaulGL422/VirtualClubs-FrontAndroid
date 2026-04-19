@@ -1,5 +1,9 @@
 # VirtualClubs Android
 
+[![CI](https://github.com/RaulGL422/VirtualClubs-FrontAndroid/actions/workflows/ci.yml/badge.svg)](https://github.com/RaulGL422/VirtualClubs-FrontAndroid/actions/workflows/ci.yml)
+![Min SDK](https://img.shields.io/badge/min%20SDK-30-brightgreen)
+![Kotlin](https://img.shields.io/badge/Kotlin-2.2.10-7F52FF?logo=kotlin&logoColor=white)
+
 Android app built with **Jetpack Compose** for managing virtual sports clubs — create clubs, organize events, handle classes, members, and attendance.
 
 > **Status:** Alpha v0.1.2 — Authentication system complete. Club management in active development.
