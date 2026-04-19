@@ -54,7 +54,7 @@ fun AppNavHost(
             arguments = listOf(navArgument("token") { type = NavType.StringType }),
             deepLinks = listOf(
                 navDeepLink {
-                    uriPattern = "virtualclubs://pass/reset-password?token={token}"
+                    uriPattern = "virtualclubs://pass/resetPassword?token={token}"
                 }
             )
         ) { backStackEntry ->
@@ -76,7 +76,7 @@ fun AppNavHost(
             arguments = listOf(navArgument("status") { type = NavType.StringType }),
             deepLinks = listOf(
                 navDeepLink {
-                    uriPattern = "virtualclubs://email/verify-email?status={status}"
+                    uriPattern = "virtualclubs://email/verifyEmail?status={status}"
                 }
             )
         ) {
