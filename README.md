@@ -7,7 +7,7 @@
 Android client for **VirtualClubs** — a platform to create and manage sports fan clubs. Users can join clubs by sport, connect with other members, organize events, manage attendance, and track club activity, all from their phone.
 
 > **Status:** Alpha v0.1.2 — Authentication complete. Club management in active development.  
-> Backend repo: _link pending_
+> Backend repo: [VirtualClubs-BackEnd](https://github.com/RaulGL422/VirtualClubs-BackEnd)
 
 ---
 
