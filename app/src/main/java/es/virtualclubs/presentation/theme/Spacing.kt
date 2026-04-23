@@ -5,106 +5,87 @@ import androidx.compose.ui.unit.dp
 
 data class Spacing(
 
-  /* ───────────── Screen ───────────── */
+    /* ───────────── Base scale ───────────── */
 
-  // Base
-  val screenPadding: Dp = 16.dp,
-  val screenHorizontal: Dp = 16.dp,
-  val screenVertical: Dp = 24.dp,
+    val xs  : Dp = 2.dp,
+    val sm  : Dp = 4.dp,
+    val md  : Dp = 8.dp,
+    val lg  : Dp = 12.dp,
+    val xl  : Dp = 16.dp,
+    val xxl : Dp = 24.dp,
+    val xxxl: Dp = 32.dp,
 
-  // Multipliers
-  val screenPaddingHalf: Dp = 8.dp,
-  val screenPaddingDouble: Dp = 32.dp,
-  val screenPaddingTriple: Dp = 48.dp,
+    /* ───────────── Screen ───────────── */
 
-  /* ───────────── Sections ───────────── */
+    val screenPadding      : Dp = 16.dp,
+    val screenHorizontal   : Dp = 16.dp,
+    val screenVertical     : Dp = 24.dp,
+    val screenPaddingHalf  : Dp = 8.dp,
+    val screenPaddingDouble: Dp = 32.dp,
+    val screenPaddingTriple: Dp = 48.dp,
 
-  // Base
-  val sectionSpacing: Dp = 32.dp,
-  val subsectionSpacing: Dp = 24.dp,
+    /* ───────────── Sections ───────────── */
 
-  // Variants
-  val sectionSpacingCompact: Dp = 24.dp,
-  val sectionSpacingExpanded: Dp = 40.dp,
-  val sectionSpacingDouble: Dp = 64.dp,
+    val sectionSpacing        : Dp = 32.dp,
+    val subsectionSpacing     : Dp = 24.dp,
+    val sectionSpacingCompact : Dp = 24.dp,
+    val sectionSpacingExpanded: Dp = 40.dp,
+    val sectionSpacingDouble  : Dp = 64.dp,
 
-  /* ───────────── Cards ───────────── */
+    /* ───────────── Cards ───────────── */
 
-  // Base
-  val cardPadding: Dp = 16.dp,
-  val cardSpacing: Dp = 12.dp,
+    val cardPadding         : Dp = 16.dp,
+    val cardSpacing         : Dp = 12.dp,
+    val cardPaddingCompact  : Dp = 12.dp,
+    val cardPaddingExpanded : Dp = 24.dp,
+    val cardPaddingDouble   : Dp = 32.dp,
+    val cardSpacingCompact  : Dp = 8.dp,
+    val cardSpacingExpanded : Dp = 16.dp,
 
-  // Variants
-  val cardPaddingCompact: Dp = 12.dp,
-  val cardPaddingExpanded: Dp = 24.dp,
-  val cardPaddingDouble: Dp = 32.dp,
+    /* ───────────── Lists / Items ───────────── */
 
-  val cardSpacingCompact: Dp = 8.dp,
-  val cardSpacingExpanded: Dp = 16.dp,
+    val itemSpacing                : Dp = 8.dp,
+    val itemVerticalPadding        : Dp = 12.dp,
+    val itemHorizontalPadding      : Dp = 16.dp,
+    val itemSpacingCompact         : Dp = 4.dp,
+    val itemSpacingExpanded        : Dp = 16.dp,
+    val itemVerticalPaddingCompact : Dp = 8.dp,
+    val itemVerticalPaddingExpanded: Dp = 16.dp,
 
-  /* ───────────── Lists / Items ───────────── */
+    /* ───────────── Components ───────────── */
 
-  // Base
-  val itemSpacing: Dp = 8.dp,
-  val itemVerticalPadding: Dp = 12.dp,
-  val itemHorizontalPadding: Dp = 16.dp,
+    val componentPaddingXs    : Dp = 4.dp,
+    val componentPaddingSm    : Dp = 8.dp,
+    val componentPaddingMd    : Dp = 12.dp,
+    val componentPaddingLg    : Dp = 16.dp,
+    val componentPaddingXl    : Dp = 24.dp,
+    val componentPaddingDouble: Dp = 32.dp,
 
-  // Variants
-  val itemSpacingCompact: Dp = 4.dp,
-  val itemSpacingExpanded: Dp = 16.dp,
+    /* ───────────── Inline / Text ───────────── */
 
-  val itemVerticalPaddingCompact: Dp = 8.dp,
-  val itemVerticalPaddingExpanded: Dp = 16.dp,
+    val inlineSpacingXs: Dp = 4.dp,
+    val inlineSpacingSm: Dp = 8.dp,
+    val inlineSpacingMd: Dp = 12.dp,
+    val inlineSpacingLg: Dp = 16.dp,
+    val inlineSpacingXl: Dp = 24.dp,
 
-  /* ───────────── Components ───────────── */
+    /* ───────────── Buttons ───────────── */
 
-  // Base
-  val componentPaddingSm: Dp = 8.dp,
-  val componentPaddingMd: Dp = 12.dp,
-  val componentPaddingLg: Dp = 16.dp,
+    val buttonPaddingVertical          : Dp = 14.dp,
+    val buttonPaddingHorizontal        : Dp = 24.dp,
+    val buttonSpacing                  : Dp = 8.dp,
+    val buttonPaddingVerticalCompact   : Dp = 10.dp,
+    val buttonPaddingVerticalExpanded  : Dp = 18.dp,
+    val buttonPaddingHorizontalCompact : Dp = 16.dp,
+    val buttonPaddingHorizontalExpanded: Dp = 32.dp,
+    val buttonSpacingDouble            : Dp = 16.dp,
 
-  // Multipliers
-  val componentPaddingXs: Dp = 4.dp,
-  val componentPaddingXl: Dp = 24.dp,
-  val componentPaddingDouble: Dp = 32.dp,
+    /* ───────────── Dialogs / Sheets ───────────── */
 
-  /* ───────────── Inline / Text ───────────── */
-
-  // Base
-  val inlineSpacingXs: Dp = 4.dp,
-  val inlineSpacingSm: Dp = 8.dp,
-  val inlineSpacingMd: Dp = 12.dp,
-
-  // Variants
-  val inlineSpacingLg: Dp = 16.dp,
-  val inlineSpacingXl: Dp = 24.dp,
-
-  /* ───────────── Buttons ───────────── */
-
-  // Base
-  val buttonPaddingVertical: Dp = 12.dp,
-  val buttonPaddingHorizontal: Dp = 16.dp,
-  val buttonSpacing: Dp = 8.dp,
-
-  // Variants
-  val buttonPaddingVerticalCompact: Dp = 8.dp,
-  val buttonPaddingVerticalExpanded: Dp = 16.dp,
-
-  val buttonPaddingHorizontalCompact: Dp = 12.dp,
-  val buttonPaddingHorizontalExpanded: Dp = 24.dp,
-
-  val buttonSpacingDouble: Dp = 16.dp,
-
-  /* ───────────── Dialogs / Sheets ───────────── */
-
-  // Base
-  val dialogPadding: Dp = 24.dp,
-  val sheetPadding: Dp = 16.dp,
-
-  // Variants
-  val dialogPaddingCompact: Dp = 16.dp,
-  val dialogPaddingExpanded: Dp = 32.dp,
-
-  val sheetPaddingCompact: Dp = 12.dp,
-  val sheetPaddingExpanded: Dp = 24.dp
+    val dialogPadding         : Dp = 24.dp,
+    val sheetPadding          : Dp = 16.dp,
+    val dialogPaddingCompact  : Dp = 16.dp,
+    val dialogPaddingExpanded : Dp = 32.dp,
+    val sheetPaddingCompact   : Dp = 12.dp,
+    val sheetPaddingExpanded  : Dp = 24.dp,
 )
