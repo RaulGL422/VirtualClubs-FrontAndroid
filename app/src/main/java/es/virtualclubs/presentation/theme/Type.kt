@@ -27,41 +27,43 @@ val AppTypography = Typography(
         fontWeight = FontWeight.Bold,
         fontSize = 57.sp,
         lineHeight = 64.sp,
-        letterSpacing = (-0.25).sp
+        letterSpacing = (-0.5).sp
     ),
     displayMedium = TextStyle(
         fontFamily = Poppins,
-        fontWeight = FontWeight.SemiBold,
+        fontWeight = FontWeight.Bold,
         fontSize = 45.sp,
-        lineHeight = 52.sp
+        lineHeight = 52.sp,
+        letterSpacing = (-0.25).sp
     ),
     displaySmall = TextStyle(
         fontFamily = Poppins,
-        fontWeight = FontWeight.Medium,
+        fontWeight = FontWeight.SemiBold,
         fontSize = 36.sp,
         lineHeight = 44.sp
     ),
     headlineLarge = TextStyle(
         fontFamily = Poppins,
-        fontWeight = FontWeight.SemiBold,
+        fontWeight = FontWeight.Bold,
         fontSize = 32.sp,
-        lineHeight = 40.sp
+        lineHeight = 40.sp,
+        letterSpacing = (-0.25).sp
     ),
     headlineMedium = TextStyle(
         fontFamily = Poppins,
-        fontWeight = FontWeight.Medium,
+        fontWeight = FontWeight.SemiBold,
         fontSize = 28.sp,
         lineHeight = 36.sp
     ),
     headlineSmall = TextStyle(
         fontFamily = Poppins,
-        fontWeight = FontWeight.Medium,
+        fontWeight = FontWeight.SemiBold,
         fontSize = 24.sp,
         lineHeight = 32.sp
     ),
     titleLarge = TextStyle(
-        fontFamily = Roboto,
-        fontWeight = FontWeight.Bold,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.SemiBold,
         fontSize = 22.sp,
         lineHeight = 28.sp
     ),
@@ -123,26 +125,24 @@ val AppTypography = Typography(
     )
 )
 
-
-// Multiply font size
 fun scaledTypography(base: Typography, multiplier: Double): Typography {
     fun TextStyle.scale() = copy(fontSize = fontSize * multiplier, lineHeight = lineHeight * multiplier)
 
     return Typography(
-        displayLarge = base.displayLarge.scale(),
+        displayLarge  = base.displayLarge.scale(),
         displayMedium = base.displayMedium.scale(),
-        displaySmall = base.displaySmall.scale(),
-        headlineLarge = base.headlineLarge.scale(),
+        displaySmall  = base.displaySmall.scale(),
+        headlineLarge  = base.headlineLarge.scale(),
         headlineMedium = base.headlineMedium.scale(),
-        headlineSmall = base.headlineSmall.scale(),
-        titleLarge = base.titleLarge.scale(),
+        headlineSmall  = base.headlineSmall.scale(),
+        titleLarge  = base.titleLarge.scale(),
         titleMedium = base.titleMedium.scale(),
-        titleSmall = base.titleSmall.scale(),
-        bodyLarge = base.bodyLarge.scale(),
+        titleSmall  = base.titleSmall.scale(),
+        bodyLarge  = base.bodyLarge.scale(),
         bodyMedium = base.bodyMedium.scale(),
-        bodySmall = base.bodySmall.scale(),
-        labelLarge = base.labelLarge.scale(),
+        bodySmall  = base.bodySmall.scale(),
+        labelLarge  = base.labelLarge.scale(),
         labelMedium = base.labelMedium.scale(),
-        labelSmall = base.labelSmall.scale()
+        labelSmall  = base.labelSmall.scale()
     )
 }
