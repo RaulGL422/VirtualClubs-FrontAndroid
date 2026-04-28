@@ -120,7 +120,7 @@ val AppTypography = Typography(
         fontFamily = Roboto,
         fontWeight = FontWeight.Medium,
         fontSize = 12.sp,
-        lineHeight = 16.sp,
+        lineHeight = 17.sp,
         letterSpacing = 0.5.sp
     )
 )
