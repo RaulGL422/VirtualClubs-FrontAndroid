@@ -33,7 +33,7 @@ android {
     productFlavors {
         create("dev") {
             dimension = "env"
-            buildConfigField("String", "BASE_URL", "\"https://virtualclubs-backend.onrender.com/\"")
+            buildConfigField("String", "BASE_URL", "\"https://api-vc.rgal.dev/\"")
             buildConfigField("String", "GOOGLE_CLIENT_ID", "\"${localProperties["GOOGLE_CLIENT_ID"]}\"")
         }
         create("prod") {
