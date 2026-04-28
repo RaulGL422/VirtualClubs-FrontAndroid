@@ -14,9 +14,9 @@ val AppShapes = Shapes(
 
 data class VCShapes(
     val extraSmall : RoundedCornerShape = RoundedCornerShape(4.dp),
-    val small      : RoundedCornerShape = RoundedCornerShape(8.dp),
-    val medium     : RoundedCornerShape = RoundedCornerShape(16.dp),
-    val large      : RoundedCornerShape = RoundedCornerShape(20.dp),
-    val extraLarge : RoundedCornerShape = RoundedCornerShape(28.dp),
+    val small      : RoundedCornerShape = RoundedCornerShape(6.dp),
+    val medium     : RoundedCornerShape = RoundedCornerShape(10.dp),
+    val large      : RoundedCornerShape = RoundedCornerShape(14.dp),
+    val extraLarge : RoundedCornerShape = RoundedCornerShape(18.dp),
     val pill       : RoundedCornerShape = RoundedCornerShape(50.dp),
 )
