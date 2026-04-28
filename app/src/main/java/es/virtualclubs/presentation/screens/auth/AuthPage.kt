@@ -1,6 +1,7 @@
 package es.virtualclubs.presentation.screens.auth
 
 import android.app.Activity
+import androidx.activity.compose.LocalActivity
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedContent
@@ -114,7 +115,7 @@ fun LoginPage(
     }
   }
 
-  val activity = LocalContext.current as? Activity
+  val activity = LocalActivity.current
 
   VCScaffold(
     snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -203,148 +204,156 @@ fun LoginContent(
 
   val columnWidthFraction = when (screenType) {
     ScreenType.Small -> 0.90f
-    ScreenType.Medium -> 0.65f
+    ScreenType.Medium -> 0.45f
   }
 
-  Box(
-    modifier = modifier.fillMaxSize(),
-    contentAlignment = Alignment.Center
-  ) {
+  Box(modifier = modifier.fillMaxSize()) {
     Column(
       modifier = Modifier
-        .fillMaxWidth(columnWidthFraction)
-        .wrapContentHeight()
-        .padding(VCTheme.spacing.sectionSpacingCompact)
+        .fillMaxSize()
         .verticalScroll(rememberScrollState()),
-      horizontalAlignment = Alignment.CenterHorizontally
+      horizontalAlignment = Alignment.CenterHorizontally,
+      verticalArrangement = Arrangement.Center
     ) {
-      // Logo
-      Image(
-        painter = getLargeLogo(),
-        contentDescription = stringResource(R.string.logo),
-        contentScale = ContentScale.FillWidth,
-        modifier = Modifier.fillMaxWidth(columnWidthFraction)
-      )
-
-      Spacer(modifier = Modifier.height(VCTheme.spacing.sectionSpacingExpanded))
-
-      // Email field
-      RoundedTextField(
-        value = email,
-        onValueChange = { email = it },
-        placeholder = R.string.email_placeholder,
-        leadingIcon = Icons.Default.Email,
-        keyboardType = KeyboardType.Email,
-        imeAction = ImeAction.Next,
-        onImeAction = {
-          passwordFocusRequester.requestFocus()
-        },
+      Column(
         modifier = Modifier
-          .fillMaxWidth()
-          .focusRequester(emailFocusRequester)
-      )
+          .fillMaxWidth(columnWidthFraction)
+          .padding(VCTheme.spacing.sectionSpacingCompact),
+        horizontalAlignment = Alignment.CenterHorizontally
+      ) {
+        // Logo
+        Image(
+          painter = getLargeLogo(),
+          contentDescription = stringResource(R.string.logo),
+          contentScale = ContentScale.FillWidth,
+          modifier = Modifier
+            .fillMaxWidth()
+            .padding(VCTheme.spacing.componentPaddingLg)
+        )
 
-      Spacer(modifier = Modifier.height(VCTheme.spacing.sectionSpacingCompact))
+        Spacer(modifier = Modifier.height(VCTheme.spacing.sectionSpacingExpanded))
 
-      // Password field
-      RoundedTextField(
-        value = password,
-        onValueChange = { password = it },
-        placeholder = R.string.password_placeholder,
-        leadingIcon = Icons.Default.Lock,
-        isPassword = true,
-        keyboardType = KeyboardType.Password,
-        imeAction = if (isLogin) ImeAction.Done else ImeAction.Next,
-        onImeAction = {
-          if (isLogin) onLogin(email, password, rememberUser)
-          else confirmPasswordFocusRequester.requestFocus()
-        },
-        modifier = Modifier
-          .fillMaxWidth()
-          .focusRequester(passwordFocusRequester)
-      )
-
-      if (!isLogin) {
-        Spacer(modifier = Modifier.height(VCTheme.spacing.sectionSpacingCompact))
+        // Email field
         RoundedTextField(
-          value = confirmPassword,
-          onValueChange = { confirmPassword = it },
-          placeholder = R.string.confirm_password_placeholder,
-          leadingIcon = Icons.Default.Lock,
-          isPassword = true,
-          keyboardType = KeyboardType.Password,
-          imeAction = ImeAction.Done,
+          value = email,
+          onValueChange = { email = it },
+          placeholder = R.string.email_placeholder,
+          leadingIcon = Icons.Default.Email,
+          keyboardType = KeyboardType.Email,
+          imeAction = ImeAction.Next,
           onImeAction = {
-            focusManager.clearFocus()
-            onRegister(email, password, confirmPassword, rememberUser)
+            passwordFocusRequester.requestFocus()
           },
           modifier = Modifier
             .fillMaxWidth()
-            .focusRequester(confirmPasswordFocusRequester)
+            .focusRequester(emailFocusRequester)
         )
-      }
 
-      Spacer(modifier = Modifier.height(VCTheme.spacing.sectionSpacingCompact))
+        Spacer(modifier = Modifier.height(VCTheme.spacing.sectionSpacingCompact))
 
-      // Remember user checkbox
-      Box(
-        modifier = Modifier
-          .fillMaxWidth()
-          .padding(horizontal = VCTheme.spacing.itemHorizontalPadding)
-      ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-          Checkbox(
-            checked = rememberUser,
-            onCheckedChange = { rememberUser = it }
+        // Password field
+        RoundedTextField(
+          value = password,
+          onValueChange = { password = it },
+          placeholder = R.string.password_placeholder,
+          leadingIcon = Icons.Default.Lock,
+          isPassword = true,
+          keyboardType = KeyboardType.Password,
+          imeAction = if (isLogin) ImeAction.Done else ImeAction.Next,
+          onImeAction = {
+            if (isLogin) onLogin(email, password, rememberUser)
+            else confirmPasswordFocusRequester.requestFocus()
+          },
+          modifier = Modifier
+            .fillMaxWidth()
+            .focusRequester(passwordFocusRequester)
+        )
+
+        if (!isLogin) {
+          Spacer(modifier = Modifier.height(VCTheme.spacing.sectionSpacingCompact))
+          RoundedTextField(
+            value = confirmPassword,
+            onValueChange = { confirmPassword = it },
+            placeholder = R.string.confirm_password_placeholder,
+            leadingIcon = Icons.Default.Lock,
+            isPassword = true,
+            keyboardType = KeyboardType.Password,
+            imeAction = ImeAction.Done,
+            onImeAction = {
+              focusManager.clearFocus()
+              onRegister(email, password, confirmPassword, rememberUser)
+            },
+            modifier = Modifier
+              .fillMaxWidth()
+              .focusRequester(confirmPasswordFocusRequester)
           )
-          Text(stringResource(R.string.remember_password))
         }
-      }
 
-      if (globalUIManager.haveError()) {
-        Text(
-          text = stringResource(globalUIManager.getErrorId()),
-          color = VCTheme.colors.error
+        Spacer(modifier = Modifier.height(VCTheme.spacing.sectionSpacingCompact))
+
+        if (globalUIManager.haveError()) {
+          Text(
+            text = stringResource(globalUIManager.getErrorId()),
+            color = VCTheme.colors.error
+          )
+
+          Spacer(modifier = Modifier.height(VCTheme.spacing.itemSpacingExpanded))
+        }
+
+        // Remember user checkbox
+        Row(
+          modifier = Modifier
+            .fillMaxWidth(),
+          horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+          Row(verticalAlignment = Alignment.CenterVertically) {
+            Checkbox(
+              checked = rememberUser,
+              onCheckedChange = { rememberUser = it }
+            )
+            Text(stringResource(R.string.remember_password))
+          }
+          // Forgot password
+          VCButton(
+            content = VCButtonContent.Text(R.string.forgot_password),
+            style = VCButtonStyle.Text,
+            onClick = { showForgotPasswordDialog = true }
+          )
+        }
+
+        Spacer(modifier = Modifier.height(VCTheme.spacing.itemSpacingCompact))
+
+        // Login/Register button
+        VCButton(
+          content = VCButtonContent.Text(if (isLogin) R.string.login else R.string.register),
+          enabled = uiState !is AuthUiState.AttemptingAuth,
+          onClick = {
+            if (isLogin) onLogin(email, password, rememberUser)
+            else onRegister(email, password, confirmPassword, rememberUser)
+          },
+          modifier = Modifier
+            .fillMaxWidth()
         )
+
+        Spacer(modifier = Modifier.height(VCTheme.spacing.itemVerticalPadding))
+
+        // Divider
+        AuthDivider()
+
+        Spacer(modifier = Modifier.height(VCTheme.spacing.itemVerticalPadding))
+
+        // Social buttons
+        _SocialButton(R.string.continue_with_google, R.drawable.google_icon, onGoogle)
+        Spacer(modifier = Modifier.height(VCTheme.spacing.buttonPaddingVertical))
+        _SocialButton(R.string.continue_with_apple, R.drawable.apple_icon, onApple)
+        Spacer(modifier = Modifier.height(VCTheme.spacing.buttonPaddingVertical))
+        _SocialButton(R.string.facebook, R.drawable.facebook_icon, onFacebook)
+
+        Spacer(modifier = Modifier.height(VCTheme.spacing.buttonPaddingVerticalExpanded))
+
+        // Register/Login toggle
+        AuthToggle(isLogin, onChangeLogin)
       }
-
-      Spacer(modifier = Modifier.height(VCTheme.spacing.itemSpacingExpanded))
-
-      // Login/Register button
-      VCButton(
-        content = VCButtonContent.Text(if (isLogin) R.string.login else R.string.register),
-        enabled = uiState !is AuthUiState.AttemptingAuth,
-        onClick = {
-          if (isLogin) onLogin(email, password, rememberUser)
-          else onRegister(email, password, confirmPassword, rememberUser)
-        },
-        modifier = Modifier
-          .fillMaxWidth()
-      )
-
-      // Forgot password
-      VCButton(
-        content = VCButtonContent.Text(R.string.forgot_password),
-        style = VCButtonStyle.Text,
-        onClick = { showForgotPasswordDialog = true }
-      )
-
-      // Divider
-      AuthDivider()
-
-      Spacer(modifier = Modifier.height(VCTheme.spacing.sectionSpacingCompact))
-
-      // Social buttons
-      _SocialButton(R.string.continue_with_google, R.drawable.google_icon, onGoogle)
-      Spacer(modifier = Modifier.height(VCTheme.spacing.buttonPaddingVertical))
-      _SocialButton(R.string.continue_with_apple, R.drawable.apple_icon, onApple)
-      Spacer(modifier = Modifier.height(VCTheme.spacing.buttonPaddingVertical))
-      _SocialButton(R.string.facebook, R.drawable.facebook_icon, onFacebook)
-
-      Spacer(modifier = Modifier.height(VCTheme.spacing.buttonPaddingVerticalExpanded))
-
-      // Register/Login toggle
-      AuthToggle(isLogin, onChangeLogin)
     }
 
     // App version bottom
