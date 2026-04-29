@@ -4,6 +4,8 @@
 ![Min SDK](https://img.shields.io/badge/min%20SDK-30-brightgreen)
 ![Kotlin](https://img.shields.io/badge/Kotlin-2.2.10-7F52FF?logo=kotlin&logoColor=white)
 
+> [Leer en español](README.es.md)
+
 Android client for **VirtualClubs** — a platform to create and manage sports fan clubs. Users can join clubs by sport, connect with other members, organize events, manage attendance, and track club activity, all from their phone.
 
 > **Status:** Alpha v0.1.2 — Authentication complete. Club management in active development.  
@@ -29,9 +31,11 @@ Android client for **VirtualClubs** — a platform to create and manage sports f
 
 ### UI & Infrastructure
 - Global UI state manager (`GlobalUIManager`) — loading, error dialogs, and snackbars from a single source of truth, injectable anywhere without passing callbacks down the tree
+- **Stadium Design System** — custom M3 token layer with Poppins + Roboto typography, a 10-level color palette (Electric Blue / Fire Orange / Stadium Green / Cool Blue-Gray), and semantic spacing, elevation, shape, motion, and gradient tokens across 6 color schemes (light, dark, high/medium contrast per mode)
 - Material 3 dynamic theme: light / dark / high-contrast modes
 - Deep links handled via dedicated Activities to avoid NavGraph contamination
-- Build flavors: `dev` (Render backend) / `prod` (certificate pinning active)
+- Build flavors: `dev` (`api-vc.rgal.dev` backend) / `prod` (certificate pinning active)
+- Debug-only server URL switcher in Settings — configure any local backend IP at runtime without recompiling
 
 ---
 
@@ -41,7 +45,7 @@ A few design decisions worth noting:
 
 **Token refresh without race conditions** — `SafeResponse` intercepts 401 responses and triggers a token refresh. If multiple requests fail simultaneously, only one refresh call is made. The others wait and retry with the new token.
 
-**No `runBlocking` in the network layer** — Access tokens are cached in memory (`UserSession`) after the first read. `AuthInterceptor` reads synchronously from the cache, avoiding both `runBlocking` and adding latency on every request.
+**No `runBlocking` on the hot path** — Access tokens are cached in memory (`UserSession`) after the first read. `AuthInterceptor` reads synchronously from the cache, avoiding `runBlocking` and extra latency on every request. The only `runBlocking` call is in `NetworkModule` at Hilt graph construction time (debug builds only, reads the dev server URL from DataStore before any request is made).
 
 **`ErrorDispatcher` interface** — `GlobalUIManager` implements an `ErrorDispatcher` interface defined in the domain layer. Use cases dispatch errors without knowing anything about the UI, keeping the dependency direction correct.
 
@@ -123,7 +127,7 @@ domain/usecase/   Auth, Register, Google Sign-In, Logout, RefreshToken, GetUserI
 
 ## API
 
-Base URL: `https://virtualclubs-backend.onrender.com/`
+Base URL: `https://virtualclubs-backend.onrender.com/` (production) · `https://api-vc.rgal.dev/` (dev flavor)
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -171,14 +175,21 @@ GOOGLE_CLIENT_ID=your_google_oauth2_web_client_id_here
 
 Open in Android Studio, select the `devDebug` variant, connect a device or emulator (API 30+), and press **Run**.
 
+### Local backend (optional)
+
+To point a debug build at a local backend without recompiling, open **Settings → Development server**, enter the address (e.g. `192.168.1.50:3000` — `http://` and trailing `/` are added automatically), and tap **Save and restart**.
+
+- **Emulator:** use `10.0.2.2` to reach your machine's `localhost`
+- **Physical device:** use your machine's LAN IP; run `adb reverse tcp:PORT tcp:PORT` if the device is connected via USB
+
 ---
 
 ## Build Variants
 
 | Variant | Description |
 |---------|-------------|
-| `devDebug` | Development — Render backend, no certificate pinning |
-| `prodRelease` | Production — certificate pinning active |
+| `devDebug` | Development — `api-vc.rgal.dev` backend, no certificate pinning |
+| `prodRelease` | Production — `virtualclubs-backend.onrender.com`, certificate pinning active |
 
 ```bash
 ./gradlew compileDevDebugKotlin   # Check for Kotlin errors
