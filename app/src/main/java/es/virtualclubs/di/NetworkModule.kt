@@ -7,6 +7,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import es.virtualclubs.BuildConfig
+import es.virtualclubs.data.local.datastore.AppPreferences
 import es.virtualclubs.data.local.secure.SecureUserPreferences
 import es.virtualclubs.data.managers.SafeResponse
 import es.virtualclubs.data.remote.api.AuthApi
@@ -20,6 +21,7 @@ import es.virtualclubs.domain.repository.RefreshRepository
 import es.virtualclubs.domain.repository.UserRepository
 import es.virtualclubs.data.session.UserSession
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.flow.first
 import okhttp3.CertificatePinner
 import java.util.concurrent.atomic.AtomicBoolean
 import okhttp3.OkHttpClient
@@ -41,7 +43,8 @@ object NetworkModule {
   fun provideRetrofit(
     userSession: UserSession,
     refreshRepository: Lazy<RefreshRepository>,
-    gson: Gson
+    gson: Gson,
+    appPreferences: AppPreferences
   ): Retrofit {
     val logging = HttpLoggingInterceptor().apply {
       level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.HEADERS
@@ -79,8 +82,22 @@ object NetworkModule {
 
     val client = clientBuilder.build()
 
+    val baseUrl = if (BuildConfig.DEBUG) {
+      val saved = runBlocking { appPreferences.debugServerUrlFlow.first() }.trim()
+      if (saved.isBlank()) {
+        BuildConfig.BASE_URL
+      } else {
+        var url = saved
+        if (!url.startsWith("http://") && !url.startsWith("https://")) url = "http://$url"
+        if (!url.endsWith("/")) url = "$url/"
+        url
+      }
+    } else {
+      BuildConfig.BASE_URL
+    }
+
     return Retrofit.Builder()
-      .baseUrl(BuildConfig.BASE_URL)
+      .baseUrl(baseUrl)
       .client(client)
       .addConverterFactory(GsonConverterFactory.create(gson))
       .build()

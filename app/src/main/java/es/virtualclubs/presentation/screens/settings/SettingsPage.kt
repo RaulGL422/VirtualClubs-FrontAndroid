@@ -1,5 +1,6 @@
 package es.virtualclubs.presentation.screens.settings
 
+import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,17 +13,26 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import es.virtualclubs.BuildConfig
 import es.virtualclubs.R
+import kotlin.system.exitProcess
 import es.virtualclubs.presentation.components.VCButton
 import es.virtualclubs.presentation.components.VCButtonContent
 import es.virtualclubs.presentation.components.VCButtonStyle
@@ -35,6 +45,16 @@ fun SettingsPage(
   onBack: () -> Unit
 ) {
   val uiState by viewModel.uiState.collectAsState()
+  val context = LocalContext.current
+
+  LaunchedEffect(Unit) {
+    viewModel.restartSignal.collect {
+      val intent = context.packageManager.getLaunchIntentForPackage(context.packageName)!!
+      intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+      context.startActivity(intent)
+      exitProcess(0)
+    }
+  }
 
   VCScaffold(
     titleTopBar = R.string.settings_page,
@@ -147,6 +167,43 @@ fun SettingsPage(
         modifier = Modifier.fillMaxWidth(),
         onClick = { viewModel.logout() }
       )
+
+      // ----- Desarrollo (solo debug) -----
+      if (BuildConfig.DEBUG) {
+        HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+
+        SectionTitle("Servidor de desarrollo")
+
+        SectionLabel("Activo: ${uiState.debugServerUrl.ifBlank { BuildConfig.BASE_URL }}")
+
+        Spacer(Modifier.height(4.dp))
+
+        var localUrl by remember(uiState.debugServerUrl) { mutableStateOf(uiState.debugServerUrl) }
+
+        OutlinedTextField(
+          value = localUrl,
+          onValueChange = { localUrl = it },
+          label = { Text("URL del servidor") },
+          placeholder = { Text("http://192.168.1.100:3000/") },
+          singleLine = true,
+          modifier = Modifier.fillMaxWidth()
+        )
+
+        Text(
+          text = "Vacío → usa la URL del flavor (${BuildConfig.BASE_URL})",
+          style = MaterialTheme.typography.bodySmall,
+          color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+
+        Spacer(Modifier.height(8.dp))
+
+        OutlinedButton(
+          onClick = { viewModel.saveDebugServerUrl(localUrl) },
+          modifier = Modifier.fillMaxWidth()
+        ) {
+          Text("Guardar y reiniciar")
+        }
+      }
 
       Spacer(Modifier.height(16.dp))
     }
