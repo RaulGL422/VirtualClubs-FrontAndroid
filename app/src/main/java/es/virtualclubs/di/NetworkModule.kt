@@ -83,6 +83,8 @@ object NetworkModule {
     val client = clientBuilder.build()
 
     val baseUrl = if (BuildConfig.DEBUG) {
+      // runBlocking intencional: solo en DEBUG y en el hilo de construcción del grafo Hilt.
+      // DataStore mantiene caché en memoria tras el primer acceso; la lectura es < 1ms.
       val saved = runBlocking { appPreferences.debugServerUrlFlow.first() }.trim()
       if (saved.isBlank()) {
         BuildConfig.BASE_URL

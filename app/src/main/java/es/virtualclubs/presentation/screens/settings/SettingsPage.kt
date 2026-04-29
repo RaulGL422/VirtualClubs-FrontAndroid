@@ -49,7 +49,8 @@ fun SettingsPage(
 
   LaunchedEffect(Unit) {
     viewModel.restartSignal.collect {
-      val intent = context.packageManager.getLaunchIntentForPackage(context.packageName)!!
+      val intent = context.packageManager
+        .getLaunchIntentForPackage(context.packageName) ?: return@collect
       intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
       context.startActivity(intent)
       exitProcess(0)
@@ -171,42 +172,47 @@ fun SettingsPage(
       // ----- Desarrollo (solo debug) -----
       if (BuildConfig.DEBUG) {
         HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-
-        SectionTitle("Servidor de desarrollo")
-
-        SectionLabel("Activo: ${uiState.debugServerUrl.ifBlank { BuildConfig.BASE_URL }}")
-
-        Spacer(Modifier.height(4.dp))
-
-        var localUrl by remember(uiState.debugServerUrl) { mutableStateOf(uiState.debugServerUrl) }
-
-        OutlinedTextField(
-          value = localUrl,
-          onValueChange = { localUrl = it },
-          label = { Text("URL del servidor") },
-          placeholder = { Text("http://192.168.1.100:3000/") },
-          singleLine = true,
-          modifier = Modifier.fillMaxWidth()
+        DebugServerSection(
+          currentUrl = uiState.debugServerUrl,
+          onSave = { viewModel.saveDebugServerUrl(it) }
         )
-
-        Text(
-          text = "Vacío → usa la URL del flavor (${BuildConfig.BASE_URL})",
-          style = MaterialTheme.typography.bodySmall,
-          color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-
-        Spacer(Modifier.height(8.dp))
-
-        OutlinedButton(
-          onClick = { viewModel.saveDebugServerUrl(localUrl) },
-          modifier = Modifier.fillMaxWidth()
-        ) {
-          Text("Guardar y reiniciar")
-        }
       }
 
       Spacer(Modifier.height(16.dp))
     }
+  }
+}
+
+@Composable
+private fun DebugServerSection(currentUrl: String, onSave: (String) -> Unit) {
+  var localUrl by remember(currentUrl) { mutableStateOf(currentUrl) }
+
+  SectionTitle("Servidor de desarrollo")
+  SectionLabel("Activo: ${currentUrl.ifBlank { BuildConfig.BASE_URL }}")
+  Spacer(Modifier.height(4.dp))
+
+  OutlinedTextField(
+    value = localUrl,
+    onValueChange = { localUrl = it },
+    label = { Text("URL del servidor") },
+    placeholder = { Text("http://192.168.1.100:3000/") },
+    singleLine = true,
+    modifier = Modifier.fillMaxWidth()
+  )
+
+  Text(
+    text = "Vacío → usa la URL del flavor (${BuildConfig.BASE_URL})",
+    style = MaterialTheme.typography.bodySmall,
+    color = MaterialTheme.colorScheme.onSurfaceVariant
+  )
+
+  Spacer(Modifier.height(8.dp))
+
+  OutlinedButton(
+    onClick = { onSave(localUrl) },
+    modifier = Modifier.fillMaxWidth()
+  ) {
+    Text("Guardar y reiniciar")
   }
 }
 
