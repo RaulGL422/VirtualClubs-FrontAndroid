@@ -9,10 +9,12 @@ import es.virtualclubs.domain.usecase.LogoutUserUseCase
 import es.virtualclubs.domain.usecase.token.ClearTokensUseCase
 import es.virtualclubs.presentation.managers.GlobalUIManager
 import es.virtualclubs.presentation.navigation.AppNavigator
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,19 +31,24 @@ class SettingsViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(SettingsUiState())
     val uiState: StateFlow<SettingsUiState> = _uiState.asStateFlow()
 
+    private val _restartSignal = Channel<Unit>(Channel.BUFFERED)
+    val restartSignal = _restartSignal.receiveAsFlow()
+
     init {
         viewModelScope.launch {
             combine(
                 appPreferences.darkThemeFlow,
                 appPreferences.contrastTypeFlow,
                 appPreferences.fontSizeMultiplierFlow,
-                userPreferences.userEmailFlow
-            ) { dark, contrast, fontSize, email ->
+                userPreferences.userEmailFlow,
+                appPreferences.debugServerUrlFlow
+            ) { dark, contrast, fontSize, email, debugUrl ->
                 SettingsUiState(
                     isDarkTheme = dark,
                     contrastType = contrast,
                     fontSizeMultiplier = fontSize,
-                    email = email
+                    email = email,
+                    debugServerUrl = debugUrl
                 )
             }.collect { _uiState.value = it }
         }
@@ -59,6 +66,13 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch { appPreferences.saveFontSizeMultiplier(value) }
     }
 
+    fun saveDebugServerUrl(url: String) {
+        viewModelScope.launch {
+            appPreferences.setDebugServerUrl(url.trim())
+            _restartSignal.send(Unit)
+        }
+    }
+
     fun logout() {
         viewModelScope.launch {
             globalUIManager.withLoading {
@@ -74,5 +88,6 @@ data class SettingsUiState(
     val isDarkTheme: Boolean? = null,
     val contrastType: Int = 0,
     val fontSizeMultiplier: Double = 1.0,
-    val email: String? = null
+    val email: String? = null,
+    val debugServerUrl: String = ""
 )
