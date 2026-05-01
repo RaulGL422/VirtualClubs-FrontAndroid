@@ -1,14 +1,16 @@
 package es.virtualclubs.di
 
+import com.google.gson.Gson
+import dagger.Lazy
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import es.virtualclubs.BuildConfig
+import es.virtualclubs.data.local.datastore.AppPreferences
 import es.virtualclubs.data.local.secure.SecureUserPreferences
 import es.virtualclubs.data.managers.SafeResponse
 import es.virtualclubs.data.remote.api.AuthApi
-import es.virtualclubs.data.remote.api.RefreshApi
 import es.virtualclubs.data.remote.api.UserApi
 import es.virtualclubs.data.repository.AuthRepositoryImpl
 import es.virtualclubs.data.repository.RefreshRepositoryImpl
@@ -17,9 +19,11 @@ import es.virtualclubs.domain.model.AuthInterceptor
 import es.virtualclubs.domain.repository.AuthRepository
 import es.virtualclubs.domain.repository.RefreshRepository
 import es.virtualclubs.domain.repository.UserRepository
-import es.virtualclubs.presentation.navigation.SessionManager
-import kotlinx.coroutines.flow.firstOrNull
+import es.virtualclubs.data.session.UserSession
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.flow.first
+import okhttp3.CertificatePinner
+import java.util.concurrent.atomic.AtomicBoolean
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -32,23 +36,72 @@ object NetworkModule {
 
   @Provides
   @Singleton
-  fun provideRetrofit(secureUserPreferences: SecureUserPreferences): Retrofit {
+  fun provideGson(): Gson = Gson()
+
+  @Provides
+  @Singleton
+  fun provideRetrofit(
+    userSession: UserSession,
+    refreshRepository: Lazy<RefreshRepository>,
+    gson: Gson,
+    appPreferences: AppPreferences
+  ): Retrofit {
     val logging = HttpLoggingInterceptor().apply {
       level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.HEADERS
       else HttpLoggingInterceptor.Level.NONE
     }
 
-    val client = OkHttpClient.Builder()
-      .addInterceptor(AuthInterceptor {
-        runBlocking { secureUserPreferences.accessToken.firstOrNull() }
-      })
+    // AtomicBoolean evita que múltiples hilos de OkHttp lancen refreshes simultáneos.
+    // runBlocking es intencional: AuthInterceptor es un Interceptor síncrono de OkHttp
+    // que corre en el hilo de red (no el principal), por lo que no puede causar ANR.
+    val isProactivelyRefreshing = AtomicBoolean(false)
+
+    val clientBuilder = OkHttpClient.Builder()
+      .addInterceptor(AuthInterceptor(
+        tokenProvider = { userSession.cachedAccessToken },
+        onTokenExpired = {
+          if (isProactivelyRefreshing.compareAndSet(false, true)) {
+            try { runBlocking { refreshRepository.get().refresh() } }
+            finally { isProactivelyRefreshing.set(false) }
+          }
+        }
+      ))
       .addInterceptor(logging)
-      .build()
+
+    // Certificate pinning solo en prod para proteger contra MITM
+    // Pins: CA intermedio (Google Trust Services WE1) + Root CA (GTS Root R4)
+    // Actualizar cuando Render cambie de CA. Ver sección "Certificate Pinning" en CLAUDE.md
+    if (BuildConfig.FLAVOR == "prod") {
+      clientBuilder.certificatePinner(
+        CertificatePinner.Builder()
+          .add("virtualclubs-backend.onrender.com", "sha256/kIdp6NNEd8wsugYyyIYFsi1ylMCED3hZbSR8ZFsa/A4=")
+          .add("virtualclubs-backend.onrender.com", "sha256/mEflZT5enoR1FuXLgYYGqnVEoZvmf9c2bVBpiOjYQ0c=")
+          .build()
+      )
+    }
+
+    val client = clientBuilder.build()
+
+    val baseUrl = if (BuildConfig.DEBUG) {
+      // runBlocking intencional: solo en DEBUG y en el hilo de construcción del grafo Hilt.
+      // DataStore mantiene caché en memoria tras el primer acceso; la lectura es < 1ms.
+      val saved = runBlocking { appPreferences.debugServerUrlFlow.first() }.trim()
+      if (saved.isBlank()) {
+        BuildConfig.BASE_URL
+      } else {
+        var url = saved
+        if (!url.startsWith("http://") && !url.startsWith("https://")) url = "http://$url"
+        if (!url.endsWith("/")) url = "$url/"
+        url
+      }
+    } else {
+      BuildConfig.BASE_URL
+    }
 
     return Retrofit.Builder()
-      .baseUrl(BuildConfig.BASE_URL)
+      .baseUrl(baseUrl)
       .client(client)
-      .addConverterFactory(GsonConverterFactory.create())
+      .addConverterFactory(GsonConverterFactory.create(gson))
       .build()
   }
 
@@ -64,17 +117,12 @@ object NetworkModule {
 
   @Provides
   @Singleton
-  fun provideRefreshApi(retrofit: Retrofit): RefreshApi =
-    retrofit.create(RefreshApi::class.java)
-
-  @Provides
-  @Singleton
   fun provideRefreshRepository(
-    api: RefreshApi,
-    sessionManager: SessionManager,
-    secureUserPreferences: SecureUserPreferences
+    api: AuthApi,
+    secureUserPreferences: SecureUserPreferences,
+    userSession: UserSession
   ): RefreshRepository =
-    RefreshRepositoryImpl(api, sessionManager, secureUserPreferences = secureUserPreferences)
+    RefreshRepositoryImpl(api, secureUserPreferences, userSession)
 
   @Provides
   @Singleton
@@ -91,6 +139,6 @@ object NetworkModule {
 
   @Provides
   @Singleton
-  fun provideSafeCall(refresh: RefreshRepository): SafeResponse =
-    SafeResponse(refresh)
+  fun provideSafeCall(refresh: RefreshRepository, gson: Gson): SafeResponse =
+    SafeResponse(refresh, gson)
 }

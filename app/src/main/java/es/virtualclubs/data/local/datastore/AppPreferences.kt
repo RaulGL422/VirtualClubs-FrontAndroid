@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.doublePreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -16,6 +17,7 @@ class AppPreferences @Inject constructor(private val dataStore: DataStore<Prefer
         private val DARK_THEME = booleanPreferencesKey("dark_theme")
         private val CONTRAST_TYPE = intPreferencesKey("contrast_type")
         private val FONT_SIZE_MULTIPLIER = doublePreferencesKey("font_size_multiplier")
+        private val DEBUG_SERVER_URL = stringPreferencesKey("debug_server_url")
     }
 
     // ------------------- Theme -------------------
@@ -49,5 +51,14 @@ class AppPreferences @Inject constructor(private val dataStore: DataStore<Prefer
 
     suspend fun saveFontSizeMultiplier(value: Double) {
         dataStore.edit { it[FONT_SIZE_MULTIPLIER] = value }
+    }
+
+    // ------------------- Debug server URL (solo debug builds) -------------------
+
+    val debugServerUrlFlow: Flow<String> = dataStore.data
+        .map { it[DEBUG_SERVER_URL] ?: "" }
+
+    suspend fun setDebugServerUrl(url: String) {
+        dataStore.edit { it[DEBUG_SERVER_URL] = url }
     }
 }

@@ -24,7 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import es.virtualclubs.R
-import es.virtualclubs.data.managers.GlobalUIManager
+import es.virtualclubs.presentation.managers.LocalGlobalUIManager
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,12 +36,13 @@ fun AppBar(
   onNavigateBack: (() -> Unit)? = null,
   actions: (@Composable RowScope.() -> Unit)? = null
 ) {
-  val errorState by GlobalUIManager.errorState.collectAsState()
+  val globalUIManager = LocalGlobalUIManager.current
+  val errorState by globalUIManager.errorState.collectAsState()
 
   val message = when (errorState.code) {
     null -> UiMessage.None
     else -> UiMessage.Error(
-      messageKey = GlobalUIManager.getErrorId()
+      messageKey = globalUIManager.getErrorId()
     )
   }
 
@@ -84,7 +85,7 @@ fun AppBar(
           )
 
           IconButton(onClick = {
-            GlobalUIManager.clearError()
+            globalUIManager.clearError()
           }) {
             Icon(Icons.Default.Close, contentDescription = stringResource(id = R.string.close))
           }

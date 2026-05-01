@@ -27,122 +27,122 @@ val AppTypography = Typography(
         fontWeight = FontWeight.Bold,
         fontSize = 57.sp,
         lineHeight = 64.sp,
-        letterSpacing = (-0.25).sp
+        letterSpacing = (-0.5).sp
     ),
     displayMedium = TextStyle(
         fontFamily = Poppins,
-        fontWeight = FontWeight.SemiBold,
+        fontWeight = FontWeight.Bold,
         fontSize = 45.sp,
-        lineHeight = 52.sp
+        lineHeight = 52.sp,
+        letterSpacing = (-0.25).sp
     ),
     displaySmall = TextStyle(
         fontFamily = Poppins,
-        fontWeight = FontWeight.Medium,
+        fontWeight = FontWeight.SemiBold,
         fontSize = 36.sp,
         lineHeight = 44.sp
     ),
     headlineLarge = TextStyle(
         fontFamily = Poppins,
-        fontWeight = FontWeight.SemiBold,
+        fontWeight = FontWeight.Bold,
         fontSize = 32.sp,
-        lineHeight = 40.sp
+        lineHeight = 40.sp,
+        letterSpacing = (-0.25).sp
     ),
     headlineMedium = TextStyle(
         fontFamily = Poppins,
-        fontWeight = FontWeight.Medium,
+        fontWeight = FontWeight.SemiBold,
         fontSize = 28.sp,
         lineHeight = 36.sp
     ),
     headlineSmall = TextStyle(
         fontFamily = Poppins,
-        fontWeight = FontWeight.Medium,
+        fontWeight = FontWeight.SemiBold,
         fontSize = 24.sp,
         lineHeight = 32.sp
     ),
     titleLarge = TextStyle(
-        fontFamily = Roboto,
-        fontWeight = FontWeight.Bold,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.SemiBold,
         fontSize = 22.sp,
         lineHeight = 28.sp
     ),
     titleMedium = TextStyle(
         fontFamily = Roboto,
         fontWeight = FontWeight.Medium,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
+        fontSize = 17.sp,
+        lineHeight = 25.sp,
         letterSpacing = 0.15.sp
     ),
     titleSmall = TextStyle(
         fontFamily = Roboto,
         fontWeight = FontWeight.Medium,
-        fontSize = 14.sp,
-        lineHeight = 20.sp,
+        fontSize = 15.sp,
+        lineHeight = 21.sp,
         letterSpacing = 0.1.sp
     ),
     bodyLarge = TextStyle(
         fontFamily = Roboto,
         fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
+        fontSize = 17.sp,
+        lineHeight = 25.sp,
         letterSpacing = 0.5.sp
     ),
     bodyMedium = TextStyle(
         fontFamily = Roboto,
         fontWeight = FontWeight.Normal,
-        fontSize = 14.sp,
-        lineHeight = 20.sp,
+        fontSize = 15.sp,
+        lineHeight = 22.sp,
         letterSpacing = 0.25.sp
     ),
     bodySmall = TextStyle(
         fontFamily = Roboto,
         fontWeight = FontWeight.Normal,
-        fontSize = 12.sp,
-        lineHeight = 16.sp,
+        fontSize = 13.sp,
+        lineHeight = 18.sp,
         letterSpacing = 0.4.sp
     ),
     labelLarge = TextStyle(
         fontFamily = Roboto,
         fontWeight = FontWeight.Medium,
-        fontSize = 14.sp,
-        lineHeight = 20.sp,
+        fontSize = 15.sp,
+        lineHeight = 21.sp,
         letterSpacing = 0.1.sp
     ),
     labelMedium = TextStyle(
         fontFamily = Roboto,
         fontWeight = FontWeight.Medium,
-        fontSize = 12.sp,
-        lineHeight = 16.sp,
+        fontSize = 13.sp,
+        lineHeight = 17.sp,
         letterSpacing = 0.5.sp
     ),
     labelSmall = TextStyle(
         fontFamily = Roboto,
         fontWeight = FontWeight.Medium,
-        fontSize = 11.sp,
-        lineHeight = 16.sp,
+        fontSize = 12.sp,
+        lineHeight = 17.sp,
         letterSpacing = 0.5.sp
     )
 )
 
-
-// Multiply font size
 fun scaledTypography(base: Typography, multiplier: Double): Typography {
     fun TextStyle.scale() = copy(fontSize = fontSize * multiplier, lineHeight = lineHeight * multiplier)
 
     return Typography(
-        displayLarge = base.displayLarge.scale(),
+        displayLarge  = base.displayLarge.scale(),
         displayMedium = base.displayMedium.scale(),
-        displaySmall = base.displaySmall.scale(),
-        headlineLarge = base.headlineLarge.scale(),
+        displaySmall  = base.displaySmall.scale(),
+        headlineLarge  = base.headlineLarge.scale(),
         headlineMedium = base.headlineMedium.scale(),
-        headlineSmall = base.headlineSmall.scale(),
-        titleLarge = base.titleLarge.scale(),
+        headlineSmall  = base.headlineSmall.scale(),
+        titleLarge  = base.titleLarge.scale(),
         titleMedium = base.titleMedium.scale(),
-        titleSmall = base.titleSmall.scale(),
-        bodyLarge = base.bodyLarge.scale(),
+        titleSmall  = base.titleSmall.scale(),
+        bodyLarge  = base.bodyLarge.scale(),
         bodyMedium = base.bodyMedium.scale(),
-        bodySmall = base.bodySmall.scale(),
-        labelLarge = base.labelLarge.scale(),
+        bodySmall  = base.bodySmall.scale(),
+        labelLarge  = base.labelLarge.scale(),
         labelMedium = base.labelMedium.scale(),
-        labelSmall = base.labelSmall.scale()
+        labelSmall  = base.labelSmall.scale()
     )
 }

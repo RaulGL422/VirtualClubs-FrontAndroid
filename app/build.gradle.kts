@@ -15,9 +15,9 @@ android {
     defaultConfig {
         applicationId = "es.virtualclubs"
         minSdk = 30
-        targetSdk = 35
-        versionCode = 1
-        versionName = "0.1.1v Alpha"
+        targetSdk = 36
+        versionCode = 2
+        versionName = "0.1.2v Alpha"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables { useSupportLibrary = true }
     }
@@ -33,8 +33,8 @@ android {
     productFlavors {
         create("dev") {
             dimension = "env"
-            buildConfigField("String", "BASE_URL", "\"https://virtualclubs-backend.onrender.com/\"")
-            buildConfigField("String", "GOOGLE_CLIENT_ID", "\"879741762461-03ck5fqsbrrpgs6gvidvdofpe6ebao6u.apps.googleusercontent.com\"")
+            buildConfigField("String", "BASE_URL", "\"https://api-vc.rgal.dev/\"")
+            buildConfigField("String", "GOOGLE_CLIENT_ID", "\"${localProperties["GOOGLE_CLIENT_ID"]}\"")
         }
         create("prod") {
             dimension = "env"
@@ -48,11 +48,18 @@ android {
             isDebuggable = true
         }
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+        }
+    }
+
+    testOptions {
+        unitTests {
+            isReturnDefaultValues = true
         }
     }
 
@@ -64,7 +71,6 @@ android {
         compose = true
         buildConfig = true
     }
-    composeOptions { kotlinCompilerExtensionVersion = "2.1.10" }
     packaging { resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" } }
 }
 
@@ -82,26 +88,24 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.compose.material3.window.size)
     implementation(libs.androidx.hilt.common)
-    implementation(libs.ui.graphics)
     implementation(libs.androidx.ui.test.android)
     implementation(libs.androidx.foundation.layout.android)
     implementation(libs.androidx.foundation.android)
     implementation(libs.androidx.animation.android)
     implementation(libs.androidx.animation.core.lint)
-    implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.foundation.layout)
-    implementation(libs.material3)
     implementation(libs.androidx.compose.ui.unit)
 
 
     // Dependencias de pruebas
     testImplementation(libs.junit)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
 
     implementation(libs.dagger.hilt.android)
-    annotationProcessor(libs.dagger.hilt.compiler)
     kapt(libs.dagger.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.navigation.compose)
@@ -119,7 +123,8 @@ dependencies {
 
     implementation(libs.androidx.security.crypto)
     implementation(libs.googleid)
-    implementation(libs.play.services.auth)
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services.auth)
 }
 java {
     toolchain {

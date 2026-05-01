@@ -19,7 +19,7 @@
 
         <!-- Main launcher activity -->
         <activity
-            android:name=".MainActivity"
+            android:name=".presentation.MainActivity"
             android:launchMode="singleTask"
             android:exported="true"
             android:theme="@style/Theme.VirtualClubs">
@@ -33,7 +33,7 @@
         </activity>
 
         <activity
-            android:name=".ResetPasswordActivity"
+            android:name=".presentation.ResetPasswordActivity"
             android:launchMode="singleTask"
             android:exported="true"
             android:theme="@style/Theme.VirtualClubs">
@@ -47,7 +47,7 @@
         </activity>
 
         <activity
-            android:name=".VerifyEmailActivity"
+            android:name=".presentation.VerifyEmailActivity"
             android:launchMode="singleTask"
             android:exported="true"
             android:theme="@style/Theme.VirtualClubs">
