@@ -17,7 +17,7 @@ coroutinesTest = "1.10.2"
 lifecycleRuntimeKtx = "2.10.0"
 composeBom = "2026.03.00"
 datastorePreferences = "1.2.1"
-kapt = '2.2.10'
+ksp = "2.2.10-2.0.2"
 loggingInterceptor = "5.3.0"
 navigationCompose = "2.9.4"
 securityCrypto = "1.1.0"
@@ -65,11 +65,10 @@ androidx-foundation-layout-android = { group = "androidx.compose.foundation", na
 androidx-foundation-android = { group = "androidx.compose.foundation", name = "foundation-android" }
 androidx-animation-android = { group = "androidx.compose.animation", name = "animation-android" }
 androidx-animation-core-lint = { group = "androidx.compose.animation", name = "animation-core-lint" }
-androidx-compose-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-kotlin-kapt = { id = 'org.jetbrains.kotlin.kapt', version.ref = "kapt" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }

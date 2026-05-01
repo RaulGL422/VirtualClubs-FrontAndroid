@@ -2,24 +2,22 @@ import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.hilt.android)
-    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.ksp)
 }
 
 android {
     namespace = "es.virtualclubs"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "es.virtualclubs"
         minSdk = 30
-        targetSdk = 36
+        targetSdk = 37
         versionCode = 2
         versionName = "0.1.2v Alpha"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables { useSupportLibrary = true }
     }
 
     flavorDimensions += "env"
@@ -44,9 +42,6 @@ android {
     }
 
     buildTypes {
-        debug {
-            isDebuggable = true
-        }
         release {
             isMinifyEnabled = true
             isShrinkResources = true
@@ -63,10 +58,6 @@ android {
         }
     }
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
     buildFeatures {
         compose = true
         buildConfig = true
@@ -88,12 +79,10 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.compose.material3.window.size)
     implementation(libs.androidx.hilt.common)
-    implementation(libs.androidx.ui.test.android)
     implementation(libs.androidx.foundation.layout.android)
     implementation(libs.androidx.foundation.android)
     implementation(libs.androidx.animation.android)
-    implementation(libs.androidx.animation.core.lint)
-    implementation(libs.androidx.compose.foundation.layout)
+    lintChecks(libs.androidx.animation.core.lint)
     implementation(libs.androidx.compose.ui.unit)
 
 
@@ -103,10 +92,11 @@ dependencies {
     testImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.ui.test.junit4)
+    androidTestImplementation(libs.androidx.ui.test.android)
     debugImplementation(libs.androidx.ui.tooling)
 
     implementation(libs.dagger.hilt.android)
-    kapt(libs.dagger.hilt.compiler)
+    ksp(libs.dagger.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.core)
