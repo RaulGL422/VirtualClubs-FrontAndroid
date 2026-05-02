@@ -1,182 +1,166 @@
-# /review-pr — Revisión de Pull Request
+# /review-pr — Pull Request Review
 
-Revisa el PR actual (o el especificado como argumento) de forma exhaustiva, enfocado en Android/Jetpack Compose.
+Reviews the current PR (or a specified one) exhaustively, focused on Android/Jetpack Compose.
 
-## Uso
-- `/review-pr` — revisa el PR de la rama actual
-- `/review-pr 42` — revisa el PR número 42
+## Usage
+- `/review-pr` — reviews the PR for the current branch
+- `/review-pr 42` — reviews PR number 42
 
-## Paso 1: Identificar el PR
+## Step 1: Identify the PR
 
-Si se pasó un número como argumento, usa ese PR.
+If a number was passed as argument, use that PR.
 
-Si no, ejecuta:
+Otherwise, run:
 ```
 git branch --show-current
-gh pr list --head [rama-actual] --json number,title,url,baseRefName
+gh pr list --head [current-branch] --json number,title,url,baseRefName
 ```
 
-Si no existe PR para la rama actual, avisa al usuario y detente.
+If no PR exists for the current branch, inform the user and stop.
 
-**Detectar tarjeta Notion:** Extrae el número N si el nombre de la rama contiene `vc-[N]`. Se usará al final para actualizar el estado.
+## Step 2: Get PR information
 
-## Paso 2: Obtener información del PR
-
-Ejecuta:
+Run:
 ```
-gh pr view [numero] --json title,body,baseRefName,headRefName,additions,deletions,changedFiles,commits
-gh pr diff [numero]
+gh pr view [number] --json title,body,baseRefName,headRefName,additions,deletions,changedFiles,commits
+gh pr diff [number]
 ```
 
-## Paso 3: Revisar el código (análisis exhaustivo)
+## Step 3: Review the code (exhaustive analysis)
 
-Analiza el diff completo evaluando **todas** las categorías siguientes:
-
----
-
-### 🔴 ERRORES CRÍTICOS (bloquean el merge)
-
-- Crash potencial: NullPointerException en Composables, StateFlow no inicializado antes de colectar
-- Lógica de negocio incorrecta o rota
-- Navegación rota (rutas mal definidas, argumentos sin decodificar)
-- `TODO`, `FIXME`, `HACK`, `Log.d`, `println` olvidados en el diff
-- Descripción del PR vacía o sin secciones requeridas
-- Compilación rota (verificar que no hay errores de sintaxis evidentes)
-- Coroutines no canceladas o lanzadas en scope incorrecto
+Analyze the full diff evaluating **all** of the following categories:
 
 ---
 
-### 🔐 SEGURIDAD ANDROID
+### 🔴 CRITICAL ERRORS (block merge)
 
-- [ ] **Almacenamiento de tokens:** ¿Se usan `SecureUserPreferences` (AES/GCM) y NO `SharedPreferences` plano para tokens?
-- [ ] **Datos en logs:** ¿Hay tokens, contraseñas o datos de usuario en `Log.d/e/i`?
-- [ ] **Deep links:** ¿Los deep links validan los parámetros antes de usarlos?
-- [ ] **Permisos en Manifest:** ¿Solo se añaden los permisos estrictamente necesarios?
-- [ ] **Credenciales hardcodeadas:** ¿Hay secrets, API keys o contraseñas en el código?
-- [ ] **BuildConfig correctamente usado:** ¿Las URLs y keys usan `BuildConfig.BASE_URL` y `BuildConfig.GOOGLE_CLIENT_ID`?
-- [ ] **Datos sensibles en Bundle/arguments de navegación:** ¿Se evita pasar tokens por argumentos de navegación?
-
----
-
-### 📚 DOCUMENTACIÓN
-
-- [ ] ¿Los composables reutilizables nuevos tienen `@Preview`?
-- [ ] ¿Las funciones públicas o complejas tienen KDoc?
-- [ ] ¿Se actualizó `CLAUDE.md` si se añadieron rutas nuevas, endpoints nuevos o patrones nuevos?
-- [ ] ¿Los ErrorType nuevos tienen su caso en `ErrorHandler.kt`?
+- Potential crash: NullPointerException in Composables, StateFlow collected before initialization
+- Incorrect or broken business logic
+- Broken navigation (malformed routes, undecodified arguments)
+- `TODO`, `FIXME`, `HACK`, `Log.d`, `println` left in the diff
+- Empty PR description or missing required sections
+- Broken compilation (obvious syntax errors)
+- Coroutines not cancelled or launched in wrong scope
 
 ---
 
-### 🏗️ ARQUITECTURA Y MALAS PRÁCTICAS
+### 🔐 ANDROID SECURITY
 
-- ¿Se respeta la separación de capas? (Composable → ViewModel → UseCase → Repository, no saltar capas)
-- ¿El ViewModel **no** tiene referencias a Context, Activity ni Composables?
-- ¿El estado del ViewModel se expone como `StateFlow` inmutable (no `MutableStateFlow` público)?
-- ¿Los efectos secundarios (navegación, toast) se manejan con `SharedFlow`/`Channel`, no desde el Composable directamente?
-- ¿Se usa `hiltViewModel()` correctamente en los composables?
-- ¿Los use cases tienen `operator fun invoke(...)` y contienen la lógica de negocio?
-- ¿Los repositorios solo hacen mapeo de datos, no lógica de negocio?
-- ¿Hay código duplicado que podría extraerse a componentes o utilities?
-- ¿Los nombres de variables, funciones y clases son descriptivos?
-- ¿Imports sin usar o código comentado innecesario?
-- ¿Los composables nuevos reutilizables están en `presentation/components/`, no inlineados?
+- [ ] **Token storage:** Are tokens stored in `SecureUserPreferences` (AES/GCM) and NOT in plain `SharedPreferences`?
+- [ ] **Data in logs:** Are there tokens, passwords, or user data in `Log.d/e/i`?
+- [ ] **Deep links:** Do deep links validate parameters before using them?
+- [ ] **Manifest permissions:** Are only strictly necessary permissions added?
+- [ ] **Hardcoded credentials:** Are there secrets, API keys, or passwords in the code?
+- [ ] **BuildConfig correctly used:** Do URLs and keys use `BuildConfig.BASE_URL` and `BuildConfig.GOOGLE_CLIENT_ID`?
+- [ ] **Sensitive data in navigation arguments:** Are tokens avoided in navigation arguments/Bundle?
 
 ---
 
-### ⚡ RENDIMIENTO Y COMPOSE
+### 📚 DOCUMENTATION
 
-- ¿Hay recomposiciones innecesarias? (lambdas no recordadas, objetos nuevos en cada recomposición)
-- ¿Se usa `remember { }` correctamente para valores que no deben recalcularse?
-- ¿Los `LazyColumn`/`LazyRow` usan `key` correctamente?
-- ¿Las operaciones de IO o CPU pesadas están en `Dispatchers.IO` o `Dispatchers.Default`?
-- ¿Los Flows se colectan con `collectAsStateWithLifecycle()` (no `collectAsState()`) para respetar el ciclo de vida?
-- ¿Se usa `rememberCoroutineScope` solo cuando es necesario (no para reemplazar `viewModelScope`)?
+- [ ] Do new reusable composables have `@Preview`?
+- [ ] Do new public or complex functions have KDoc?
+- [ ] Was `CLAUDE.md` updated if new routes, endpoints, or patterns were added?
+- [ ] Do new `ErrorType` values have their case in `ErrorHandler.kt`?
+
+---
+
+### 🏗️ ARCHITECTURE AND BAD PRACTICES
+
+- Is layer separation respected? (Composable → ViewModel → UseCase → Repository — no layer skipping)
+- Does the ViewModel have **no** references to Context, Activity, or Composables?
+- Is ViewModel state exposed as immutable `StateFlow` (not public `MutableStateFlow`)?
+- Are side effects (navigation, toasts) handled with `SharedFlow`/`Channel`, not directly from Composable?
+- Is `hiltViewModel()` used correctly in composables?
+- Do use cases have `operator fun invoke(...)` and contain the business logic?
+- Do repositories only do data mapping, not business logic?
+- Is there duplicated code that could be extracted to components or utilities?
+- Are variable, function, and class names descriptive?
+- Unused imports or unnecessary commented-out code?
+- Are new reusable composables in `presentation/components/`, not inlined?
+
+---
+
+### ⚡ PERFORMANCE AND COMPOSE
+
+- Are there unnecessary recompositions? (non-remembered lambdas, new objects on every recomposition)
+- Is `remember { }` used correctly for values that should not be recalculated?
+- Do `LazyColumn`/`LazyRow` use `key` correctly?
+- Are heavy IO or CPU operations on `Dispatchers.IO` or `Dispatchers.Default`?
+- Are Flows collected with `collectAsStateWithLifecycle()` (not `collectAsState()`) to respect lifecycle?
+- Is `rememberCoroutineScope` only used when necessary (not to replace `viewModelScope`)?
 
 ---
 
 ### ✅ TESTS
 
-- ¿El nuevo ViewModel o UseCase tiene tests unitarios en `src/test/`?
-- ¿Se cubren los casos de error además del happy path?
-- ¿Los tests nuevos de UI usan el framework de Compose Testing?
-- **Nota:** No es posible ejecutar los tests con el diff. Si hay tests nuevos, deben ejecutarse con `./gradlew testDevDebugUnitTest` antes del merge.
+- Does the new ViewModel or UseCase have unit tests in `src/test/`?
+- Are error cases covered in addition to the happy path?
+- Do new UI tests use the Compose Testing framework?
+- **Note:** Tests cannot be run from the diff alone. If there are new tests, they must be run with `./gradlew testDevDebugUnitTest` before merge.
 
 ---
 
-## Paso 4: Generar reporte
+## Step 4: Generate report
 
-Presenta el resultado con este formato:
+Present the result in this format:
 
 ```
-## Revisión PR #[numero]: [título]
+## PR Review #[number]: [title]
 
-**Base:** [rama-base] ← [rama-head]
-**Cambios:** +[adiciones] / -[eliminaciones] en [N] archivos
-
----
-
-### 🔴 Errores Críticos
-[lista o "Ninguno encontrado"]
-
-### 🔐 Problemas de Seguridad
-[lista o "Ninguno encontrado"]
-
-### 📚 Documentación Faltante
-[lista o "Completa"]
-
-### 🏗️ Malas Prácticas
-[lista o "Ninguna encontrada"]
-
-### ⚡ Problemas de Rendimiento / Compose
-[lista o "Ninguno encontrado"]
-
-### ✅ Estado de Tests
-[observaciones]
+**Base:** [base-branch] ← [head-branch]
+**Changes:** +[additions] / -[deletions] in [N] files
 
 ---
 
-### Veredicto
-[APROBADO / APROBADO CON SUGERENCIAS / CAMBIOS REQUERIDOS]
+### 🔴 Critical Errors
+[list or "None found"]
 
-### Próximos pasos sugeridos:
-1. [acción concreta]
-2. [acción concreta]
+### 🔐 Security Issues
+[list or "None found"]
+
+### 📚 Missing Documentation
+[list or "Complete"]
+
+### 🏗️ Bad Practices
+[list or "None found"]
+
+### ⚡ Performance / Compose Issues
+[list or "None found"]
+
+### ✅ Test Status
+[observations]
+
+---
+
+### Verdict
+[APPROVED / APPROVED WITH SUGGESTIONS / CHANGES REQUIRED]
+
+### Suggested next steps:
+1. [concrete action]
+2. [concrete action]
 ```
 
-Si hay errores críticos o problemas de seguridad, explica el riesgo y propón el fix concreto con código.
+If there are critical errors or security issues, explain the risk and propose the concrete fix with code.
 
 ---
 
-## Paso 5: Actualizar estado en Notion (si aplica)
+## Step 5: Update documentation if applicable
 
-Si se detectó una tarjeta Notion (VC-N en el nombre de rama), actualiza el estado según el veredicto:
+After generating the report, read `CLAUDE.md` and determine if the PR introduces changes that leave it outdated. Evaluate:
 
-| Veredicto | Estado Notion |
-|-----------|---------------|
-| APROBADO | `📦 Pendiente debug` |
-| APROBADO CON SUGERENCIAS | `📦 Pendiente debug` |
-| CAMBIOS REQUERIDOS | `🔄️Cambios Solicitados` |
+**Navigation Routes:** Does the PR add, remove, or modify routes in `Screen.kt`/`NavGraph.kt`? Update the table.
 
-Busca la página con `notion-search` en `data_source_url: "collection://276a7f5d-0a0f-802c-8d6f-000b821853c1"` usando el número N, luego usa `notion-update-page` con `command: "update_properties"` y el estado correspondiente.
+**API Endpoints Consumed:** Does the PR consume new endpoints or modify existing calls? Update the table.
 
----
+**Known Technical Debt:** Does the PR resolve or introduce technical debt? Update the table.
 
-## Paso 6: Actualizar documentación si corresponde
+**Patterns & Conventions:** Does the PR introduce a new pattern? Document it.
 
-Después de generar el reporte, lee `CLAUDE.md` y determina si el PR introduce cambios que lo dejan desactualizado. Evalúa:
+If nothing needs to be updated, state: `"CLAUDE.md is up to date, no changes required."`
 
-**Rutas de Navegación:** ¿El PR añade, elimina o modifica rutas en `Screen.kt`/`NavGraph.kt`? Actualiza la tabla.
-
-**Endpoints API Consumidos:** ¿El PR consume nuevos endpoints o modifica llamadas existentes? Actualiza la tabla.
-
-**Deuda Técnica Conocida:** ¿El PR resuelve o introduce deuda técnica? Actualiza la tabla.
-
-**Patrones y Convenciones:** ¿El PR introduce un patrón nuevo? Documéntalo.
-
-Si no hay nada que actualizar en `CLAUDE.md`, indica: `"CLAUDE.md está al día, no requiere cambios."`
-
-Si hay cambios, aplícalos directamente y al final muestra un resumen:
+If there are changes, apply them directly and show a summary:
 ```
-### Documentación actualizada
-- [sección]: [qué cambió]
+### Documentation updated
+- [section]: [what changed]
 ```

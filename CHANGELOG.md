@@ -1,6 +1,6 @@
-# CHANGELOG — Virtual Clubs Android
+# Changelog
 
-Todas las versiones notables del proyecto. Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
+All notable changes to VirtualClubs Android. Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
@@ -10,50 +10,53 @@ Todas las versiones notables del proyecto. Formato basado en [Keep a Changelog](
 
 ## [0.1.2] — Alpha — 2026-04-08
 
-### Implementado
-- VC-58: Implementar VerifyEmailResultPage y ViewModel completos (🛠️ Funcionalidad)
-- VC-59: Reescribir SettingsPage y SettingsViewModel desde cero para VirtualClubs (✏️ Diseño)
-- VC-60: Implementar flujo completo de getUserInfo con modelo de usuario real (🛠️ Funcionalidad)
-- VC-62: Refactorizar UserSession para exponer estado reactivo con StateFlow (🛠️ Funcionalidad)
-- VC-63: Reemplazar runBlocking en NetworkModule por caché de token en memoria (📱 Android)
-- VC-66: Añadir certificate pinning en OkHttp para la API de producción (🔒 Autenticación)
-- VC-67: Crear suite de tests unitarios base para ViewModels y UseCases (🔎 Testing)
-- VC-68: Implementar pantalla Home con contenido real de clubes del usuario (🛠️ Funcionalidad)
-- VC-71: Verificar expiración JWT localmente en AuthInterceptor antes de la request (🛠️ Funcionalidad)
-- VC-76: Migrar Google Sign-In a CredentialManager (eliminar legacy play-services-auth) (📱 Android)
-- VC-81: Usar campo email de RegisterResponse para poblar UserSession (🛠️ Funcionalidad)
-- VC-85: Configurar ProGuard/R8 para build release (📱 Android)
+### Added
+- Email verification result screen (`VerifyEmailResultPage` + `VerifyEmailResultViewModel`) with deep link handling
+- Home screen with real club listing from the authenticated user's data
+- Unit test suite for all ViewModels, use cases, and the network layer
+  - Fakes for repositories (not mocks) for more reliable and refactor-proof tests
+  - `MainDispatcherRule` for coroutine-based tests
+- Certificate pinning in OkHttp for the production flavor — prevents MITM attacks
+- Local JWT expiration check in `AuthInterceptor` before every request — avoids unnecessary 401 round-trips
+- `ErrorDispatcher` interface in the domain layer — use cases dispatch errors without coupling to UI
+- Debug-only server URL switcher in Settings — configure any local backend IP at runtime without recompiling
+
+### Changed
+- `SettingsPage` and `SettingsViewModel` fully rewritten with theme, contrast, font size, email display, and logout
+- `getUserInfo` flow redesigned with a real User domain model populated from the API response
+- `UserSession` refactored to expose reactive state via `StateFlow`
+- `runBlocking` in `NetworkModule` replaced with in-memory token cache in `UserSession` — eliminates blocking on every request
+- Google Sign-In migrated from legacy `play-services-auth` to `CredentialManager` (modern API)
+- `RegisterResponse` now provides the email field to populate `UserSession` directly
+- ProGuard / R8 enabled and configured for release builds (`isMinifyEnabled = true`, `isShrinkResources = true`)
 
 ---
 
 ## [0.1.1] — Alpha — 2025
 
-### Implementado
-- Sistema de autenticación completo
-  - Login con email/contraseña
-  - Registro con email/contraseña
-  - Google Sign-In (legacy API)
-  - Logout con limpieza de tokens
-  - Solicitud de reset de contraseña por email
-  - Reset de contraseña con token via deep link
-  - Verificación de email via deep link (resultado pendiente)
-  - Auto-login con refresh token al arrancar
-- Almacenamiento seguro de tokens (AES/GCM con AndroidKeyStore)
-- Navegación con Jetpack Compose Navigation + deep links
-- Tema dinámico (light/dark/contrast) con Material 3
-- DataStore para preferencias de usuario y app
-- Estructura Clean Architecture + MVVM + Hilt completa
-- GlobalUIManager para estado global de UI (loading, errores, diálogos)
-- Build flavors dev/prod con BuildConfig
-- Dos Activities adicionales para deep links (ResetPassword, VerifyEmail)
+### Added
+- Complete authentication system
+  - Email/password login and registration
+  - Google Sign-In (now migrated to CredentialManager — see 0.1.2)
+  - Logout with full token and session cleanup
+  - Password reset via email + deep link
+  - Email verification via deep link
+  - Auto-login on startup using refresh token
+- Secure token storage — AES/GCM encryption with AndroidKeyStore
+- Jetpack Compose Navigation with deep links
+- Dynamic theme (light / dark / high-contrast) with Material 3
+- DataStore for user and app preferences
+- Clean Architecture + MVVM + Hilt project structure
+- `GlobalUIManager` for global UI state (loading, errors, dialogs)
+- Build flavors `dev` / `prod` with `BuildConfig` fields
 
 ---
 
 ## [0.1.0] — Alpha — Initial Setup
 
-### Implementado
-- Setup inicial del proyecto Android
-- Estructura de paquetes Clean Architecture
-- Integración Hilt DI
-- Retrofit + OkHttp con AuthInterceptor
-- Material 3 theme base
+### Added
+- Initial Android project setup
+- Clean Architecture package structure
+- Hilt DI integration
+- Retrofit + OkHttp with `AuthInterceptor`
+- Material 3 base theme

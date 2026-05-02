@@ -1,65 +1,64 @@
-# CLAUDE.md — Virtual Clubs Android
+# CLAUDE.md — VirtualClubs Android
 
-## Contexto del Proyecto
+## Project Overview
 
-App Android en **Jetpack Compose** para gestión de **clubes deportivos virtuales**. Actualmente implementa el sistema de autenticación completo y la estructura base de navegación. Es un proyecto en desarrollo activo por un desarrollador junior.
+Android client for **VirtualClubs** — a platform to create and manage sports fan clubs. Users can join clubs by sport, connect with members, organize events, and manage attendance, all from their phone.
 
-- **Versión app:** 0.1.1v Alpha | **Kotlin:** 2.2.10 | **AGP:** 9.1.0
-- **Compose BOM:** 2025.07.00 | **Hilt:** 2.57
-- **Min SDK:** 30 | **Target SDK:** 35 | **Compile SDK:** 36
-- **API Backend:** https://virtualclubs-backend.onrender.com/
-- **Rama de trabajo habitual:** ramas `feature/*` o `fix/*` (nunca main/development directamente)
-- **Nombres de rama:** inglés o español pero **solo ASCII** — sin tildes, sin ñ (ej: `feature/email-verification`, no `feature/verificación-email`)
+- **Platform:** Android (Kotlin + Jetpack Compose)
+- **Architecture:** Clean Architecture + MVVM
+- **Version:** 0.1.2 Alpha | **AGP:** 9.2.0 | **Kotlin:** 2.2.10
+- **Compose BOM:** 2026.03.00 | **Hilt:** 2.57
+- **Min SDK:** 30 (Android 11) | **Target SDK:** 37 | **Compile SDK:** 37
+- **Backend:** https://api-vc.rgal.dev (dev) / https://virtualclubs-backend.onrender.com (prod)
 
 ---
 
-## Arquitectura del Proyecto
-
-Clean Architecture + MVVM. Tres capas:
+## Package Structure
 
 ```
 es/virtualclubs/
-├── App.kt                          HiltAndroidApp — punto de entrada
+├── App.kt                          HiltAndroidApp entry point
 ├── Activities.kt                   MainActivity, ResetPasswordActivity, VerifyEmailActivity
-├── VirtualClubsMainApp.kt          Composable raíz (tema + NavHost)
+├── VirtualClubsMainApp.kt          Root composable (theme + NavHost)
 │
-├── data/                           CAPA DE DATOS
+├── data/                           DATA LAYER
 │   ├── local/
 │   │   ├── datastore/
-│   │   │   ├── AppPreferences.kt   Tema oscuro, contraste, tamaño fuente
-│   │   │   └── UserPreferences.kt  Email, autologin flag
+│   │   │   ├── AppPreferences.kt   Dark theme, contrast, font size
+│   │   │   └── UserPreferences.kt  Email, auto-login flag
 │   │   └── secure/
-│   │       ├── EncryptionUtils.kt          AES/GCM para tokens
-│   │       └── SecureUserPreferences.kt    Almacenamiento encriptado de tokens
+│   │       ├── EncryptionUtils.kt          AES/GCM for tokens
+│   │       └── SecureUserPreferences.kt    Encrypted token storage
 │   ├── managers/
-│   │   ├── GlobalUIManager.kt      Estado global: loading, errores, diálogos
-│   │   ├── SafeCall.kt             Wrapper para llamadas API
-│   │   └── SafeResponse.kt         Manejo de respuestas + refresh automático de token
+│   │   ├── GlobalUIManager.kt      Global state: loading, errors, dialogs
+│   │   ├── SafeCall.kt             API call wrapper with error dispatching
+│   │   └── SafeResponse.kt         Response handler + automatic token refresh
 │   ├── models/
 │   │   └── User.kt                 User(email: String?)
 │   ├── remote/
 │   │   ├── api/
-│   │   │   ├── AuthApi.kt          Endpoints de autenticación
-│   │   │   ├── RefreshApi.kt       Endpoint de refresh de token
-│   │   │   └── UserApi.kt          Endpoint de info de usuario
-│   │   └── dto/                    DTOs de request/response
-│   └── repository/                 Implementaciones de repositorios
+│   │   │   ├── AuthApi.kt          Authentication endpoints
+│   │   │   ├── RefreshApi.kt       Token refresh endpoint
+│   │   │   └── UserApi.kt          User info endpoint
+│   │   └── dto/                    Request/response DTOs
+│   └── repository/                 Repository implementations
 │
-├── di/                             INYECCIÓN DE DEPENDENCIAS (Hilt)
-│   ├── NetworkModule.kt            Retrofit + OkHttp + interceptores
+├── di/                             DEPENDENCY INJECTION (Hilt)
+│   ├── NetworkModule.kt            Retrofit + OkHttp + interceptors
 │   ├── PreferencesModule.kt        DataStore providers
 │   ├── SessionModule.kt
-│   ├── UseCaseModule.kt            Todos los use cases (@Singleton)
+│   ├── UseCaseModule.kt            All use cases (@Singleton)
 │   └── GlobalUIEntryPoint.kt
 │
-├── domain/                         CAPA DE DOMINIO
+├── domain/                         DOMAIN LAYER
 │   ├── model/
-│   │   ├── AuthInterceptor.kt      Inyecta Bearer token en requests
+│   │   ├── AuthInterceptor.kt      Injects Bearer token into requests
 │   │   ├── AuthTokens.kt           accessToken + refreshToken
-│   │   ├── ErrorType.kt            Enum con 26 tipos de error
-│   │   └── VirtualClubException.kt Excepción custom del proyecto
-│   ├── repository/                 Interfaces de repositorios
-│   └── usecase/                    Casos de uso (lógica de negocio)
+│   │   ├── ErrorType.kt            Enum with 27 error types
+│   │   ├── ErrorDispatcher.kt      Interface for dispatching errors (implemented by GlobalUIManager)
+│   │   └── VirtualClubException.kt Custom project exception
+│   ├── repository/                 Repository interfaces
+│   └── usecase/                    Use cases (business logic)
 │       ├── AuthUseCase.kt
 │       ├── GoogleUseCase.kt
 │       ├── LogoutUserUseCase.kt
@@ -67,215 +66,213 @@ es/virtualclubs/
 │       ├── RegisterUseCase.kt
 │       └── token/                  GetAccessToken, GetRefreshToken, SaveTokens, ClearTokens
 │
-├── presentation/                   CAPA DE PRESENTACIÓN
-│   ├── components/                 Componentes reutilizables
+├── presentation/                   PRESENTATION LAYER
+│   ├── components/                 Reusable composables
 │   │   ├── AppBar.kt
 │   │   ├── Buttons.kt
 │   │   ├── Scaffold.kt
 │   │   ├── TextFields.kt
 │   │   └── dialogs/
-│   │       └── EmailNotVerifiedDialog.kt
 │   ├── handlers/
 │   │   └── ErrorHandler.kt         ErrorType → string resource
 │   ├── navigation/
-│   │   ├── AppNavigator.kt         Control estático de navegación
-│   │   ├── NavGraph.kt             NavHost con todas las rutas
-│   │   ├── Screen.kt               Rutas selladas del proyecto
-│   │   └── SessionManager.kt       Manejo de logout global
+│   │   ├── AppNavigator.kt         Static navigation control
+│   │   ├── NavGraph.kt             NavHost with all routes
+│   │   ├── Screen.kt               Sealed class with all routes
+│   │   └── SessionManager.kt       Global logout handling
 │   ├── screens/
 │   │   ├── auth/                   Login/Register (AuthPage + AuthViewModel)
-│   │   ├── home/                   Home principal (HomePage + HomeViewModel)
-│   │   ├── resetPassword/          Reset de contraseña
-│   │   ├── settings/               Configuración de tema/fuente
-│   │   └── verifyemailresult/      Resultado de verificación de email
+│   │   ├── home/                   Main home (HomePage + HomeViewModel)
+│   │   ├── resetPassword/          Password reset flow
+│   │   ├── settings/               Theme/font/server settings
+│   │   └── verifyemailresult/      Email verification result
 │   └── theme/
-│       ├── Color.kt                Paleta Material 3 (light/dark/contrast)
+│       ├── Color.kt                Stadium DS — 10-level palette, 6 color schemes
 │       ├── Shape.kt
 │       ├── Theme.kt                VirtualClubsTheme composable
-│       └── Type.kt                 Tipografía
+│       └── Type.kt                 Poppins + Roboto typography
 │
 └── session/
-    └── UserSession.kt              Estado en memoria del usuario actual
+    └── UserSession.kt              In-memory user state (token cache + user info)
 ```
 
 ---
 
-## Rutas de Navegación
+## Navigation Routes
 
-Clase sellada `Screen` — todas las rutas del app:
+Sealed class `Screen` — all routes:
 
-| Ruta | Pantalla | Deep Link |
-|------|---------|-----------|
-| `auth/{message}` | Login / Registro | — |
-| `home` | Home principal | — |
-| `settings` | Configuración | — |
-| `reset-password/{token}` | Resetear contraseña | `virtualclubs://pass/reset-password?token={token}` |
-| `verify_email/{status}` | Resultado verificación | `virtualclubs://email/verify-email?status={status}` |
-
----
-
-## Endpoints API Consumidos
-
-Base URL: `https://virtualclubs-backend.onrender.com/`
-
-| Método | Ruta | Descripción | API interface |
-|--------|------|-------------|---------------|
-| POST | `/api/auth/authenticate` | Login con email/contraseña | AuthApi |
-| POST | `/api/auth/register` | Registro de usuario | AuthApi |
-| POST | `/api/auth/logout` | Cerrar sesión | AuthApi |
-| POST | `/api/auth/google` | Login con Google | AuthApi |
-| POST | `/api/auth/requestPasswordReset` | Solicitar reset de contraseña | AuthApi |
-| POST | `/api/auth/resetPassword` | Aplicar reset con token | AuthApi |
-| POST | `/api/auth/requestVerify` | Solicitar verificación de email | AuthApi |
-| POST | `/api/auth/refresh` | Refrescar access token | RefreshApi |
-| GET | `/api/user/getUserInfo` | Info del usuario autenticado | UserApi |
+| Route | Screen | Deep Link |
+|-------|---------|-----------|
+| `auth/{message}` | Login / Registration | — |
+| `home` | Main home | — |
+| `settings` | Settings | — |
+| `reset-password/{token}` | Password reset | `virtualclubs://pass/reset-password?token={token}` |
+| `verify_email/{status}` | Email verification result | `virtualclubs://email/verify-email?status={status}` |
 
 ---
 
-## Tipos de Error (ErrorType enum — 26 tipos)
+## API Endpoints
 
-`INTERNAL_ERROR`, `INVALID_CREDENTIALS`, `USERNAME_NOT_FOUND`, `EMAIL_ALREADY_EXISTS`, `EMAIL_REQUIRED`, `PASSWORD_REQUIRED`, `USERNAME_REQUIRED`, `PASSWORD_MIN_LENGTH_ERROR`, `INVALID_EMAIL_FORMAT`, `FIELD_NULL`, `TOKEN_BLANK`, `INVALID_REFRESH_TOKEN`, `INVALID_GOOGLE_TOKEN`, `FAILED_SEND_EMAIL`, `INVALID_TOKEN`, `NO_LOCAL_PROVIDER`, `EMAIL_NOT_FOUND`, `INVALID_ACCESS_TOKEN`, `CANT_CONNECT_SERVER`, `MISSING_TOKENS`, `GOOGLE_SIGN_IN_FAILED`, `PASSWORD_NOT_EQUALS`, `GOOGLE_SIGN_IN_NO_TOKEN`, `GOOGLE_LOGIN_EXCEPTION`, `USER_NOT_FOUND`, `EMAIL_NOT_VERIFIED`
+Base URL: `https://api-vc.rgal.dev/` (dev) · `https://virtualclubs-backend.onrender.com/` (prod)
+
+| Method | Route | Description | Interface |
+|--------|-------|-------------|-----------|
+| POST | `/v1/auth/login` | Login with email/password | AuthApi |
+| POST | `/v1/auth/register` | Register new user | AuthApi |
+| DELETE | `/v1/auth/logout` | Logout | AuthApi |
+| POST | `/v1/auth/google` | Google Sign-In | AuthApi |
+| POST | `/v1/auth/requestPasswordReset` | Request password reset | AuthApi |
+| POST | `/v1/auth/resetPassword` | Apply reset with token | AuthApi |
+| POST | `/v1/auth/requestVerify` | Request email verification | AuthApi |
+| POST | `/v1/auth/refresh` | Refresh access token | RefreshApi |
+| GET | `/v1/user/getUserInfo` | Authenticated user info | UserApi |
 
 ---
 
-## Build Flavors y Comandos
+## Error Types
 
-| Flavor | Descripción |
-|--------|-------------|
-| `dev` | BASE_URL apunta a Render (dev), Google Client ID hardcodeado |
-| `prod` | BASE_URL + Google Client ID desde `secrets.properties` |
+`ErrorType` enum — 27 types:
 
-**Comandos de build habituales:**
+`INTERNAL_ERROR`, `INVALID_CREDENTIALS`, `USERNAME_NOT_FOUND`, `EMAIL_ALREADY_EXISTS`, `EMAIL_REQUIRED`, `PASSWORD_REQUIRED`, `USERNAME_REQUIRED`, `PASSWORD_MIN_LENGTH_ERROR`, `INVALID_EMAIL_FORMAT`, `FIELD_NULL`, `TOKEN_BLANK`, `INVALID_REFRESH_TOKEN`, `INVALID_GOOGLE_TOKEN`, `FAILED_SEND_EMAIL`, `INVALID_TOKEN`, `NO_LOCAL_PROVIDER`, `EMAIL_NOT_FOUND`, `INVALID_ACCESS_TOKEN`, `CANT_CONNECT_SERVER`, `MISSING_TOKENS`, `GOOGLE_SIGN_IN_FAILED`, `PASSWORD_NOT_EQUALS`, `GOOGLE_SIGN_IN_NO_TOKEN`, `GOOGLE_LOGIN_EXCEPTION`, `USER_NOT_FOUND`, `EMAIL_NOT_VERIFIED`, `UNKNOWN`
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|------------|
+| UI | Jetpack Compose + Material 3 |
+| Architecture | Clean Architecture + MVVM |
+| DI | Hilt 2.57 |
+| Navigation | Jetpack Navigation Compose + deep links |
+| Networking | Retrofit 3 + OkHttp 5 (certificate pinning in prod) |
+| Auth | Google CredentialManager (modern API) |
+| Secure storage | AndroidKeyStore + AES/GCM encryption |
+| Local storage | DataStore Preferences |
+| Camera / QR | CameraX + ML Kit Barcode Scanning |
+| Testing | JUnit 4 + MockK + Coroutines Test + Fakes |
+| Language | Kotlin 2.2.10 |
+
+---
+
+## Build Flavors
+
+| Flavor | Backend URL | Certificate pinning |
+|--------|------------|---------------------|
+| `dev` | `api-vc.rgal.dev` | Disabled |
+| `prod` | `virtualclubs-backend.onrender.com` | Enabled |
+
+Both flavors read `GOOGLE_CLIENT_ID` from `secrets.properties` (never hardcoded).
+
 ```bash
-# Compilar (verificar errores Kotlin)
-./gradlew compileDevDebugKotlin
-
-# Build completo debug
-./gradlew assembleDevDebug
-
-# Tests unitarios
-./gradlew test
-
-# Tests unitarios del flavor dev
-./gradlew testDevDebugUnitTest
-
-# Limpiar
+./gradlew compileDevDebugKotlin      # Verify Kotlin errors
+./gradlew assembleDevDebug           # Full debug build
+./gradlew testDevDebugUnitTest       # Run unit tests
 ./gradlew clean
 ```
 
 ---
 
-## Patrones y Convenciones
+## Secrets Configuration
 
-### Estructura de un screen nuevo
-Cada pantalla sigue el patrón:
-1. `[Nombre]Page.kt` — Composable raíz de la pantalla
-2. `[Nombre]ViewModel.kt` — ViewModel con StateFlow
-3. Ruta en `Screen.kt`
-4. Entrada en `NavGraph.kt`
+Copy `app/secrets.properties.example` to `app/secrets.properties` (never committed):
 
-### ViewModel
-- Estado con `StateFlow` / `MutableStateFlow`
-- Efectos secundarios con `SharedFlow` / `Channel`
-- Inyección con `@HiltViewModel` + `@Inject constructor`
-- Coroutines con `viewModelScope.launch`
+```properties
+GOOGLE_CLIENT_ID=your_google_oauth2_web_client_id_here
+```
 
-### Repositorios
-- Interfaz en `domain/repository/`
-- Implementación en `data/repository/`
-- Siempre retornan `Result<T>` o usan `SafeResponse`
+Use the **Web client** type from Google Cloud Console. The Android client is automatically linked via package name + SHA-1 fingerprint.
+
+---
+
+## Patterns & Conventions
+
+### New screen structure
+
+Each screen follows this pattern:
+1. `[Name]Page.kt` — root screen Composable
+2. `[Name]ViewModel.kt` — ViewModel with StateFlow
+3. Route added to `Screen.kt`
+4. Entry added to `NavGraph.kt`
+
+### ViewModels
+
+- State via immutable `StateFlow` / `MutableStateFlow` (never expose `MutableStateFlow` publicly)
+- Side effects (navigation, toasts) via `SharedFlow` / `Channel`
+- Inject with `@HiltViewModel` + `@Inject constructor`
+- Coroutines via `viewModelScope.launch`
+- No references to `Context`, `Activity`, or `Composable` types
 
 ### Use Cases
-- Un archivo por use case en `domain/usecase/`
-- `@Singleton` en `UseCaseModule`
-- `operator fun invoke(...)` como punto de entrada
 
-### Gestión de errores
-- `VirtualClubException(type: ErrorType)` para errores de negocio
-- `SafeResponse` captura excepciones de red y delega refresh de token
-- `GlobalUIManager` maneja el estado de loading/error/diálogos a nivel global
-- `ErrorHandler` mapea `ErrorType` → string resource para mostrar en UI
+- One file per use case in `domain/usecase/`
+- `@Singleton` registered in `UseCaseModule`
+- `operator fun invoke(...)` as entry point
+- All business logic lives here, not in ViewModels or repositories
 
-### Almacenamiento seguro
-- Tokens siempre en `SecureUserPreferences` (AES/GCM con AndroidKeyStore)
-- Nunca en `SharedPreferences` plano ni en logs
-- Email y flags de sesión en `UserPreferences` (DataStore normal)
+### Repositories
+
+- Interface in `domain/repository/`
+- Implementation in `data/repository/`
+- Only data mapping — no business logic
+- Return `Result<T>` or delegate to `SafeResponse`
+
+### Error handling
+
+- `VirtualClubException(type: ErrorType)` for business errors
+- `SafeResponse` catches network exceptions and delegates token refresh
+- `GlobalUIManager` implements `ErrorDispatcher` from the domain layer — use cases dispatch errors without knowing about UI
+- `ErrorHandler` maps `ErrorType` → string resource for display
+
+### Token refresh without race conditions
+
+`SafeResponse` intercepts 401 responses and triggers a refresh. If multiple requests fail simultaneously, only one refresh call is made — others wait and retry with the new token.
+
+### Secure storage
+
+- Tokens always in `SecureUserPreferences` (AES/GCM with AndroidKeyStore)
+- Never in plain `SharedPreferences`, never logged
+- Email and session flags in `UserPreferences` (plain DataStore)
+
+### In-memory token cache
+
+Access tokens are cached in `UserSession` after the first read. `AuthInterceptor` reads synchronously from cache to avoid `runBlocking` on every request. The only `runBlocking` is in `NetworkModule` at Hilt graph construction time (dev builds only).
 
 ### Composables
-- Nombres en PascalCase
-- `@Preview` en todos los composables reutilizables
-- `modifier: Modifier = Modifier` como primer parámetro después del estado
-- No llamar ViewModels directamente desde composables hijos — pasar lambdas
 
-### Commits y ramas
-- Commits en español, formato semántico: `[tipo](scope): descripción`
-- Scopes habituales: `auth`, `navigation`, `theme`, `home`, `settings`, `user`, `deps`, `network`, `di`
-- Nunca commitear directamente en `main` o `development`
+- PascalCase names
+- `@Preview` on all reusable composables
+- `modifier: Modifier = Modifier` as first parameter after state
+- Do not call ViewModels directly from child composables — pass lambdas down
 
----
+### Testing strategy
 
-## Comandos Personalizados
-
-| Comando | Descripción |
-|---------|-------------|
-| `/add-task` | Crea tarjeta en Notion |
-| `/new-feature` | Crea rama desde tarjeta Notion o descripción libre |
-| `/do-task` | Flujo completo autónomo: rama → implementa → commit → PR → review |
-| `/commit` | Commit semántico con referencia Notion opcional |
-| `/create-pr` | Crea PR hacia development + actualiza Notion |
-| `/review-pr` | Revisión exhaustiva de PR (Android-specific) |
-| `/project-status` | Estado del proyecto y deuda técnica |
-| `/sync-main` | Sincroniza rama actual con main via rebase |
-| `/update-deps` | Revisa y actualiza dependencias en libs.versions.toml |
-| `/add-test` | Genera tests unitarios o de UI para una clase/composable |
-| `/check-security` | Auditoría de seguridad Android |
-| `/explain` | Explica un archivo o concepto del proyecto |
-| `/release-debug` | Agrupa tareas debug, genera CHANGELOG, crea release PR |
+- **Fakes** for repositories — configurable real implementations in `test/fakes/`, not mocks
+- **MockK** only for Android-dependent classes (`SecureUserPreferences`, `GlobalUIManager`)
+- `MainDispatcherRule` on every test using coroutines or `StateFlow`
 
 ---
 
-## Integración con Notion
+## Known Technical Debt
 
-Misma base de datos del proyecto backend.
-
-- **Database ID:** `276a7f5d-0a0f-80ab-9cd3-d4f3c733a260`
-- **Collection ID:** `276a7f5d-0a0f-802c-8d6f-000b821853c1`
-- **Search URL:** `collection://276a7f5d-0a0f-802c-8d6f-000b821853c1`
-
-**Propiedades:**
-- `Nombre de la tarea` (title)
-- `userDefined:ID` (auto_increment, formato VC-N)
-- `Tipo de tarea` (multi_select)
-- `Estado` (status)
-- `Prioridad` (select: Alta, Medio, Baja)
-- `Descripción` (text)
-- `Nivel de esfuerzo` (select: Pequeño, Medio, Grande)
-
-**Flujo de estados:**
-```
-Sin Empezar → 💻 En curso → 📬 PR Abierto → 📦 Pendiente debug → ⌛🔎 Pendiente de testeo → 👁️ Pendiente de Publicar → ✅ Publicado
-```
-
-**Tipos de tarea disponibles (misma DB que el backend):**
-- `🐞 Error` — bug fix
-- `🔎 Testing` — tests unitarios o UI
-- `✏️ Diseño` — trabajo en composables, pantallas, componentes UI
-- `🛠️ Funcionalidad` — nueva feature del app
-- `📱 Android` — configuración nativa, permisos, manifest, deep links, Gradle
-- `🔒 Autenticación` — flujos de login/registro/tokens
-- `⛓️ API` — cambios en la capa de red, DTOs, endpoints consumidos
-- `📊 Base de datos` — DataStore, Room si se añade en el futuro
+| Item | Detail |
+|------|--------|
+| Home screen incomplete | Club listing implemented but management features are placeholders |
+| UserApi limited | `getUserInfo` only returns email — needs expansion for clubs, config, etc. |
+| `prod` flavor backend | Both flavors point to Render — a dedicated production URL is needed |
+| UI/instrumentation tests | No Compose UI tests implemented yet |
 
 ---
 
-## Deuda Técnica Conocida
+## Rules for Claude
 
-| Ítem | Detalle |
-|------|---------|
-| Home screen vacía | HomePage actual es placeholder, falta contenido real de clubes |
-| ProGuard no configurado | `isMinifyEnabled = false` en release — falta configurar R8/ProGuard |
-| Certificate pinning ausente | No hay pinning de certificados SSL en OkHttp |
-| Tests sin cobertura | No hay tests unitarios ni de UI implementados |
-| UserApi limitada | `getUserInfo` solo devuelve email — falta expandir para clubs, config, etc. |
-| Credentials API migración | Se usa `play-services-auth` legacy + nuevo `credentials` — consolidar en uno |
-| `prod` flavor sin URL real | Ambos flavors apuntan a Render — falta URL de producción propia |
+- **Never commit directly** to `main` or `development` — always use feature/fix branches
+- **Never hardcode** `GOOGLE_CLIENT_ID` or any secret in source files — always read from `BuildConfig`
+- **Keep layer boundaries**: Composable → ViewModel → UseCase → Repository. No layer skipping.
+- **New error types** must have a corresponding case in `ErrorHandler.kt`
+- **New routes** must be added to both `Screen.kt` and `NavGraph.kt`
+- **New use cases** must be registered as `@Singleton` in `UseCaseModule`
+- **Models** should be `data class` — no logic in data classes
+- **Do not add** `runBlocking` outside of `NetworkModule` — use coroutines properly
+- **Update this file** when adding new routes, endpoints, or patterns

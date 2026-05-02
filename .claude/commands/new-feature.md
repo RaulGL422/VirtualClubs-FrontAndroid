@@ -1,120 +1,60 @@
-# /new-feature — Crear Nueva Rama de Feature
+# /new-feature — Create Feature Branch
 
-Crea una rama de trabajo correctamente nombrada desde `development` (por defecto) o desde la rama especificada. Soporta integración con Notion: si se pasa un ID de tarjeta, obtiene los detalles directamente de la base de datos.
+Creates a correctly named working branch from `development` (default) or a specified base branch.
 
-## Uso
-- `/new-feature VC-5` — crea rama a partir de la tarjeta Notion #5
-- `/new-feature 5` — equivalente a VC-5
-- `/new-feature agregar pantalla de perfil` — modo libre, sin Notion
-- `/new-feature VC-5 --from main` — tarjeta Notion desde otra rama base
-
----
-
-## Paso 1: Verificar estado de trabajo
-
-Ejecuta `git status`. Si hay cambios sin commitear, avisa al usuario:
-> "Tienes cambios sin commitear en la rama actual. ¿Quieres que haga stash antes de cambiar de rama? (sí/no)"
+## Usage
+- `/new-feature add profile screen` — creates branch from description
+- `/new-feature fix refresh token on network change`
+- `/new-feature add profile screen --from main` — use a different base branch
 
 ---
 
-## Paso 2: Determinar origen de la tarea
+## Step 1: Check working state
 
-Detecta si el argumento tiene formato `VC-N`, `vc-N` o es un número entero (ej: `5`, `VC-5`, `vc-5`).
-
-- **Si es ID de Notion** → sigue el **Paso 2A**
-- **Si es descripción libre** → sigue el **Paso 2B**
+Run `git status`. If there are uncommitted changes, warn the user:
+> "You have uncommitted changes on the current branch. Do you want me to stash them before switching? (yes/no)"
 
 ---
 
-### Paso 2A: Obtener tarea desde Notion
+## Step 2: Determine branch name
 
-Busca la tarjeta usando `notion-search` con:
-- `data_source_url`: `"collection://276a7f5d-0a0f-802c-8d6f-000b821853c1"`
-- `query`: el nombre o número de la tarea (prueba con el número, luego con `VC-N` si no aparece)
+Based on the description, determine type and name:
 
-Si la búsqueda devuelve varios resultados, busca el que tenga `userDefined:ID` igual al número proporcionado. Si es necesario, haz `notion-fetch` a la URL del resultado para obtener todos los detalles.
-
-Extrae del resultado:
-- `Nombre de la tarea`
-- `Tipo de tarea` (array multi_select)
-- `Descripción` (primeros 150 caracteres para mostrar al usuario)
-- ID/URL de la página (para actualizar el estado después)
-
-**Determinar prefijo de rama según `Tipo de tarea`:**
-
-| Tipo de tarea presente | Prefijo |
-|---|---|
-| 🐞 Error | `fix/` |
-| 🔎 Testing | `test/` |
-| 🛠️ Funcionalidad / 💻 FrontEnd / 🔒 Autenticación / 📱 Android | `feature/` |
-| 🎨 UI/Diseño | `feature/` |
-| (ninguno coincide o campo vacío) | `chore/` |
-
-Si hay varios tipos, aplica la prioridad: Error > Testing > Funcionalidad/FrontEnd/Auth/Android/UI > Diseño.
-
-**Generar nombre de rama:**
-- Convierte `Nombre de la tarea` a kebab-case ASCII: minúsculas, sin tildes (á→a, é→e, í→i, ó→o, ú→u), sin ñ (ñ→n), sin caracteres especiales, espacios → guiones
-- Formato: `[prefijo]/vc-[N]-[nombre-kebab]`
-- Máximo 55 caracteres en total; trunca el nombre si hace falta
-- Ejemplo: `fix/vc-3-deep-link-reset-password`, `feature/vc-5-pantalla-perfil-usuario`
-
-Muestra al usuario antes de continuar:
-```
-Tarjeta Notion encontrada:
-  #[N] — [Nombre de la tarea]
-  Tipo: [Tipo de tarea]
-  Descripción: [primeros 150 chars]
-
-Rama propuesta: [nombre-de-rama]
-Base: [rama-base]
-
-¿Confirmar? (sí/no)
-```
-
----
-
-### Paso 2B: Modo libre (sin Notion)
-
-Basándote en la descripción, determina tipo y nombre:
-
-**Tipo de rama:**
-- `feature/` — nueva pantalla o funcionalidad
-- `fix/` — corrección de bug
+**Branch type:**
+- `feature/` — new screen or feature
+- `fix/` — bug fix
 - `refactor/` — refactoring
 - `test/` — tests
-- `chore/` — mantenimiento, dependencias
-- `docs/` — solo documentación
+- `chore/` — maintenance, dependencies
+- `docs/` — documentation only
 
-**Nombre:** kebab-case, solo ASCII (sin tildes ni ñ), máximo 40 caracteres.
+**Name:** kebab-case, ASCII only (no accents, no special characters), max 40 characters.
 
-Propón el nombre al usuario antes de crear la rama.
+**Full format:** `[type]/[short-name]`
+
+Examples: `feature/profile-screen`, `fix/refresh-token-network`, `chore/update-dependencies`
+
+Propose the name to the user before creating the branch.
 
 ---
 
-## Paso 3: Crear la rama
+## Step 3: Create the branch
 
-La rama base es `development` por defecto. Si el usuario pasó `--from <rama>`, usa esa.
-
-```bash
-git fetch origin [rama-base]
-git checkout [rama-base]
-git pull origin [rama-base]
-git checkout -b [nombre-rama]
-```
-
-## Paso 4: Push inicial al remoto
+Default base is `development`. If `--from <branch>` was passed, use that.
 
 ```bash
-git push --set-upstream origin [nombre-rama]
+git fetch origin [base-branch]
+git checkout [base-branch]
+git pull origin [base-branch]
+git checkout -b [branch-name]
 ```
 
-## Paso 5: Actualizar Notion (solo si vino del Paso 2A)
+## Step 4: Initial push to remote
 
-Actualiza el estado de la tarjeta a `💻 En curso`:
-- Usa `notion-update-page` con `command: "update_properties"`
-- `properties`: `{"Estado": "💻 En curso"}`
-- `page_id`: el ID de la página obtenida en el Paso 2A
+```bash
+git push --set-upstream origin [branch-name]
+```
 
-## Paso 6: Confirmar
+## Step 5: Confirm
 
-Muestra la rama creada y, si aplica, confirma que el estado en Notion fue actualizado a "💻 En curso". Recuerda al usuario usar `/commit` para los cambios y `/create-pr` cuando termine.
+Show the created branch name and remind the user to use `/commit` for changes and `/create-pr` when done.

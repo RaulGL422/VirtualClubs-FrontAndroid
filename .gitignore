@@ -14,13 +14,17 @@
 .cxx
 local.properties
 
-# Secretos y credenciales
+# Secrets and credentials
 secrets.properties
 **/secrets.properties
 google-services.json
 *.jks
 *.keystore
+*.p12
+*.pem
+*.key
+.env
 
-# Configuración interna de Claude Code
-.claude/
-CLAUDE.md
+# Claude Code — personal settings only (commands are public)
+.claude/settings.local.json
+.claude/workflows/
