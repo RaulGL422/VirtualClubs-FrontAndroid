@@ -32,7 +32,7 @@ All notable changes to VirtualClubs Android. Format based on [Keep a Changelog](
 
 ---
 
-## [0.1.1] — Alpha — 2025
+## [0.1.1] — Alpha — 2025-12-26
 
 ### Added
 - Complete authentication system
@@ -52,7 +52,7 @@ All notable changes to VirtualClubs Android. Format based on [Keep a Changelog](
 
 ---
 
-## [0.1.0] — Alpha — Initial Setup
+## [0.1.0] — Alpha — 2025-06-30
 
 ### Added
 - Initial Android project setup
