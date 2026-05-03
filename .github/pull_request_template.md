@@ -13,11 +13,11 @@ Brief description: what problem does it solve or what feature does it add?
 ## Type of change
 
 - [ ] Bug fix
-- [ ] New feature
-- [ ] Refactoring (no behavior change)
-- [ ] Dependency update
+- [ ] New feature / new screen
+- [ ] Refactor (no behavior change)
+- [ ] Tests
 - [ ] Documentation
-- [ ] Other: ___
+- [ ] Chore / config / dependencies
 
 ---
 
@@ -52,8 +52,10 @@ Be specific: which flavor, which screen, what input, expected result.
 - [ ] `./gradlew compileDevDebugKotlin` passes with no errors
 - [ ] `./gradlew testDevDebugUnitTest` passes
 - [ ] New ViewModels or use cases have unit tests
-- [ ] No secrets, API keys, or tokens hardcoded in source files
-- [ ] New routes added to both `Screen.kt` and `NavGraph.kt`
+- [ ] New screens added to both `Screen.kt` and `NavGraph.kt`
 - [ ] New error types added to `ErrorHandler.kt`
+- [ ] New use cases registered as `@Singleton` in `UseCaseModule`
+- [ ] No secrets, API keys, or tokens hardcoded or logged
 - [ ] `CLAUDE.md` updated if new routes, endpoints, or patterns were introduced
+- [ ] PR targets `development`, not `main`
 - [ ] PR description is complete (no empty sections above)

@@ -84,4 +84,4 @@ Si hay error de compilación después de actualizar, revierte el cambio específ
 
 ## Paso 6: Recordatorio
 
-Al terminar, sugiere hacer `/commit` con tipo `chore(deps): actualiza dependencias`.
+When done, suggest running `/commit` with type `chore(deps): update dependencies`.
