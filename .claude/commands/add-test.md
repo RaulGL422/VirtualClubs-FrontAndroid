@@ -1,109 +1,109 @@
-# /add-test — Generar Tests para una Clase o Composable
+# /add-test — Generate Tests for a Class or Composable
 
-Genera tests unitarios o de UI para cualquier clase, ViewModel, UseCase o Composable del proyecto.
+Generates unit or UI tests for any class, ViewModel, UseCase, or Composable in the project.
 
-## Uso
-- `/add-test AuthViewModel` — genera tests unitarios para el ViewModel de auth
-- `/add-test AuthUseCase` — genera tests para el caso de uso
-- `/add-test AuthPage` — genera tests de UI con Compose Testing
-- `/add-test SafeResponse` — genera tests para el wrapper de respuestas
-
----
-
-## Paso 1: Localizar y leer el archivo objetivo
-
-Busca el archivo en el proyecto. Lee su contenido completo para entender:
-- Qué hace la clase
-- Qué dependencias tiene (para mockear)
-- Qué casos de uso tiene (happy path + casos de error)
-- Qué ErrorType puede lanzar
+## Usage
+- `/add-test AuthViewModel` — generates unit tests for the auth ViewModel
+- `/add-test AuthUseCase` — generates tests for the use case
+- `/add-test AuthPage` — generates UI tests with Compose Testing
+- `/add-test SafeResponse` — generates tests for the response wrapper
 
 ---
 
-## Paso 2: Determinar el tipo de test
+## Step 1: Locate and read the target file
 
-**Tests Unitarios** (en `app/src/test/`) para:
-- ViewModels — testear lógica de estado con `StateFlow`
-- UseCases — testear lógica de negocio
-- Repositorios — testear transformaciones de datos
-- Utilidades — testear lógica pura
-
-**Tests de UI con Compose** (en `app/src/androidTest/`) para:
-- Composables — testear renderizado y eventos
-- Flujos de navegación — testear que las pantallas se conectan correctamente
+Find the file in the project. Read its full content to understand:
+- What the class does
+- What dependencies it has (to mock)
+- What use cases it covers (happy path + error cases)
+- What `ErrorType` it can throw
 
 ---
 
-## Paso 3: Estructura de un test unitario de ViewModel
+## Step 2: Determine the test type
+
+**Unit Tests** (in `app/src/test/`) for:
+- ViewModels — test state logic with `StateFlow`
+- UseCases — test business logic
+- Repositories — test data transformations
+- Utilities — test pure logic
+
+**UI Tests with Compose** (in `app/src/androidTest/`) for:
+- Composables — test rendering and events
+- Navigation flows — test that screens connect correctly
+
+---
+
+## Step 3: Unit test structure for a ViewModel
 
 ```kotlin
 @OptIn(ExperimentalCoroutinesApi::class)
-class [Nombre]ViewModelTest {
+class [Name]ViewModelTest {
 
     @get:Rule
-    val mainDispatcherRule = MainDispatcherRule() // Reemplaza Dispatchers.Main en tests
+    val mainDispatcherRule = MainDispatcherRule()
 
-    private val mock[Dependencia] = mockk<[Tipo]>()
-    private lateinit var viewModel: [Nombre]ViewModel
+    private val mock[Dependency] = mockk<[Type]>()
+    private lateinit var viewModel: [Name]ViewModel
 
     @Before
     fun setUp() {
-        viewModel = [Nombre]ViewModel(mock[Dependencia])
+        viewModel = [Name]ViewModel(mock[Dependency])
     }
 
     @Test
-    fun `[descripción del caso en español]`() = runTest {
+    fun `[description in English, human-readable]`() = runTest {
         // Arrange
-        coEvery { mock[Dependencia].invoke(any()) } returns Result.success([valor])
+        coEvery { mock[Dependency].invoke(any()) } returns Result.success([value])
 
         // Act
-        viewModel.[accion]([parametros])
+        viewModel.[action]([parameters])
         advanceUntilIdle()
 
         // Assert
-        assertEquals([esperado], viewModel.[estado].value)
+        assertEquals([expected], viewModel.[state].value)
     }
 
     @Test
-    fun `[descripción del caso de error]`() = runTest {
+    fun `[description of the error case]`() = runTest {
         // Arrange
-        coEvery { mock[Dependencia].invoke(any()) } throws VirtualClubException(ErrorType.INVALID_CREDENTIALS)
+        coEvery { mock[Dependency].invoke(any()) } throws VirtualClubException(ErrorType.INVALID_CREDENTIALS)
 
         // Act
-        viewModel.[accion]([parametros])
+        viewModel.[action]([parameters])
         advanceUntilIdle()
 
         // Assert
-        // Verifica el estado de error
+        // Verify the error state
     }
 }
 ```
 
-**Reglas:**
-- Usa `mockk` para los mocks (no Mockito — es Android/Kotlin)
-- Usa `coEvery`/`coVerify` para funciones suspend
-- Usa `runTest` para coroutines en tests
-- Incluye `MainDispatcherRule` para reemplazar `Dispatchers.Main`
-- Nombra los tests en español descriptivo: `` `cuando hay credenciales inválidas, devuelve error` ``
-- Cubre: happy path + al menos 2 casos de error relevantes
+**Rules:**
+- Use `mockk` for mocks (not Mockito — this is Android/Kotlin)
+- Use `coEvery`/`coVerify` for suspend functions
+- Use `runTest` for coroutines in tests
+- Include `MainDispatcherRule` to replace `Dispatchers.Main`
+- Name tests in English, human-readable: `` `when credentials are invalid, returns error` ``
+- Cover: happy path + at least 2 relevant error cases
 
 ---
 
-## Paso 4: Estructura de un test de UseCase
+## Step 4: UseCase test structure
 
 ```kotlin
-class [Nombre]UseCaseTest {
+class [Name]UseCaseTest {
 
     private val mock[Repo] = mockk<[Repo]Interface>()
-    private lateinit var useCase: [Nombre]UseCase
+    private lateinit var useCase: [Name]UseCase
 
     @Before
     fun setUp() {
-        useCase = [Nombre]UseCase(mock[Repo])
+        useCase = [Name]UseCase(mock[Repo])
     }
 
     @Test
-    fun `[descripción]`() = runTest {
+    fun `[description]`() = runTest {
         // Arrange - Act - Assert (AAA)
     }
 }
@@ -111,45 +111,45 @@ class [Nombre]UseCaseTest {
 
 ---
 
-## Paso 5: Estructura de un test de Composable (UI)
+## Step 5: Composable UI test structure
 
 ```kotlin
 @RunWith(AndroidJUnit4::class)
-class [Nombre]PageTest {
+class [Name]PageTest {
 
     @get:Rule
     val composeTestRule = createComposeRule()
 
     @Test
-    fun `[descripción del caso visual]`() {
+    fun `[description of the visual case]`() {
         composeTestRule.setContent {
             VirtualClubsTheme {
-                [Nombre]Page(
-                    // parámetros del composable
+                [Name]Page(
+                    // composable parameters
                 )
             }
         }
 
-        // Verificar que un elemento existe
-        composeTestRule.onNodeWithText("[texto visible]").assertIsDisplayed()
+        // Assert an element exists
+        composeTestRule.onNodeWithText("[visible text]").assertIsDisplayed()
 
-        // Simular click
-        composeTestRule.onNodeWithText("[botón]").performClick()
+        // Simulate a click
+        composeTestRule.onNodeWithText("[button]").performClick()
 
-        // Verificar resultado
-        composeTestRule.onNodeWithText("[resultado esperado]").assertIsDisplayed()
+        // Assert the result
+        composeTestRule.onNodeWithText("[expected result]").assertIsDisplayed()
     }
 }
 ```
 
 ---
 
-## Paso 6: Escribir y colocar los tests
+## Step 6: Write and place the tests
 
-- Tests unitarios → `app/src/test/java/es/virtualclubs/[mismo package que la clase]/`
-- Tests de UI → `app/src/androidTest/java/es/virtualclubs/[mismo package]/`
+- Unit tests → `app/src/test/java/es/virtualclubs/[same package as the class]/`
+- UI tests → `app/src/androidTest/java/es/virtualclubs/[same package]/`
 
-Escribe el archivo de test y luego confirma con el usuario si quiere ejecutarlos:
+Write the test file, then ask the user if they want to run it:
 ```bash
-./gradlew testDevDebugUnitTest --tests "[NombreClase]Test"
+./gradlew testDevDebugUnitTest --tests "[ClassName]Test"
 ```

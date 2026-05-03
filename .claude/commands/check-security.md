@@ -1,124 +1,122 @@
-# /check-security — Auditoría de Seguridad Android
+# /check-security — Android Security Audit
 
-Realiza una auditoría de seguridad completa del proyecto, enfocada en las vulnerabilidades más comunes en apps Android.
+Performs a complete security audit of the project, focused on the most common vulnerabilities in Android apps.
 
-## Uso
-- `/check-security` — audita todo el proyecto
-- `/check-security AuthViewModel` — audita un archivo específico
-
----
-
-## Paso 1: Recopilar información
-
-Lee los archivos clave de seguridad del proyecto:
-- `data/local/secure/SecureUserPreferences.kt` — almacenamiento de tokens
-- `data/local/secure/EncryptionUtils.kt` — implementación de cifrado
-- `di/NetworkModule.kt` — configuración de red
-- `domain/model/AuthInterceptor.kt` — manejo de tokens en requests
-- `data/managers/SafeResponse.kt` — manejo de errores de red
-- `AndroidManifest.xml` — permisos y configuración
-- `app/build.gradle.kts` — configuración de build (minify, debuggable)
-
-Si se especificó un archivo concreto, léelo también.
+## Usage
+- `/check-security` — audits the entire project
+- `/check-security AuthViewModel` — audits a specific file
 
 ---
 
-## Paso 2: Auditoría por categorías
+## Step 1: Gather information
 
-### A1 — Almacenamiento Inseguro de Datos
-- [ ] ¿Los tokens de acceso y refresh se guardan en `SecureUserPreferences` (AES/GCM con AndroidKeyStore)?
-- [ ] ¿No hay tokens ni contraseñas en `SharedPreferences` sin cifrar?
-- [ ] ¿No hay datos sensibles en archivos sin cifrar o en la caché?
-- [ ] ¿Las claves criptográficas se generan con `AndroidKeyStore` y no se exportan?
+Read the key security files in the project:
+- `data/local/secure/SecureUserPreferences.kt` — token storage
+- `data/local/secure/EncryptionUtils.kt` — encryption implementation
+- `di/NetworkModule.kt` — network configuration
+- `domain/model/AuthInterceptor.kt` — token handling in requests
+- `data/managers/SafeResponse.kt` — network error handling
+- `AndroidManifest.xml` — permissions and configuration
+- `app/build.gradle.kts` — build configuration (minify, debuggable)
 
-### A2 — Comunicación Insegura
-- [ ] ¿Se usa HTTPS en todas las llamadas a la API (`BASE_URL` con `https://`)?
-- [ ] ¿Hay certificate pinning configurado en OkHttp? (actualmente NO — deuda técnica conocida)
-- [ ] ¿El `HttpLoggingInterceptor` está en modo `HEADERS` o `NONE` en release? (no `BODY` que expone tokens)
-- [ ] ¿`isDebuggable` está a `false` en release?
-
-### A3 — Autenticación Insegura
-- [ ] ¿El `AuthInterceptor` añade el token Bearer correctamente?
-- [ ] ¿El refresh automático de token funciona sin exponer el refresh token en logs?
-- [ ] ¿Los tokens tienen tiempo de expiración manejado correctamente?
-- [ ] ¿El logout limpia todos los tokens almacenados (`ClearTokensUseCase`)?
-
-### A4 — Exposición de Datos Sensibles
-- [ ] ¿No hay tokens, contraseñas o PII en `Log.d`, `Log.e` o `println`?
-- [ ] ¿No hay datos sensibles en los extras de Intents o argumentos de navegación?
-- [ ] ¿No hay credenciales hardcodeadas en el código fuente?
-- [ ] ¿El `GOOGLE_CLIENT_ID` en `prod` viene de `secrets.properties` y no está en el repositorio?
-
-### A5 — Deep Links Inseguros
-- [ ] ¿Los deep links (`virtualclubs://`) validan los parámetros recibidos antes de usarlos?
-- [ ] ¿El token de reset de contraseña se valida en el backend antes de aceptarlo?
-- [ ] ¿No es posible inyectar rutas o datos maliciosos via deep links?
-
-### A6 — Permisos Excesivos
-- [ ] ¿El `AndroidManifest.xml` solo declara los permisos estrictamente necesarios?
-- [ ] ¿No hay `uses-permission android:name="android.permission.READ_PHONE_STATE"` u otros permisos sensibles innecesarios?
-
-### A7 — Configuración de Build
-- [ ] ¿`isMinifyEnabled = true` y ProGuard configurado en el flavor `release`? (actualmente NO — deuda técnica)
-- [ ] ¿`isDebuggable = false` en release builds?
-- [ ] ¿No hay `allowBackup="true"` en Manifest si contiene datos sensibles?
-
-### A8 — Uso de Componentes con Vulnerabilidades Conocidas
-- [ ] ¿Las dependencias están actualizadas? (ejecutar `/update-deps` si hay dudas)
-- [ ] ¿Se usa `androidx.security:security-crypto` en versión reciente?
+If a specific file was passed, read it as well.
 
 ---
 
-## Paso 3: Buscar en el código
+## Step 2: Audit by category
 
-Usa Grep para buscar patrones problemáticos:
+### A1 — Insecure Data Storage
+- [ ] Are access and refresh tokens stored in `SecureUserPreferences` (AES/GCM with AndroidKeyStore)?
+- [ ] Are there no tokens or passwords in unencrypted `SharedPreferences`?
+- [ ] Are there no sensitive data in unencrypted files or in the cache?
+- [ ] Are cryptographic keys generated with `AndroidKeyStore` and not exported?
+
+### A2 — Insecure Communication
+- [ ] Is HTTPS used in all API calls (`BASE_URL` with `https://`)?
+- [ ] Is certificate pinning configured in OkHttp? (prod flavor only)
+- [ ] Is `HttpLoggingInterceptor` in `HEADERS` or `NONE` mode in release? (not `BODY`, which exposes tokens)
+- [ ] Is `isDebuggable` set to `false` in release?
+
+### A3 — Insecure Authentication
+- [ ] Does `AuthInterceptor` add the Bearer token correctly?
+- [ ] Does the automatic token refresh work without exposing the refresh token in logs?
+- [ ] Are token expiration times handled correctly?
+- [ ] Does logout clear all stored tokens (`ClearTokensUseCase`)?
+
+### A4 — Sensitive Data Exposure
+- [ ] Are there no tokens, passwords, or PII in `Log.d`, `Log.e`, or `println`?
+- [ ] Are there no sensitive data in Intent extras or navigation arguments?
+- [ ] Are there no hardcoded credentials in the source code?
+- [ ] Does `GOOGLE_CLIENT_ID` come from `secrets.properties` and is it not in the repository?
+
+### A5 — Insecure Deep Links
+- [ ] Do deep links (`virtualclubs://`) validate received parameters before using them?
+- [ ] Is the password reset token validated in the backend before being accepted?
+- [ ] Is it impossible to inject routes or malicious data via deep links?
+
+### A6 — Excessive Permissions
+- [ ] Does `AndroidManifest.xml` only declare strictly necessary permissions?
+- [ ] Are there no unnecessary sensitive permissions (e.g., `READ_PHONE_STATE`)?
+
+### A7 — Build Configuration
+- [ ] Is `isMinifyEnabled = true` and ProGuard configured in the release build type?
+- [ ] Is `isDebuggable = false` in release builds?
+- [ ] Is there no `allowBackup="true"` in the Manifest if the app stores sensitive data?
+
+### A8 — Components with Known Vulnerabilities
+- [ ] Are dependencies up to date? (run `/update-deps` if in doubt)
+- [ ] Is `androidx.security:security-crypto` at a recent version?
+
+---
+
+## Step 3: Search in the code
+
+Use Grep to search for problematic patterns:
 
 ```bash
-# Tokens o contraseñas en logs
+# Tokens or passwords in logs
 grep -rn "Log\." app/src/main/java --include="*.kt" | grep -i "token\|password\|secret\|key"
 
-# SharedPreferences sin cifrar con datos sensibles
+# Unencrypted SharedPreferences with sensitive data
 grep -rn "getSharedPreferences\|SharedPreferences" app/src/main/java --include="*.kt"
 
-# Credenciales hardcodeadas
+# Hardcoded credentials
 grep -rn "password\s*=\|secret\s*=\|apikey\s*=" app/src/main/java --include="*.kt" -i
 
-# println o System.out
+# println or System.out
 grep -rn "println\|System\.out" app/src/main/java --include="*.kt"
 
-# HTTP en lugar de HTTPS
+# HTTP instead of HTTPS
 grep -rn "http://" app/src/main/java --include="*.kt"
 ```
 
 ---
 
-## Paso 4: Generar reporte
+## Step 4: Generate report
 
 ```
-## Auditoría de Seguridad — Virtual Clubs Android — [fecha]
+## Security Audit — Virtual Clubs Android — [date]
 
-### 🔴 Crítico (corregir inmediatamente)
-[lista o "Ninguno encontrado"]
+### 🔴 Critical (fix immediately)
+[list or "None found"]
 
-### 🟡 Importante (corregir antes del release)
-[lista con referencia a archivo:línea]
+### 🟡 Important (fix before release)
+[list with file:line reference]
 
-### 🟢 Informativo (mejoras recomendadas)
-[lista]
+### 🟢 Informational (recommended improvements)
+[list]
 
-### ✅ Correcto
-[lo que está bien implementado]
+### ✅ Correct
+[what is well implemented]
 
 ---
 
-### Deuda de Seguridad Conocida (del CLAUDE.md)
-- ProGuard/R8 no configurado en release
-- Certificate pinning ausente en OkHttp
-[otras]
+### Known Security Debt (from CLAUDE.md)
+[items from the Known Technical Debt table]
 
-### Próximas acciones recomendadas
-1. [acción concreta con prioridad]
-2. [acción concreta]
+### Recommended next steps
+1. [concrete action with priority]
+2. [concrete action]
 ```
 
-Si se encuentran problemas críticos, propón el fix concreto con código.
+If critical issues are found, propose the concrete fix with code.

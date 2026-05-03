@@ -1,10 +1,10 @@
-# /project-status — Estado General del Proyecto
+# /project-status — Project Status Overview
 
-Genera un resumen del estado actual del proyecto Android.
+Generates a summary of the current state of the Android project.
 
-## Paso 1: Estado de Git y GitHub
+## Step 1: Git and GitHub state
 
-Ejecuta en paralelo:
+Run in parallel:
 ```bash
 git branch --show-current
 git log --oneline -8
@@ -13,47 +13,45 @@ git stash list
 gh pr list --state open --json number,title,headRefName,createdAt
 ```
 
-## Paso 2: Buscar deuda técnica en el código
+## Step 2: Search for technical debt in the code
 
-Busca TODOs, FIXMEs y malas prácticas con Grep en el directorio `app/src/main/java`:
+Use Grep to search for TODOs, FIXMEs, and bad practices in `app/src/main/java`:
 - `TODO`, `FIXME`, `HACK`
-- `println`, `Log.d` (posibles datos sensibles en debug)
-- `// TODO` comentarios
+- `println`, `Log.d` (possible sensitive data in debug logs)
 
-También verifica el estado actual de la `HomePage.kt` (pantalla placeholder pendiente de contenido real).
+Also check the current state of `HomePage.kt` (screen pending full club management content).
 
-## Paso 3: Verificar compilación rápida
+## Step 3: Verify compilation
 
 ```bash
 ./gradlew compileDevDebugKotlin -q 2>&1 | tail -5
 ```
 
-## Paso 4: Generar reporte
+## Step 4: Generate report
 
 ```
-## Estado del Proyecto — Virtual Clubs Android — [fecha actual]
+## Project Status — Virtual Clubs Android — [current date]
 
 ### Git
-- Rama actual: [rama]
-- Últimos commits: [lista]
-- Cambios sin commitear: [N archivos] / Limpio
-- Stashes guardados: [N] / Ninguno
-- PRs abiertos: [lista con número y título] / Ninguno
+- Current branch: [branch]
+- Recent commits: [list]
+- Uncommitted changes: [N files] / Clean
+- Saved stashes: [N] / None
+- Open PRs: [list with number and title] / None
 
-### Compilación
-- Estado: [OK / Errores encontrados]
+### Build
+- Status: [OK / Errors found]
 
-### Deuda Técnica
-- TODOs/FIXMEs encontrados: [lista con archivo:línea] / Ninguno
-- Pantallas pendientes de implementación:
-  - [ ] Home screen (contenido real de clubes)
-  - [ ] [otras encontradas]
-- Items de deuda del CLAUDE.md:
-  - [ ] ProGuard/R8 no configurado
-  - [ ] Certificate pinning ausente
-  - [ ] Tests sin cobertura
-  - [ ] [otros]
+### Technical Debt
+- TODOs/FIXMEs found: [list with file:line] / None
+- Screens pending implementation:
+  - [ ] Home screen (real club content)
+  - [ ] [others found]
+- Technical debt from CLAUDE.md:
+  - [ ] UI/instrumentation tests not implemented
+  - [ ] UserApi limited to email only
+  - [ ] [others]
 
-### Próxima acción sugerida
-[Una sola acción concreta basada en el estado actual]
+### Suggested next action
+[One concrete action based on the current state]
 ```
