@@ -42,7 +42,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="virtualclubs" android:host="pass" android:path="/reset-password" />
+                <data android:scheme="virtualclubs" android:host="pass" android:path="/resetPassword" />
             </intent-filter>
         </activity>
 
@@ -56,7 +56,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="virtualclubs" android:host="email" android:path="/verify-email" />
+                <data android:scheme="virtualclubs" android:host="email" android:path="/verifyEmail" />
             </intent-filter>
         </activity>
     </application>
