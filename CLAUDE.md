@@ -82,6 +82,8 @@ es/virtualclubs/
 │   │   └── SessionManager.kt       Global logout handling
 │   ├── screens/
 │   │   ├── auth/                   Login/Register (AuthPage + AuthViewModel)
+│   │   │   ├── components/         AuthDivider, AuthToggle, SocialButtons (internal)
+│   │   │   └── dialogs/            ForgotPasswordDialog
 │   │   ├── home/                   Main home (HomePage + HomeViewModel)
 │   │   ├── resetPassword/          Password reset flow
 │   │   ├── settings/               Theme/font/server settings
@@ -190,11 +192,24 @@ Use the **Web client** type from Google Cloud Console. The Android client is aut
 
 ### New screen structure
 
-Each screen follows this pattern:
+Each screen lives in its own folder under `presentation/screens/`. The minimum structure is:
+
 1. `[Name]Page.kt` — root screen Composable
 2. `[Name]ViewModel.kt` — ViewModel with StateFlow
 3. Route added to `Screen.kt`
 4. Entry added to `NavGraph.kt`
+
+When a screen grows, split it into subfolders within the same folder — **all files keep the same package declaration** (e.g. `package es.virtualclubs.presentation.screens.auth`), so no imports change:
+
+```
+screens/[name]/
+├── [Name]Page.kt       root composable + main content composable
+├── [Name]ViewModel.kt
+├── components/         composables used only by this screen (visibility: internal)
+└── dialogs/            dialogs triggered from this screen (visibility: public or internal)
+```
+
+Use `internal` for composables that must not be called from outside the screen folder.
 
 ### ViewModels
 
@@ -262,6 +277,9 @@ Access tokens are cached in `UserSession` after the first read. `AuthInterceptor
 | UserApi limited | `getUserInfo` only returns email — needs expansion for clubs, config, etc. |
 | `prod` flavor backend | Both flavors point to Render — a dedicated production URL is needed |
 | UI/instrumentation tests | No Compose UI tests implemented yet |
+| Apple / Facebook login | Buttons render correctly but `onApple` and `onFacebook` are `{ /* TODO */ }` — not yet implemented |
+| `collectAsState()` → `collectAsStateWithLifecycle()` | All screens use `collectAsState()` which does not respect Android lifecycle — migrate to `collectAsStateWithLifecycle()` |
+| Auth side effect in composition | `if (uiState is AuthUiState.Success) onLogged()` in `LoginPage` should be inside a `LaunchedEffect` |
 
 ---
 

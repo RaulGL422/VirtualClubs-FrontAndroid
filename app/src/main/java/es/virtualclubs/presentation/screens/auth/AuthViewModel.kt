@@ -65,7 +65,7 @@ class AuthViewModel @Inject constructor(
         val result = credentialManager.getCredential(activity, request)
         processGoogleCredential(result)
       } catch (_: GetCredentialCancellationException) {
-        // El usuario canceló el selector — no es un error
+        // User dismissed the credential selector — not an error
       } catch (_: GetCredentialException) {
         onLoginFailed(ErrorType.GOOGLE_SIGN_IN_FAILED)
       } catch (_: Exception) {
@@ -107,10 +107,9 @@ class AuthViewModel @Inject constructor(
 
   private fun tryAutoLogin() {
     viewModelScope.launch {
-      if (userPreferences.autoLoginFlow.firstOrNull() == true) {
+      val hasSession = securePreferences.refreshToken.firstOrNull() != null
+      if (hasSession) {
         globalUIManager.withLoading {
-          // Llamada directa — no pasa por safeCall para que un fallo silencioso
-          // no dispare logout ni navegación. El usuario simplemente ve la pantalla de login.
           val response = refreshRepository.refresh()
           _uiState.value = if (response.isSuccess) {
             userSession.updateUser(User(email = userPreferences.userEmailFlow.firstOrNull()))
@@ -123,7 +122,7 @@ class AuthViewModel @Inject constructor(
     }
   }
 
-  fun loginUser(email: String, password: String, rememberUser: Boolean) {
+  fun loginUser(email: String, password: String) {
     viewModelScope.launch {
       _uiState.value = AuthUiState.AttemptingAuth
       val response = safeCall.safeCall { repository.login(email, password) }
@@ -131,7 +130,7 @@ class AuthViewModel @Inject constructor(
         val tokens = response.getOrNull()
         if (tokens != null) {
           securePreferences.saveTokens(tokens.accessToken, tokens.refreshToken)
-          userPreferences.saveUser(email, rememberUser)
+          userPreferences.saveUser(email)
           userSession.updateUser(User(email = email))
           _uiState.value = AuthUiState.Success
         } else {
@@ -144,9 +143,7 @@ class AuthViewModel @Inject constructor(
     }
   }
 
-  fun registerUser(
-    email: String, password: String, confirmPassword: String, rememberUser: Boolean
-  ) {
+  fun registerUser(email: String, password: String, confirmPassword: String) {
     viewModelScope.launch {
       _uiState.value = AuthUiState.AttemptingAuth
 
@@ -160,7 +157,7 @@ class AuthViewModel @Inject constructor(
       if (response.isSuccess) {
         val tokens = response.getOrNull()
         if (tokens != null) {
-          userPreferences.saveUser(email, rememberUser)
+          userPreferences.saveUser(email)
           securePreferences.saveTokens(tokens.accessToken, tokens.refreshToken)
           userSession.updateUser(User(email = tokens.email ?: email))
           _uiState.value = AuthUiState.Success

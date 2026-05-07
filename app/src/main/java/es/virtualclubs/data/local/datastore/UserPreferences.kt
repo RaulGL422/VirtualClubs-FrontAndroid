@@ -13,33 +13,26 @@ class UserPreferences @Inject constructor(
     private val dataStore: DataStore<Preferences>
 ) {
 
-    // Preference keys
     companion object {
         private val EMAIL = stringPreferencesKey("email")
-        private val AUTOLOGIN = booleanPreferencesKey("autologin")
+        // Removed in favour of refresh-token-based session detection; cleaned up on next save/clear
+        private val LEGACY_AUTOLOGIN = booleanPreferencesKey("autologin")
     }
 
-    // Flow to observe user email
     val userEmailFlow: Flow<String?> = dataStore.data
         .map { prefs -> prefs[EMAIL] }
 
-    // Flow to observe user autologin
-    val autoLoginFlow: Flow<Boolean?> = dataStore.data
-        .map { prefs -> prefs[AUTOLOGIN] }
-
-    // Save email and autologin
-    suspend fun saveUser(email: String, autologin: Boolean) {
+    suspend fun saveUser(email: String) {
         dataStore.edit { prefs ->
             prefs[EMAIL] = email
-            prefs[AUTOLOGIN] = autologin
+            prefs.remove(LEGACY_AUTOLOGIN)
         }
     }
 
-    // Clear stored user data
     suspend fun clearUser() {
         dataStore.edit { prefs ->
             prefs.remove(EMAIL)
-            prefs.remove(AUTOLOGIN)
+            prefs.remove(LEGACY_AUTOLOGIN)
         }
     }
 }
