@@ -95,7 +95,14 @@ es.virtualclubs/
     ├── components/     # Componentes Compose reutilizables (botones, campos de texto, scaffold, diálogos)
     ├── managers/       # GlobalUIManager — loading, errores, diálogos como singleton inyectable
     ├── navigation/     # NavGraph, clase sellada Screen, AppNavigator, SessionManager
-    ├── screens/        # auth/, home/, settings/, resetPassword/, verifyemailresult/
+    ├── screens/        # una carpeta por pantalla — cada carpeta puede contener subcarpetas components/ y dialogs/
+│   │   ├── auth/           # AuthPage, AuthViewModel
+│   │   │   ├── components/ # AuthDivider, AuthToggle, SocialButtons (internos a auth)
+│   │   │   └── dialogs/    # ForgotPasswordDialog
+│   │   ├── home/           # HomePage, HomeViewModel
+│   │   ├── settings/       # SettingsPage, SettingsViewModel
+│   │   ├── resetPassword/  # ResetPasswordPage, ResetPasswordViewModel
+│   │   └── verifyemailresult/ # VerifyEmailResultPage, VerifyEmailResultViewModel
     └── theme/          # Colores M3, tipografía, espaciado, formas
 ```
 
