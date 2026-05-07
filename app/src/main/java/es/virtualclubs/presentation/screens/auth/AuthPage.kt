@@ -1,9 +1,13 @@
+/**
+ * Auth screen entry point.
+ *
+ * [LoginPage] — root composable wired to [AuthViewModel], handles snackbars and navigation.
+ * [LoginContent] — stateless layout: form fields, social buttons, settings icon and version label.
+ * Dialogs and sub-composables are split into dialogs/ and components/ within this package.
+ */
 package es.virtualclubs.presentation.screens.auth
 
-import android.app.Activity
 import androidx.activity.compose.LocalActivity
-import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.core.tween
@@ -20,25 +24,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -93,7 +89,6 @@ fun LoginPage(
 
   if (uiState is AuthUiState.Success) onLogged()
 
-  // Handle password reset snackbar
   LaunchedEffect(passwordResetUiState) {
     if (passwordResetUiState is PasswordResetUiState.Success) {
       scope.launch {
@@ -119,7 +114,7 @@ fun LoginPage(
 
   VCScaffold(
     snackbarHost = { SnackbarHost(snackbarHostState) },
-    topBar = { AuthTopBar(onSettingsTap) }
+    enableTopBar = false
   ) { padding ->
     AnimatedContent(
       targetState = isLogin,
@@ -135,14 +130,10 @@ fun LoginPage(
         uiState = uiState,
         passwordResetUiState = passwordResetUiState,
         screenType = screenType,
-        onLogin = { email, pass, remember -> viewModel.loginUser(email, pass, remember) },
-        onRegister = { email, pass, confirm, remember ->
-          viewModel.registerUser(
-            email,
-            pass,
-            confirm,
-            remember
-          )
+        onSettingsTap = onSettingsTap,
+        onLogin = { email, pass -> viewModel.loginUser(email, pass) },
+        onRegister = { email, pass, confirm ->
+          viewModel.registerUser(email, pass, confirm)
         },
         onGoogle = { activity?.let { viewModel.beginSignInGoogle(it) } },
         onFacebook = { /* TODO */ },
@@ -156,33 +147,14 @@ fun LoginPage(
 }
 
 @Composable
-private fun AuthTopBar(onSettingsTap: () -> Unit) {
-  Row(
-    modifier = Modifier
-      .fillMaxWidth()
-      .padding(
-        vertical = VCTheme.spacing.screenPaddingDouble,
-        horizontal = VCTheme.spacing.screenHorizontal
-      ),
-    horizontalArrangement = Arrangement.End
-  ) {
-    VCButton(
-      content = VCButtonContent.Icon(VCIcon.Vector(Icons.Filled.Settings)),
-      style = VCButtonStyle.Icon,
-      iconSize = VCTheme.sizes.iconMd,
-      onClick = onSettingsTap
-    )
-  }
-}
-
-@Composable
 fun LoginContent(
   isLogin: Boolean,
   uiState: AuthUiState,
   passwordResetUiState: PasswordResetUiState,
   screenType: ScreenType,
-  onLogin: (String, String, Boolean) -> Unit,
-  onRegister: (String, String, String, Boolean) -> Unit,
+  onSettingsTap: () -> Unit,
+  onLogin: (String, String) -> Unit,
+  onRegister: (String, String, String) -> Unit,
   onGoogle: () -> Unit,
   onFacebook: () -> Unit,
   onApple: () -> Unit,
@@ -190,11 +162,9 @@ fun LoginContent(
   onForgottenPass: (String) -> Unit,
   modifier: Modifier = Modifier
 ) {
-  // Local states
   var email by remember { mutableStateOf("") }
   var password by remember { mutableStateOf("") }
   var confirmPassword by remember { mutableStateOf("") }
-  var rememberUser by remember { mutableStateOf(false) }
   var showForgotPasswordDialog by remember { mutableStateOf(false) }
   val emailFocusRequester = remember { FocusRequester() }
   val passwordFocusRequester = remember { FocusRequester() }
@@ -203,8 +173,8 @@ fun LoginContent(
   val globalUIManager = LocalGlobalUIManager.current
 
   val columnWidthFraction = when (screenType) {
-    ScreenType.Small -> 0.90f
-    ScreenType.Medium -> 0.45f
+    ScreenType.Small -> 0.85f
+    ScreenType.Medium -> 0.40f
   }
 
   Box(modifier = modifier.fillMaxSize()) {
@@ -218,10 +188,9 @@ fun LoginContent(
       Column(
         modifier = Modifier
           .fillMaxWidth(columnWidthFraction)
-          .padding(VCTheme.spacing.sectionSpacingCompact),
+          .padding(vertical = VCTheme.spacing.screenPaddingTriple),
         horizontalAlignment = Alignment.CenterHorizontally
       ) {
-        // Logo
         Image(
           painter = getLargeLogo(),
           contentDescription = stringResource(R.string.logo),
@@ -231,9 +200,8 @@ fun LoginContent(
             .padding(VCTheme.spacing.componentPaddingLg)
         )
 
-        Spacer(modifier = Modifier.height(VCTheme.spacing.sectionSpacingExpanded))
+        Spacer(modifier = Modifier.height(VCTheme.spacing.sectionSpacingCompact))
 
-        // Email field
         RoundedTextField(
           value = email,
           onValueChange = { email = it },
@@ -241,9 +209,7 @@ fun LoginContent(
           leadingIcon = Icons.Default.Email,
           keyboardType = KeyboardType.Email,
           imeAction = ImeAction.Next,
-          onImeAction = {
-            passwordFocusRequester.requestFocus()
-          },
+          onImeAction = { passwordFocusRequester.requestFocus() },
           modifier = Modifier
             .fillMaxWidth()
             .focusRequester(emailFocusRequester)
@@ -251,7 +217,6 @@ fun LoginContent(
 
         Spacer(modifier = Modifier.height(VCTheme.spacing.sectionSpacingCompact))
 
-        // Password field
         RoundedTextField(
           value = password,
           onValueChange = { password = it },
@@ -261,7 +226,7 @@ fun LoginContent(
           keyboardType = KeyboardType.Password,
           imeAction = if (isLogin) ImeAction.Done else ImeAction.Next,
           onImeAction = {
-            if (isLogin) onLogin(email, password, rememberUser)
+            if (isLogin) onLogin(email, password)
             else confirmPasswordFocusRequester.requestFocus()
           },
           modifier = Modifier
@@ -281,7 +246,7 @@ fun LoginContent(
             imeAction = ImeAction.Done,
             onImeAction = {
               focusManager.clearFocus()
-              onRegister(email, password, confirmPassword, rememberUser)
+              onRegister(email, password, confirmPassword)
             },
             modifier = Modifier
               .fillMaxWidth()
@@ -296,24 +261,13 @@ fun LoginContent(
             text = stringResource(globalUIManager.getErrorId()),
             color = VCTheme.colors.error
           )
-
           Spacer(modifier = Modifier.height(VCTheme.spacing.itemSpacingExpanded))
         }
 
-        // Remember user checkbox
         Row(
-          modifier = Modifier
-            .fillMaxWidth(),
-          horizontalArrangement = Arrangement.SpaceBetween
+          modifier = Modifier.fillMaxWidth(),
+          horizontalArrangement = Arrangement.Start
         ) {
-          Row(verticalAlignment = Alignment.CenterVertically) {
-            Checkbox(
-              checked = rememberUser,
-              onCheckedChange = { rememberUser = it }
-            )
-            Text(stringResource(R.string.remember_password))
-          }
-          // Forgot password
           VCButton(
             content = VCButtonContent.Text(R.string.forgot_password),
             style = VCButtonStyle.Text,
@@ -323,40 +277,59 @@ fun LoginContent(
 
         Spacer(modifier = Modifier.height(VCTheme.spacing.itemSpacingCompact))
 
-        // Login/Register button
         VCButton(
           content = VCButtonContent.Text(if (isLogin) R.string.login else R.string.register),
           enabled = uiState !is AuthUiState.AttemptingAuth,
           onClick = {
-            if (isLogin) onLogin(email, password, rememberUser)
-            else onRegister(email, password, confirmPassword, rememberUser)
+            if (isLogin) onLogin(email, password)
+            else onRegister(email, password, confirmPassword)
           },
-          modifier = Modifier
-            .fillMaxWidth()
+          modifier = Modifier.fillMaxWidth()
         )
 
         Spacer(modifier = Modifier.height(VCTheme.spacing.itemVerticalPadding))
 
-        // Divider
         AuthDivider()
 
         Spacer(modifier = Modifier.height(VCTheme.spacing.itemVerticalPadding))
 
-        // Social buttons
-        _SocialButton(R.string.continue_with_google, R.drawable.google_icon, onGoogle)
-        Spacer(modifier = Modifier.height(VCTheme.spacing.buttonPaddingVertical))
-        _SocialButton(R.string.continue_with_apple, R.drawable.apple_icon, onApple)
-        Spacer(modifier = Modifier.height(VCTheme.spacing.buttonPaddingVertical))
-        _SocialButton(R.string.facebook, R.drawable.facebook_icon, onFacebook)
+        val onSurface = MaterialTheme.colorScheme.onSurface
+        if (screenType == ScreenType.Small) {
+          Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(VCTheme.spacing.buttonPaddingVertical)
+          ) {
+            SocialIconButton(R.drawable.google_icon, R.string.continue_with_google, iconTint = null, onGoogle, Modifier.weight(1f))
+            SocialIconButton(R.drawable.apple_icon, R.string.continue_with_apple, iconTint = onSurface, onApple, Modifier.weight(1f))
+            SocialIconButton(R.drawable.facebook_icon, R.string.facebook, iconTint = FacebookBlue, onFacebook, Modifier.weight(1f))
+          }
+        } else {
+          SocialButton(R.string.continue_with_google, R.drawable.google_icon, iconTint = null, onGoogle)
+          Spacer(modifier = Modifier.height(VCTheme.spacing.buttonPaddingVertical))
+          SocialButton(R.string.continue_with_apple, R.drawable.apple_icon, iconTint = onSurface, onApple)
+          Spacer(modifier = Modifier.height(VCTheme.spacing.buttonPaddingVertical))
+          SocialButton(R.string.facebook, R.drawable.facebook_icon, iconTint = FacebookBlue, onFacebook)
+        }
 
         Spacer(modifier = Modifier.height(VCTheme.spacing.buttonPaddingVerticalExpanded))
 
-        // Register/Login toggle
         AuthToggle(isLogin, onChangeLogin)
       }
     }
 
-    // App version bottom
+    VCButton(
+      content = VCButtonContent.Icon(VCIcon.Vector(Icons.Filled.Settings)),
+      style = VCButtonStyle.Icon,
+      iconSize = VCTheme.sizes.iconMd,
+      onClick = onSettingsTap,
+      modifier = Modifier
+        .align(Alignment.TopEnd)
+        .padding(
+          top = VCTheme.spacing.screenPaddingDouble,
+          end = VCTheme.spacing.screenHorizontal
+        )
+    )
+
     Text(
       text = getAppVersion(LocalContext.current),
       fontSize = 12.sp,
@@ -374,97 +347,4 @@ fun LoginContent(
       )
     }
   }
-}
-
-@Composable
-private fun AuthDivider() {
-  Row(verticalAlignment = Alignment.CenterVertically) {
-    HorizontalDivider(Modifier.weight(1f))
-    Text("  O  ", color = Color.Gray)
-    HorizontalDivider(Modifier.weight(1f))
-  }
-}
-
-@Composable
-private fun AuthToggle(isLogin: Boolean, onChangeLogin: () -> Unit) {
-  Row(
-    horizontalArrangement = Arrangement.Center,
-    modifier = Modifier.fillMaxWidth(),
-    verticalAlignment = Alignment.CenterVertically
-  ) {
-    Text(stringResource(if (isLogin) R.string.dont_have_account else R.string.have_account))
-    VCButton(
-      content = VCButtonContent.Text(if (isLogin) R.string.register else R.string.login),
-      style = VCButtonStyle.Text,
-      onClick = onChangeLogin
-    )
-  }
-}
-
-@Composable
-fun ForgotPasswordDialog(
-  passwordResetUiState: PasswordResetUiState,
-  onDismiss: () -> Unit,
-  onConfirm: (String) -> Unit
-) {
-  var email by remember { mutableStateOf("") }
-  val globalUIManager = LocalGlobalUIManager.current
-
-  if (passwordResetUiState is PasswordResetUiState.Success) onDismiss()
-
-  AlertDialog(
-    onDismissRequest = onDismiss,
-    title = { Text(stringResource(R.string.forgot_password)) },
-    text = {
-      Column {
-        Text(
-          text = stringResource(R.string.forgot_password_description),
-          style = MaterialTheme.typography.bodyMedium
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        RoundedTextField(
-          value = email,
-          onValueChange = { email = it },
-          placeholder = R.string.email_placeholder,
-          leadingIcon = Icons.Default.Email,
-          keyboardType = KeyboardType.Email,
-          modifier = Modifier.fillMaxWidth()
-        )
-        if (globalUIManager.haveError()) {
-          Text(
-            text = stringResource(globalUIManager.getErrorId()),
-            color = MaterialTheme.colorScheme.error,
-            modifier = Modifier.padding(vertical = 8.dp)
-          )
-        }
-      }
-    },
-    confirmButton = {
-      VCButton(
-        content = VCButtonContent.Text(R.string.send_email),
-        enabled = email.isNotBlank() && passwordResetUiState !is PasswordResetUiState.Attempting,
-        shape = VCTheme.shapes.large,
-        onClick = { onConfirm(email) }
-      )
-    },
-    dismissButton = {
-      VCButton(
-        content = VCButtonContent.Text(R.string.close),
-        style = VCButtonStyle.Text,
-        onClick = onDismiss
-      )
-    }
-  )
-}
-
-@Composable
-fun _SocialButton(@StringRes text: Int, @DrawableRes icon: Int, onClick: () -> Unit) {
-  VCButton(
-    content = VCButtonContent.TextAndIcon(
-      text = text, VCIcon.Drawable(icon)
-    ),
-    style = VCButtonStyle.Outline,
-    onClick = onClick,
-    modifier = Modifier.fillMaxWidth()
-  )
 }
