@@ -18,22 +18,22 @@ Android client for **VirtualClubs** — a platform to create and manage sports f
 ```
 es/virtualclubs/
 ├── App.kt                          HiltAndroidApp entry point
-├── Activities.kt                   MainActivity, ResetPasswordActivity, VerifyEmailActivity
+├── ScreenType.kt                   Small/Medium enum for responsive layouts
 ├── VirtualClubsMainApp.kt          Root composable (theme + NavHost)
 │
 ├── data/                           DATA LAYER
 │   ├── local/
 │   │   ├── datastore/
 │   │   │   ├── AppPreferences.kt   Dark theme, contrast, font size
-│   │   │   └── UserPreferences.kt  Email, auto-login flag
+│   │   │   └── UserPreferences.kt  Email (plain DataStore)
 │   │   └── secure/
 │   │       ├── EncryptionUtils.kt          AES/GCM for tokens
 │   │       └── SecureUserPreferences.kt    Encrypted token storage
 │   ├── managers/
-│   │   ├── GlobalUIManager.kt      Global state: loading, errors, dialogs
 │   │   ├── SafeCall.kt             API call wrapper with error dispatching
 │   │   └── SafeResponse.kt         Response handler + automatic token refresh
 │   ├── models/
+│   │   ├── Club.kt                 Club(id, name, sport, memberCount)
 │   │   └── User.kt                 User(email: String?)
 │   ├── remote/
 │   │   ├── api/
@@ -41,25 +41,28 @@ es/virtualclubs/
 │   │   │   ├── RefreshApi.kt       Token refresh endpoint
 │   │   │   └── UserApi.kt          User info endpoint
 │   │   └── dto/                    Request/response DTOs
-│   └── repository/                 Repository implementations
+│   ├── repository/                 Repository implementations
+│   └── session/
+│       └── UserSession.kt          In-memory cache: currentUser StateFlow + cachedAccessToken
 │
 ├── di/                             DEPENDENCY INJECTION (Hilt)
+│   ├── DispatcherModule.kt         Binds ErrorDispatcher → GlobalUIManager
+│   ├── GlobalUIEntryPoint.kt       Hilt EntryPoint for Activities
 │   ├── NetworkModule.kt            Retrofit + OkHttp + interceptors
-│   ├── PreferencesModule.kt        DataStore providers
-│   ├── SessionModule.kt
-│   ├── UseCaseModule.kt            All use cases (@Singleton)
-│   └── GlobalUIEntryPoint.kt
+│   └── PreferencesModule.kt        DataStore providers
 │
 ├── domain/                         DOMAIN LAYER
 │   ├── model/
-│   │   ├── AuthInterceptor.kt      Injects Bearer token into requests
+│   │   ├── AuthInterceptor.kt      Injects Bearer token + proactive refresh on expiry
 │   │   ├── AuthTokens.kt           accessToken + refreshToken
-│   │   ├── ErrorType.kt            Enum with 27 error types
+│   │   ├── Endpoint.kt             API endpoint path constants
 │   │   ├── ErrorDispatcher.kt      Interface for dispatching errors (implemented by GlobalUIManager)
+│   │   ├── ErrorType.kt            Enum with 27 error types
 │   │   └── VirtualClubException.kt Custom project exception
 │   ├── repository/                 Repository interfaces
 │   └── usecase/                    Use cases (business logic)
 │       ├── AuthUseCase.kt
+│       ├── GetUserInfoUseCase.kt
 │       ├── GoogleUseCase.kt
 │       ├── LogoutUserUseCase.kt
 │       ├── RefreshTokenUseCase.kt
@@ -88,14 +91,14 @@ es/virtualclubs/
 │   │   ├── resetPassword/          Password reset flow
 │   │   ├── settings/               Theme/font/server settings
 │   │   └── verifyemailresult/      Email verification result
+│   ├── MainActivity.kt             Entry point, sets up NavController + theme
+│   ├── ResetPasswordActivity.kt    Handles reset-password deep link
+│   ├── VerifyEmailActivity.kt      Handles email-verification deep link
 │   └── theme/
 │       ├── Color.kt                Stadium DS — 10-level palette, 6 color schemes
 │       ├── Shape.kt
 │       ├── Theme.kt                VirtualClubsTheme composable
 │       └── Type.kt                 Poppins + Roboto typography
-│
-└── session/
-    └── UserSession.kt              In-memory user state (token cache + user info)
 ```
 
 ---
