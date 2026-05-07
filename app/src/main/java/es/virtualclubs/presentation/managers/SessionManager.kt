@@ -1,7 +1,8 @@
-package es.virtualclubs.presentation.navigation
+package es.virtualclubs.presentation.managers
 
 import es.virtualclubs.data.local.datastore.UserPreferences
 import es.virtualclubs.data.local.secure.SecureUserPreferences
+import es.virtualclubs.presentation.navigation.AppNavigator
 import javax.inject.Inject
 
 class SessionManager @Inject constructor(

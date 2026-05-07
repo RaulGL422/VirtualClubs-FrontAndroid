@@ -1,4 +1,4 @@
-package es.virtualclubs.presentation.handlers
+package es.virtualclubs.presentation.managers
 
 import es.virtualclubs.R
 import es.virtualclubs.domain.model.ErrorType

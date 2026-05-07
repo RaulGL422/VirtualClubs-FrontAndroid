@@ -7,10 +7,8 @@ import es.virtualclubs.domain.model.ErrorType
 import es.virtualclubs.domain.model.VirtualClubException
 import es.virtualclubs.domain.repository.AuthRepository
 import es.virtualclubs.presentation.components.dialogs.EmailNotVerifiedDialog
-import es.virtualclubs.presentation.dialogs.VCDialog
-import es.virtualclubs.presentation.handlers.ErrorHandler
+import es.virtualclubs.presentation.components.dialogs.VCDialog
 import es.virtualclubs.presentation.navigation.AppNavigator
-import es.virtualclubs.presentation.navigation.SessionManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

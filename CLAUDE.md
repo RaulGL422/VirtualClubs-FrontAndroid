@@ -75,13 +75,16 @@ es/virtualclubs/
 │   │   ├── Scaffold.kt
 │   │   ├── TextFields.kt
 │   │   └── dialogs/
-│   ├── handlers/
-│   │   └── ErrorHandler.kt         ErrorType → string resource
+│   │       ├── VCDialog.kt             Interface for all system dialogs (shown by GlobalUIManager)
+│   │       └── EmailNotVerifiedDialog.kt   Global dialog triggered on EMAIL_NOT_VERIFIED error
+│   ├── managers/
+│   │   ├── ErrorHandler.kt         ErrorType → R.string resource ID mapping
+│   │   ├── GlobalUIManager.kt      Loading, errors, dialogs — implements ErrorDispatcher
+│   │   └── SessionManager.kt       Clears session data and navigates to login on logout
 │   ├── navigation/
 │   │   ├── AppNavigator.kt         Static navigation control
 │   │   ├── NavGraph.kt             NavHost with all routes
-│   │   ├── Screen.kt               Sealed class with all routes
-│   │   └── SessionManager.kt       Global logout handling
+│   │   └── Screen.kt               Sealed class with all routes
 │   ├── screens/
 │   │   ├── auth/                   Login/Register (AuthPage + AuthViewModel)
 │   │   │   ├── components/         AuthDivider, AuthToggle, SocialButtons (internal)
@@ -240,7 +243,7 @@ Use `internal` for composables that must not be called from outside the screen f
 - `VirtualClubException(type: ErrorType)` for business errors
 - `SafeResponse` catches network exceptions and delegates token refresh
 - `GlobalUIManager` implements `ErrorDispatcher` from the domain layer — use cases dispatch errors without knowing about UI
-- `ErrorHandler` maps `ErrorType` → string resource for display
+- `ErrorHandler` (in `presentation/managers/`) maps `ErrorType` → `R.string` resource ID for display. Must stay separate from `ErrorType` because `domain/` cannot import Android resources.
 
 ### Token refresh without race conditions
 

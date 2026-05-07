@@ -12,7 +12,7 @@ import androidx.compose.ui.res.stringResource
 import es.virtualclubs.R
 import es.virtualclubs.presentation.components.VCButton
 import es.virtualclubs.presentation.components.VCButtonContent
-import es.virtualclubs.presentation.dialogs.VCDialog
+import es.virtualclubs.presentation.components.dialogs.VCDialog
 import es.virtualclubs.presentation.theme.VCTheme
 
 /**
