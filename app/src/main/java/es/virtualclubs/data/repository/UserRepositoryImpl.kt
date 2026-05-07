@@ -1,7 +1,7 @@
 package es.virtualclubs.data.repository
 
 import es.virtualclubs.data.managers.SafeResponse
-import es.virtualclubs.data.models.User
+import es.virtualclubs.domain.model.User
 import es.virtualclubs.data.remote.api.UserApi
 import es.virtualclubs.data.remote.dto.getOrThrow
 import es.virtualclubs.domain.model.ErrorType

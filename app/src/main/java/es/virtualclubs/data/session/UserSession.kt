@@ -1,6 +1,6 @@
 package es.virtualclubs.data.session
 
-import es.virtualclubs.data.models.User
+import es.virtualclubs.domain.model.User
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.flow.MutableStateFlow

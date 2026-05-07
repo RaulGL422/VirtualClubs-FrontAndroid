@@ -1,7 +1,5 @@
-package es.virtualclubs.data.models
+package es.virtualclubs.domain.model
 
 data class User(
   val email: String? = null
-) {
-
-}
+)

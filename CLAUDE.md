@@ -30,11 +30,9 @@ es/virtualclubs/
 │   │       ├── EncryptionUtils.kt          AES/GCM for tokens
 │   │       └── SecureUserPreferences.kt    Encrypted token storage
 │   ├── managers/
+│   │   ├── AuthInterceptor.kt      Injects Bearer token + proactive refresh on expiry
 │   │   ├── SafeCall.kt             API call wrapper with error dispatching
 │   │   └── SafeResponse.kt         Response handler + automatic token refresh
-│   ├── models/
-│   │   ├── Club.kt                 Club(id, name, sport, memberCount)
-│   │   └── User.kt                 User(email: String?)
 │   ├── remote/
 │   │   ├── api/
 │   │   │   ├── AuthApi.kt          Authentication endpoints
@@ -53,11 +51,12 @@ es/virtualclubs/
 │
 ├── domain/                         DOMAIN LAYER
 │   ├── model/
-│   │   ├── AuthInterceptor.kt      Injects Bearer token + proactive refresh on expiry
 │   │   ├── AuthTokens.kt           accessToken + refreshToken
+│   │   ├── Club.kt                 Club(id, name, sport, memberCount)
 │   │   ├── Endpoint.kt             API endpoint path constants
 │   │   ├── ErrorDispatcher.kt      Interface for dispatching errors (implemented by GlobalUIManager)
 │   │   ├── ErrorType.kt            Enum with 27 error types
+│   │   ├── User.kt                 User(email: String?)
 │   │   └── VirtualClubException.kt Custom project exception
 │   ├── repository/                 Repository interfaces
 │   └── usecase/                    Use cases (business logic)

@@ -1,4 +1,4 @@
-package es.virtualclubs.domain.model
+package es.virtualclubs.data.managers
 
 import android.util.Base64
 import okhttp3.Interceptor

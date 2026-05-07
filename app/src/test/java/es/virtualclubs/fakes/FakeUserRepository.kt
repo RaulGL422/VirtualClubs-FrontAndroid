@@ -1,6 +1,6 @@
 package es.virtualclubs.fakes
 
-import es.virtualclubs.data.models.User
+import es.virtualclubs.domain.model.User
 import es.virtualclubs.domain.repository.UserRepository
 
 /**

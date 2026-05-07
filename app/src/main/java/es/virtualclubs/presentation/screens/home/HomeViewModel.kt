@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import es.virtualclubs.data.managers.SafeCall
-import es.virtualclubs.data.models.Club
+import es.virtualclubs.domain.model.Club
 import es.virtualclubs.data.session.UserSession
 import es.virtualclubs.domain.repository.UserRepository
 import es.virtualclubs.presentation.managers.GlobalUIManager

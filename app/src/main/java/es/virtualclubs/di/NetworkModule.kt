@@ -15,7 +15,7 @@ import es.virtualclubs.data.remote.api.UserApi
 import es.virtualclubs.data.repository.AuthRepositoryImpl
 import es.virtualclubs.data.repository.RefreshRepositoryImpl
 import es.virtualclubs.data.repository.UserRepositoryImpl
-import es.virtualclubs.domain.model.AuthInterceptor
+import es.virtualclubs.data.managers.AuthInterceptor
 import es.virtualclubs.domain.repository.AuthRepository
 import es.virtualclubs.domain.repository.RefreshRepository
 import es.virtualclubs.domain.repository.UserRepository

@@ -18,7 +18,7 @@ import es.virtualclubs.BuildConfig
 import es.virtualclubs.data.local.datastore.UserPreferences
 import es.virtualclubs.data.local.secure.SecureUserPreferences
 import es.virtualclubs.data.managers.SafeCall
-import es.virtualclubs.data.models.User
+import es.virtualclubs.domain.model.User
 import es.virtualclubs.presentation.managers.GlobalUIManager
 import es.virtualclubs.domain.model.ErrorType
 import es.virtualclubs.domain.repository.AuthRepository

@@ -49,21 +49,20 @@ class AuthViewModelTest {
         securePreferences = mockk(relaxed = true)
         safeCall = SafeCall(mockk<ErrorDispatcher>(relaxed = true))
 
-        // GlobalUIManager ahora es una clase — se mockea como cualquier otra
         globalUIManager = mockk(relaxed = true)
         coEvery { globalUIManager.withLoading<Unit>(any()) } coAnswers {
             @Suppress("UNCHECKED_CAST")
             (args[0] as suspend () -> Unit).invoke()
         }
 
-        every { userPreferences.autoLoginFlow } returns flowOf(false)
+        every { securePreferences.refreshToken } returns flowOf(null)
     }
 
     private fun buildViewModel(
-        autoLogin: Boolean = false,
+        hasSession: Boolean = false,
         email: String? = null
     ): AuthViewModel {
-        every { userPreferences.autoLoginFlow } returns flowOf(autoLogin)
+        every { securePreferences.refreshToken } returns flowOf(if (hasSession) "stored-refresh-token" else null)
         if (email != null) {
             every { userPreferences.userEmailFlow } returns flowOf(email)
         }
@@ -82,8 +81,8 @@ class AuthViewModelTest {
     // ─── Estado inicial ───────────────────────────────────────────────────────
 
     @Test
-    fun `estado inicial es Idle cuando autoLogin esta desactivado`() = runTest {
-        val vm = buildViewModel(autoLogin = false)
+    fun `estado inicial es Idle cuando no hay sesion guardada`() = runTest {
+        val vm = buildViewModel(hasSession = false)
         advanceUntilIdle()
         assertEquals(AuthUiState.Idle, vm.uiState.value)
     }
@@ -96,7 +95,7 @@ class AuthViewModelTest {
         val vm = buildViewModel()
         advanceUntilIdle()
 
-        vm.loginUser("user@test.com", "password123", false)
+        vm.loginUser("user@test.com", "password123")
         advanceUntilIdle()
 
         assertEquals(AuthUiState.Success, vm.uiState.value)
@@ -108,7 +107,7 @@ class AuthViewModelTest {
         val vm = buildViewModel()
         advanceUntilIdle()
 
-        vm.loginUser("user@test.com", "wrong", false)
+        vm.loginUser("user@test.com", "wrong")
         advanceUntilIdle()
 
         assertEquals(AuthUiState.Idle, vm.uiState.value)
@@ -117,18 +116,18 @@ class AuthViewModelTest {
     // ─── autoLogin ────────────────────────────────────────────────────────────
 
     @Test
-    fun `autoLogin activo con refresh exitoso actualiza estado a Success`() = runTest {
+    fun `autoLogin con refresh token valido y refresh exitoso actualiza estado a Success`() = runTest {
         refreshRepository.refreshResult = Result.success(Unit)
-        val vm = buildViewModel(autoLogin = true, email = "user@test.com")
+        val vm = buildViewModel(hasSession = true, email = "user@test.com")
         advanceUntilIdle()
 
         assertEquals(AuthUiState.Success, vm.uiState.value)
     }
 
     @Test
-    fun `autoLogin activo con refresh fallido mantiene estado en Idle`() = runTest {
+    fun `autoLogin con refresh token valido pero refresh fallido mantiene estado en Idle`() = runTest {
         refreshRepository.refreshResult = Result.failure(VirtualClubException(ErrorType.INVALID_REFRESH_TOKEN))
-        val vm = buildViewModel(autoLogin = true)
+        val vm = buildViewModel(hasSession = true)
         advanceUntilIdle()
 
         assertEquals(AuthUiState.Idle, vm.uiState.value)

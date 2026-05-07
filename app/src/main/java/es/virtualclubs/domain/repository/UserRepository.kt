@@ -1,6 +1,6 @@
 package es.virtualclubs.domain.repository
 
-import es.virtualclubs.data.models.User
+import es.virtualclubs.domain.model.User
 
 interface UserRepository {
   suspend fun getUserInfo(): Result<User>

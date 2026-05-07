@@ -27,7 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import es.virtualclubs.R
-import es.virtualclubs.data.models.Club
+import es.virtualclubs.domain.model.Club
 import es.virtualclubs.presentation.components.VCButton
 import es.virtualclubs.presentation.components.VCButtonContent
 import es.virtualclubs.presentation.components.VCButtonStyle
