@@ -37,8 +37,8 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -80,14 +80,16 @@ fun LoginPage(
   screenType: ScreenType
 ) {
   var isLogin by remember { mutableStateOf(true) }
-  val uiState by viewModel.uiState.collectAsState()
-  val passwordResetUiState by viewModel.passwordResetUiState.collectAsState()
+  val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+  val passwordResetUiState by viewModel.passwordResetUiState.collectAsStateWithLifecycle()
 
   val snackbarHostState = remember { SnackbarHostState() }
   val scope = rememberCoroutineScope()
   val resetEmailSent = stringResource(R.string.password_reset_email_sent)
 
-  if (uiState is AuthUiState.Success) onLogged()
+  LaunchedEffect(uiState) {
+    if (uiState is AuthUiState.Success) onLogged()
+  }
 
   LaunchedEffect(passwordResetUiState) {
     if (passwordResetUiState is PasswordResetUiState.Success) {

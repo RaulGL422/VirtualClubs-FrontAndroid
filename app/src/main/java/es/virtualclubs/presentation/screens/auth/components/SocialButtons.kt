@@ -33,10 +33,50 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import es.virtualclubs.R
 import es.virtualclubs.presentation.theme.VCTheme
 
 internal val FacebookBlue: Color = Color(0xFF1877F2)
+
+@Preview(showBackground = true, name = "SocialButton — Google")
+@Composable
+private fun SocialButtonGooglePreview() {
+  MaterialTheme {
+    SocialButton(R.string.continue_with_google, R.drawable.google_icon, iconTint = null, onClick = {})
+  }
+}
+
+@Preview(showBackground = true, name = "SocialButton — Apple")
+@Composable
+private fun SocialButtonApplePreview() {
+  MaterialTheme {
+    SocialButton(R.string.continue_with_apple, R.drawable.apple_icon, iconTint = androidx.compose.material3.MaterialTheme.colorScheme.onSurface, onClick = {})
+  }
+}
+
+@Preview(showBackground = true, name = "SocialButton — Facebook")
+@Composable
+private fun SocialButtonFacebookPreview() {
+  MaterialTheme {
+    SocialButton(R.string.facebook, R.drawable.facebook_icon, iconTint = FacebookBlue, onClick = {})
+  }
+}
+
+@Preview(showBackground = true, name = "SocialIconButtons row")
+@Composable
+private fun SocialIconButtonsPreview() {
+  MaterialTheme {
+    androidx.compose.foundation.layout.Row(
+      horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(8.dp)
+    ) {
+      SocialIconButton(R.drawable.google_icon, R.string.continue_with_google, iconTint = null, onClick = {}, modifier = androidx.compose.ui.Modifier.weight(1f))
+      SocialIconButton(R.drawable.apple_icon, R.string.continue_with_apple, iconTint = androidx.compose.material3.MaterialTheme.colorScheme.onSurface, onClick = {}, modifier = androidx.compose.ui.Modifier.weight(1f))
+      SocialIconButton(R.drawable.facebook_icon, R.string.facebook, iconTint = FacebookBlue, onClick = {}, modifier = androidx.compose.ui.Modifier.weight(1f))
+    }
+  }
+}
 
 @Composable
 internal fun SocialButton(

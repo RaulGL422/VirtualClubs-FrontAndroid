@@ -12,10 +12,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import es.virtualclubs.R
 import es.virtualclubs.presentation.components.VCButton
 import es.virtualclubs.presentation.components.VCButtonContent
 import es.virtualclubs.presentation.components.VCButtonStyle
+import androidx.compose.material3.MaterialTheme
+
+@Preview(showBackground = true, name = "Login mode")
+@Composable
+private fun AuthToggleLoginPreview() {
+  MaterialTheme { AuthToggle(isLogin = true, onChangeLogin = {}) }
+}
+
+@Preview(showBackground = true, name = "Register mode")
+@Composable
+private fun AuthToggleRegisterPreview() {
+  MaterialTheme { AuthToggle(isLogin = false, onChangeLogin = {}) }
+}
 
 @Composable
 internal fun AuthToggle(isLogin: Boolean, onChangeLogin: () -> Unit) {

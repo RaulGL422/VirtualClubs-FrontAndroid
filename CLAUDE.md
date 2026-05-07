@@ -277,6 +277,9 @@ Access tokens are cached in `UserSession` after the first read. `AuthInterceptor
 | UserApi limited | `getUserInfo` only returns email — needs expansion for clubs, config, etc. |
 | `prod` flavor backend | Both flavors point to Render — a dedicated production URL is needed |
 | UI/instrumentation tests | No Compose UI tests implemented yet |
+| Apple / Facebook login | Buttons render correctly but `onApple` and `onFacebook` are `{ /* TODO */ }` — not yet implemented |
+| `collectAsState()` → `collectAsStateWithLifecycle()` | All screens use `collectAsState()` which does not respect Android lifecycle — migrate to `collectAsStateWithLifecycle()` |
+| Auth side effect in composition | `if (uiState is AuthUiState.Success) onLogged()` in `LoginPage` should be inside a `LaunchedEffect` |
 
 ---
 

@@ -65,7 +65,7 @@ class AuthViewModel @Inject constructor(
         val result = credentialManager.getCredential(activity, request)
         processGoogleCredential(result)
       } catch (_: GetCredentialCancellationException) {
-        // El usuario canceló el selector — no es un error
+        // User dismissed the credential selector — not an error
       } catch (_: GetCredentialException) {
         onLoginFailed(ErrorType.GOOGLE_SIGN_IN_FAILED)
       } catch (_: Exception) {
