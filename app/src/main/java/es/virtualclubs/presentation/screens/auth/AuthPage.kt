@@ -176,7 +176,7 @@ fun LoginContent(
 
   val columnWidthFraction = when (screenType) {
     ScreenType.Small -> 0.85f
-    ScreenType.Medium -> 0.40f
+    ScreenType.Medium -> 0.45f
   }
 
   Box(modifier = modifier.fillMaxSize()) {

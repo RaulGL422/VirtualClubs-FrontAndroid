@@ -14,7 +14,7 @@ class GetUserInfoUseCase @Inject constructor(
   suspend operator fun invoke(): Result<User> {
     return userRepository.getUserInfo().also { result ->
       result.getOrNull()?.let { user ->
-        userSession.updateUser(user)
+        userSession.login(user)
       }
     }
   }

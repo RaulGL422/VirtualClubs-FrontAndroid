@@ -46,7 +46,10 @@ fun AppNavHost(
         }
 
         composable(Screen.Settings.route) {
-            SettingsPage(onBack = { appNavigator.navigateBack() })
+            SettingsPage(
+                screenType = screenType,
+                onBack = { appNavigator.navigateBack() }
+            )
         }
 
         composable(

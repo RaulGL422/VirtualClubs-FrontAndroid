@@ -50,9 +50,7 @@ class AppNavigator @Inject constructor(
     }
 
     fun navigateToSettings() {
-        navigate(Screen.Settings.route) {
-            popUpTo(Screen.Auth.route) { inclusive = true }
-        }
+        navController?.navigate(Screen.Settings.route)
     }
 
     fun navigate(route: String, builder: (NavOptionsBuilder.() -> Unit)) {

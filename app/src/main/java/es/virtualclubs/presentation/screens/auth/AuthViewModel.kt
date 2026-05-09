@@ -85,7 +85,7 @@ class AuthViewModel @Inject constructor(
       if (response.isSuccess) {
         val tokens = response.getOrNull()
         if (tokens != null) {
-          userSession.updateUser(User(email = googleCredential.id))
+          userSession.login(User(email = googleCredential.id))
           securePreferences.saveTokens(tokens.accessToken, tokens.refreshToken)
           _uiState.value = AuthUiState.Success
         } else {
@@ -112,7 +112,7 @@ class AuthViewModel @Inject constructor(
         globalUIManager.withLoading {
           val response = refreshRepository.refresh()
           _uiState.value = if (response.isSuccess) {
-            userSession.updateUser(User(email = userPreferences.userEmailFlow.firstOrNull()))
+            userSession.login(User(email = userPreferences.userEmailFlow.firstOrNull()))
             AuthUiState.Success
           } else {
             AuthUiState.Idle
@@ -131,7 +131,7 @@ class AuthViewModel @Inject constructor(
         if (tokens != null) {
           securePreferences.saveTokens(tokens.accessToken, tokens.refreshToken)
           userPreferences.saveUser(email)
-          userSession.updateUser(User(email = email))
+          userSession.login(User(email = email))
           _uiState.value = AuthUiState.Success
         } else {
           globalUIManager.setError(ErrorType.MISSING_TOKENS)
@@ -159,7 +159,7 @@ class AuthViewModel @Inject constructor(
         if (tokens != null) {
           userPreferences.saveUser(email)
           securePreferences.saveTokens(tokens.accessToken, tokens.refreshToken)
-          userSession.updateUser(User(email = tokens.email ?: email))
+          userSession.login(User(email = tokens.email ?: email))
           _uiState.value = AuthUiState.Success
         } else {
           globalUIManager.setError(ErrorType.MISSING_TOKENS)

@@ -12,6 +12,6 @@ class LogoutUserUseCase @Inject constructor(
 ) {
     suspend operator fun invoke() {
         repository.logout()
-        userSession.clearUser()
+        userSession.logout()
     }
 }

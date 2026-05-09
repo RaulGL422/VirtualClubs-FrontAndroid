@@ -96,4 +96,18 @@
     <string name="settings_contrast_high">Alto</string>
     <string name="settings_font_size">Tamaño de letra (%s)</string>
     <string name="settings_logout">Cerrar sesión</string>
+    <string name="settings_device">Dispositivo</string>
+    <string name="settings_language">Idioma</string>
+    <string name="settings_language_subtitle">Cambiar el idioma de la aplicación</string>
+    <string name="settings_notifications">Notificaciones</string>
+    <string name="settings_notifications_subtitle">Recibir notificaciones de la aplicación</string>
+    <string name="settings_app_version">Versión</string>
+    <string name="settings_about">Acerca de</string>
+    <string name="settings_privacy_policy">Política de privacidad</string>
+    <string name="settings_privacy_policy_subtitle">Ver la política de privacidad de VirtualClubs</string>
+    <string name="settings_terms">Términos y condiciones</string>
+    <string name="settings_terms_subtitle">Ver los términos de servicio de VirtualClubs</string>
+    <string name="settings_language_system">Predeterminado del sistema</string>
+    <string name="settings_language_restart_required">Reinicia la app para aplicar el cambio de idioma</string>
+    <string name="settings_font_preview">El texto de ejemplo muestra el tamaño de letra actual</string>
 </resources>

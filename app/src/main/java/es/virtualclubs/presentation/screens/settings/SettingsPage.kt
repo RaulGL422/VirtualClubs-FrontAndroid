@@ -1,6 +1,10 @@
 package es.virtualclubs.presentation.screens.settings
 
+import android.app.LocaleManager
 import android.content.Intent
+import android.os.Build
+import android.os.LocaleList
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,227 +13,225 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Article
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Shield
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Slider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import es.virtualclubs.BuildConfig
 import es.virtualclubs.R
-import kotlin.system.exitProcess
-import es.virtualclubs.presentation.components.VCButton
-import es.virtualclubs.presentation.components.VCButtonContent
-import es.virtualclubs.presentation.components.VCButtonStyle
+import es.virtualclubs.ScreenType
 import es.virtualclubs.presentation.components.VCScaffold
-import kotlin.math.roundToInt
+import es.virtualclubs.presentation.managers.LocalGlobalUIManager
+import es.virtualclubs.presentation.theme.VCTheme
+import es.virtualclubs.presentation.theme.getAppVersion
+import kotlin.system.exitProcess
 
 @Composable
 fun SettingsPage(
-  viewModel: SettingsViewModel = hiltViewModel(),
-  onBack: () -> Unit
+    screenType: ScreenType,
+    viewModel: SettingsViewModel = hiltViewModel(),
+    onBack: () -> Unit
 ) {
-  val uiState by viewModel.uiState.collectAsState()
-  val context = LocalContext.current
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+    val globalUIManager = LocalGlobalUIManager.current
 
-  LaunchedEffect(Unit) {
-    viewModel.restartSignal.collect {
-      val intent = context.packageManager
-        .getLaunchIntentForPackage(context.packageName) ?: return@collect
-      intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-      context.startActivity(intent)
-      exitProcess(0)
-    }
-  }
-
-  VCScaffold(
-    titleTopBar = R.string.settings_page,
-    canGoBack = true,
-    onNavigateBack = onBack
-  ) { paddingValues ->
-    Column(
-      modifier = Modifier
-        .fillMaxSize()
-        .padding(paddingValues)
-        .padding(horizontal = 16.dp)
-        .verticalScroll(rememberScrollState()),
-      verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-      Spacer(Modifier.height(8.dp))
-
-      // ----- Cuenta -----
-      SectionTitle(stringResource(R.string.settings_account))
-
-      uiState.email?.let { email ->
-        Text(
-          text = email,
-          style = MaterialTheme.typography.bodyMedium,
-          color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-      }
-
-      HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-
-      // ----- Apariencia -----
-      SectionTitle(stringResource(R.string.settings_appearance))
-
-      SectionLabel(stringResource(R.string.settings_theme))
-
-      Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-      ) {
-        VCButton(
-          content = VCButtonContent.Text(R.string.settings_theme_dark),
-          style = if (uiState.isDarkTheme == true) VCButtonStyle.Primary else VCButtonStyle.Outline,
-          modifier = Modifier.weight(1f),
-          onClick = { viewModel.setTheme(true) }
-        )
-        VCButton(
-          content = VCButtonContent.Text(R.string.settings_theme_system),
-          style = if (uiState.isDarkTheme == null) VCButtonStyle.Primary else VCButtonStyle.Outline,
-          modifier = Modifier.weight(1f),
-          onClick = { viewModel.setTheme(null) }
-        )
-        VCButton(
-          content = VCButtonContent.Text(R.string.settings_theme_light),
-          style = if (uiState.isDarkTheme == false) VCButtonStyle.Primary else VCButtonStyle.Outline,
-          modifier = Modifier.weight(1f),
-          onClick = { viewModel.setTheme(false) }
-        )
-      }
-
-      Spacer(Modifier.height(4.dp))
-
-      SectionLabel(stringResource(R.string.settings_contrast))
-
-      val contrastLabels = listOf(
-        stringResource(R.string.settings_contrast_low),
-        stringResource(R.string.settings_contrast_medium),
-        stringResource(R.string.settings_contrast_high)
-      )
-
-      Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-      ) {
-        contrastLabels.forEachIndexed { index, label ->
-          VCButton(
-            content = VCButtonContent.Text(
-              when (index) {
-                0 -> R.string.settings_contrast_low
-                1 -> R.string.settings_contrast_medium
-                else -> R.string.settings_contrast_high
-              }
-            ),
-            style = if (uiState.contrastType == index) VCButtonStyle.Primary else VCButtonStyle.Outline,
-            modifier = Modifier.weight(1f),
-            onClick = { viewModel.setContrast(index) }
-          )
+    LaunchedEffect(Unit) {
+        viewModel.restartSignal.collect {
+            val intent = context.packageManager
+                .getLaunchIntentForPackage(context.packageName) ?: return@collect
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            context.startActivity(intent)
+            exitProcess(0)
         }
-      }
-
-      Spacer(Modifier.height(4.dp))
-
-      SectionLabel(stringResource(R.string.settings_font_size, String.format("%.1f", uiState.fontSizeMultiplier)))
-
-      Slider(
-        value = uiState.fontSizeMultiplier.toFloat(),
-        onValueChange = { raw ->
-          val step = 0.1f
-          viewModel.setFontSize(((raw / step).roundToInt() * step).toDouble())
-        },
-        valueRange = 0.75f..2f,
-        steps = 12,
-        modifier = Modifier.fillMaxWidth()
-      )
-
-      HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-
-      // ----- Logout -----
-      VCButton(
-        content = VCButtonContent.Text(R.string.settings_logout),
-        style = VCButtonStyle.Outline,
-        modifier = Modifier.fillMaxWidth(),
-        onClick = { viewModel.logout() }
-      )
-
-      // ----- Desarrollo (solo debug) -----
-      if (BuildConfig.DEBUG) {
-        HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-        DebugServerSection(
-          currentUrl = uiState.debugServerUrl,
-          onSave = { viewModel.saveDebugServerUrl(it) }
-        )
-      }
-
-      Spacer(Modifier.height(16.dp))
     }
-  }
+
+    VCScaffold(
+        titleTopBar = R.string.settings_page,
+        canGoBack = true,
+        onNavigateBack = onBack
+    ) { paddingValues ->
+        val spacing = VCTheme.spacing
+        val columnWidthFraction = when (screenType) {
+            ScreenType.Small  -> 0.85f
+            ScreenType.Medium -> 0.45f
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth(columnWidthFraction)
+                    .padding(vertical = spacing.screenVertical),
+                verticalArrangement = Arrangement.spacedBy(spacing.md)
+            ) {
+                if (uiState.isLoggedIn) {
+                    AccountCard(email = uiState.email ?: "")
+                    Spacer(Modifier.height(spacing.md))
+                }
+
+                SectionHeader(stringResource(R.string.settings_device))
+
+                SettingRow(
+                    title    = stringResource(R.string.settings_language),
+                    subtitle = stringResource(R.string.settings_language_subtitle),
+                    icon     = Icons.Filled.Language,
+                    onClick  = {
+                        globalUIManager.showDialog(
+                            LanguagePickerDialog(
+                                currentLanguage    = uiState.appLanguage,
+                                onLanguageSelected = { tag ->
+                                    viewModel.setAppLanguage(tag)
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                        context.getSystemService(LocaleManager::class.java)
+                                            .applicationLocales =
+                                            if (tag.isEmpty()) LocaleList.getEmptyLocaleList()
+                                            else LocaleList.forLanguageTags(tag)
+                                    } else {
+                                        Toast.makeText(
+                                            context,
+                                            context.getString(R.string.settings_language_restart_required),
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                }
+                            )
+                        )
+                    }
+                )
+
+                SettingToggleRow(
+                    title    = stringResource(R.string.settings_notifications),
+                    subtitle = stringResource(R.string.settings_notifications_subtitle),
+                    icon     = Icons.Filled.Notifications,
+                    checked  = uiState.notificationsEnabled,
+                    onToggle = viewModel::setNotificationsEnabled
+                )
+
+                Spacer(Modifier.height(spacing.sm))
+                HorizontalDivider(color = VCTheme.colors.outlineVariant)
+                Spacer(Modifier.height(spacing.sm))
+
+                SectionHeader(stringResource(R.string.settings_appearance))
+
+                AppearanceSection(
+                    uiState         = uiState,
+                    onThemeChange   = viewModel::setTheme,
+                    onContrastChange = viewModel::setContrast,
+                    onFontSizeChange = viewModel::setFontSize
+                )
+
+                Spacer(Modifier.height(spacing.sm))
+                HorizontalDivider(color = VCTheme.colors.outlineVariant)
+                Spacer(Modifier.height(spacing.sm))
+
+                SectionHeader(stringResource(R.string.settings_about))
+
+                SettingRow(
+                    title    = stringResource(R.string.settings_app_version),
+                    subtitle = getAppVersion(context),
+                    icon     = Icons.Filled.Info,
+                    onClick  = null
+                )
+
+                SettingRow(
+                    title    = stringResource(R.string.settings_privacy_policy),
+                    subtitle = stringResource(R.string.settings_privacy_policy_subtitle),
+                    icon     = Icons.Filled.Shield,
+                    onClick  = { /* TODO: open privacy policy URL */ }
+                )
+
+                SettingRow(
+                    title    = stringResource(R.string.settings_terms),
+                    subtitle = stringResource(R.string.settings_terms_subtitle),
+                    icon     = Icons.Filled.Article,
+                    onClick  = { /* TODO: open terms of service URL */ }
+                )
+
+                if (BuildConfig.DEBUG) {
+                    Spacer(Modifier.height(spacing.sm))
+                    HorizontalDivider(color = VCTheme.colors.outlineVariant)
+                    Spacer(Modifier.height(spacing.sm))
+                    DebugServerSection(
+                        currentUrl = uiState.debugServerUrl,
+                        onSave     = viewModel::saveDebugServerUrl
+                    )
+                }
+
+                Spacer(Modifier.height(spacing.xl))
+            }
+        }
+    }
 }
 
 @Composable
-private fun DebugServerSection(currentUrl: String, onSave: (String) -> Unit) {
-  var localUrl by remember(currentUrl) { mutableStateOf(currentUrl) }
+private fun AccountCard(email: String) {
+    val spacing = VCTheme.spacing
 
-  SectionTitle("Servidor de desarrollo")
-  SectionLabel("Activo: ${currentUrl.ifBlank { BuildConfig.BASE_URL }}")
-  Spacer(Modifier.height(4.dp))
-
-  OutlinedTextField(
-    value = localUrl,
-    onValueChange = { localUrl = it },
-    label = { Text("URL del servidor") },
-    placeholder = { Text("http://192.168.1.100:3000/") },
-    singleLine = true,
-    modifier = Modifier.fillMaxWidth()
-  )
-
-  Text(
-    text = "Vacío → usa la URL del flavor (${BuildConfig.BASE_URL})",
-    style = MaterialTheme.typography.bodySmall,
-    color = MaterialTheme.colorScheme.onSurfaceVariant
-  )
-
-  Spacer(Modifier.height(8.dp))
-
-  OutlinedButton(
-    onClick = { onSave(localUrl) },
-    modifier = Modifier.fillMaxWidth()
-  ) {
-    Text("Guardar y reiniciar")
-  }
+    Surface(
+        shape    = VCTheme.shapes.large,
+        color    = VCTheme.colors.surfaceContainer,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            modifier              = Modifier.padding(spacing.cardPadding),
+            verticalAlignment     = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(spacing.inlineSpacingMd)
+        ) {
+            Icon(
+                imageVector    = Icons.Filled.AccountCircle,
+                contentDescription = null,
+                modifier       = Modifier.size(40.dp),
+                tint           = VCTheme.colors.primary
+            )
+            Column {
+                Text(
+                    text  = stringResource(R.string.settings_account),
+                    style = VCTheme.typography.labelSmall,
+                    color = VCTheme.colors.onSurfaceVariant
+                )
+                Text(
+                    text  = email,
+                    style = VCTheme.typography.bodyMedium,
+                    color = VCTheme.colors.onSurface
+                )
+            }
+        }
+    }
 }
 
 @Composable
-private fun SectionTitle(text: String) {
-  Text(
-    text = text,
-    style = MaterialTheme.typography.titleMedium,
-    fontWeight = FontWeight.Bold
-  )
-}
-
-@Composable
-private fun SectionLabel(text: String) {
-  Text(
-    text = text,
-    style = MaterialTheme.typography.labelLarge,
-    color = MaterialTheme.colorScheme.onSurfaceVariant
-  )
+private fun SectionHeader(text: String) {
+    Text(
+        text       = text,
+        style      = VCTheme.typography.titleMedium,
+        fontWeight = FontWeight.SemiBold,
+        color      = VCTheme.colors.onSurface
+    )
 }

@@ -19,6 +19,8 @@ interface VCDialog {
     val blockDialog: Boolean get() = false
     /** ID del recurso de string para el botón de confirmación. `null` oculta el botón. */
     val confirmTextRes: Int? get() = null
+    /** ID del recurso de string para el botón de cancelar. `null` oculta el botón. */
+    val dismissTextRes: Int? get() = null
     /** Callback al pulsar confirmar. `null` oculta el botón de confirmación. */
     val onConfirm: (() -> Unit)? get() = null
 
