@@ -45,8 +45,10 @@ class AppNavigator @Inject constructor(
     }
 
     fun navigateBack() {
+        val controller = navController ?: return
+        if (controller.previousBackStackEntry == null) return
         globalUIManager.get().clearError()
-        navController?.popBackStack()
+        controller.popBackStack()
     }
 
     fun navigateToSettings() {
