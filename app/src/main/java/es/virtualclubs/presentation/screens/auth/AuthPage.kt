@@ -30,7 +30,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -47,7 +46,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
@@ -55,7 +53,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import es.virtualclubs.R
 import es.virtualclubs.ScreenType
@@ -295,7 +292,7 @@ fun LoginContent(
 
         Spacer(modifier = Modifier.height(VCTheme.spacing.itemVerticalPadding))
 
-        val onSurface = MaterialTheme.colorScheme.onSurface
+        val onSurface = VCTheme.colors.onSurface
         if (screenType == ScreenType.Small) {
           Row(
             modifier = Modifier.fillMaxWidth(),
@@ -334,8 +331,8 @@ fun LoginContent(
 
     Text(
       text = getAppVersion(LocalContext.current),
-      fontSize = 12.sp,
-      color = Color.Gray,
+      style = VCTheme.typography.bodySmall,
+      color = VCTheme.colors.onSurfaceVariant,
       modifier = Modifier
         .align(Alignment.BottomStart)
         .padding(start = 24.dp, bottom = 12.dp)

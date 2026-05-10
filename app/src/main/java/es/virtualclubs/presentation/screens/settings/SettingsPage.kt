@@ -18,8 +18,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Article
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Article
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Shield
@@ -116,7 +116,7 @@ fun SettingsPage(
                                     } else {
                                         Toast.makeText(
                                             context,
-                                            context.getString(R.string.settings_language_restart_required),
+                                            stringResource(R.string.settings_language_restart_required),
                                             Toast.LENGTH_SHORT
                                         ).show()
                                     }
@@ -163,7 +163,7 @@ fun SettingsPage(
                 SettingRow(
                     title    = stringResource(R.string.settings_terms),
                     subtitle = stringResource(R.string.settings_terms_subtitle),
-                    icon     = Icons.Filled.Article,
+                    icon     = Icons.AutoMirrored.Filled.Article,
                     onClick  = null
                 )
 

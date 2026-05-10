@@ -110,4 +110,9 @@
     <string name="settings_language_system">Predeterminado del sistema</string>
     <string name="settings_language_restart_required">Reinicia la app para aplicar el cambio de idioma</string>
     <string name="settings_font_preview">El texto de ejemplo muestra el tamaño de letra actual</string>
+    <string name="settings_debug_server_title">Servidor de desarrollo</string>
+    <string name="settings_debug_server_active">Activo: %s</string>
+    <string name="settings_debug_server_url_label">URL del servidor</string>
+    <string name="settings_debug_server_hint">Vacío → usa la URL del flavor (%s)</string>
+    <string name="settings_debug_server_save">Guardar y reiniciar</string>
 </resources>

@@ -18,8 +18,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -38,7 +38,7 @@ fun AppBar(
   actions: (@Composable RowScope.() -> Unit)? = null
 ) {
   val globalUIManager = LocalGlobalUIManager.current
-  val errorState by globalUIManager.errorState.collectAsState()
+  val errorState by globalUIManager.errorState.collectAsStateWithLifecycle()
 
   val message = when (errorState.code) {
     null -> UiMessage.None
@@ -86,7 +86,7 @@ fun AppBar(
           Text(
             text = stringResource(id = messageId),
             modifier = Modifier.weight(1f),
-            color = MaterialTheme.colorScheme.onPrimaryContainer
+            color = MaterialTheme.colorScheme.onErrorContainer
           )
 
           IconButton(onClick = {
