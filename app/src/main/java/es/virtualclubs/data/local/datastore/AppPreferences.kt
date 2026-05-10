@@ -18,6 +18,8 @@ class AppPreferences @Inject constructor(private val dataStore: DataStore<Prefer
         private val CONTRAST_TYPE = intPreferencesKey("contrast_type")
         private val FONT_SIZE_MULTIPLIER = doublePreferencesKey("font_size_multiplier")
         private val DEBUG_SERVER_URL = stringPreferencesKey("debug_server_url")
+        private val NOTIFICATIONS_ENABLED = booleanPreferencesKey("notifications_enabled")
+        private val APP_LANGUAGE = stringPreferencesKey("app_language")
     }
 
     // ------------------- Theme -------------------
@@ -60,5 +62,23 @@ class AppPreferences @Inject constructor(private val dataStore: DataStore<Prefer
 
     suspend fun setDebugServerUrl(url: String) {
         dataStore.edit { it[DEBUG_SERVER_URL] = url }
+    }
+
+    // ------------------- Notifications -------------------
+
+    val notificationsEnabledFlow: Flow<Boolean> = dataStore.data
+        .map { it[NOTIFICATIONS_ENABLED] ?: true }
+
+    suspend fun setNotificationsEnabled(enabled: Boolean) {
+        dataStore.edit { it[NOTIFICATIONS_ENABLED] = enabled }
+    }
+
+    // ------------------- App language -------------------
+
+    val appLanguageFlow: Flow<String> = dataStore.data
+        .map { it[APP_LANGUAGE] ?: "" }
+
+    suspend fun setAppLanguage(tag: String) {
+        dataStore.edit { it[APP_LANGUAGE] = tag }
     }
 }

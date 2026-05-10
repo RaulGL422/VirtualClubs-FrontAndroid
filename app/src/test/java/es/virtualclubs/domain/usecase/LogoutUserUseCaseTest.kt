@@ -1,5 +1,6 @@
 package es.virtualclubs.domain.usecase
 
+import es.virtualclubs.domain.model.SessionState
 import es.virtualclubs.domain.model.User
 import es.virtualclubs.data.session.UserSession
 import es.virtualclubs.fakes.FakeAuthRepository
@@ -29,19 +30,29 @@ class LogoutUserUseCaseTest {
     }
 
     @Test
-    fun `logout limpia el usuario en sesion`() = runTest {
-        userSession.updateUser(User(email = "logged@test.com"))
+    fun `logout limpia la sesion en UserSession`() = runTest {
+        userSession.login(User(email = "logged@test.com"))
 
         useCase()
 
-        assertEquals(User(), userSession.currentUser.value)
+        assertEquals(SessionState.LoggedOut, userSession.sessionState.value)
     }
 
     @Test
-    fun `logout con usuario ya limpio no falla`() = runTest {
-        // userSession ya tiene User() por defecto
+    fun `logout con sesion ya limpia no falla`() = runTest {
+        // sessionState ya es LoggedOut por defecto
         useCase()
 
-        assertEquals(User(), userSession.currentUser.value)
+        assertEquals(SessionState.LoggedOut, userSession.sessionState.value)
+    }
+
+    @Test
+    fun `logout limpia el access token cacheado`() = runTest {
+        userSession.cacheAccessToken("token-previo")
+        userSession.login(User(email = "logged@test.com"))
+
+        useCase()
+
+        assertEquals(null, userSession.cachedAccessToken)
     }
 }

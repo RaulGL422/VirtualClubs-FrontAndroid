@@ -1,5 +1,6 @@
 package es.virtualclubs.presentation.theme
 
+import android.app.Activity
 import android.content.Context
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
@@ -9,11 +10,14 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
+import androidx.core.view.WindowCompat
 import es.virtualclubs.R
 import es.virtualclubs.data.local.datastore.AppPreferences
 
@@ -245,13 +249,15 @@ private val highContrastDarkColorScheme = darkColorScheme(
     surfaceContainerHighest = surfaceContainerHighestDarkHighContrast,
 )
 
-val LocalAppPreferences = staticCompositionLocalOf<AppPreferences> {
+val LocalAppPreferences  = staticCompositionLocalOf<AppPreferences> {
     error("AppPreferences not provided")
 }
 
-val LocalSpacing   = staticCompositionLocalOf { Spacing() }
-val LocalSizes     = staticCompositionLocalOf { Sizes() }
-val LocalElevation = staticCompositionLocalOf { VCElevation() }
+val LocalSpacing        = staticCompositionLocalOf { Spacing() }
+val LocalSizes          = staticCompositionLocalOf { Sizes() }
+val LocalElevation      = staticCompositionLocalOf { VCElevation() }
+val LocalVCColorScheme  = staticCompositionLocalOf<ColorScheme> { lightScheme }
+val LocalVCTypography   = staticCompositionLocalOf<Typography>  { AppTypography }
 
 @Composable
 private fun getColorScheme(preferences: AppPreferences): ColorScheme {
@@ -274,7 +280,7 @@ private fun getColorScheme(preferences: AppPreferences): ColorScheme {
 }
 
 @Composable
-private fun typography(preferences: AppPreferences): Typography {
+private fun resolveTypography(preferences: AppPreferences): Typography {
     val multiplier by preferences.fontSizeMultiplierFlow.collectAsState(initial = 1.0)
     return scaledTypography(AppTypography, multiplier)
 }
@@ -284,16 +290,53 @@ fun VirtualClubsTheme(
     preferences: AppPreferences,
     content: @Composable () -> Unit
 ) {
+    val isDarkTheme by preferences.darkThemeFlow.collectAsState(initial = null)
+    val effectiveDark = isDarkTheme ?: isSystemInDarkTheme()
+    val colorScheme   = getColorScheme(preferences)
+    val typography    = resolveTypography(preferences)
+
+    val view = LocalView.current
+    if (!view.isInEditMode) {
+        SideEffect {
+            val window = (view.context as Activity).window
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !effectiveDark
+        }
+    }
+
     CompositionLocalProvider(
-        LocalAppPreferences provides preferences,
+        LocalAppPreferences  provides preferences,
+        LocalSpacing         provides Spacing(),
+        LocalSizes           provides Sizes(),
+        LocalElevation       provides VCElevation(),
+        LocalVCColorScheme   provides colorScheme,
+        LocalVCTypography    provides typography,
+    ) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            shapes      = AppShapes,
+            typography  = typography,
+            content     = content
+        )
+    }
+}
+
+@Composable
+fun VCPreviewTheme(
+    darkTheme: Boolean = false,
+    content: @Composable () -> Unit
+) {
+    val colorScheme = if (darkTheme) darkScheme else lightScheme
+    CompositionLocalProvider(
         LocalSpacing        provides Spacing(),
         LocalSizes          provides Sizes(),
         LocalElevation      provides VCElevation(),
+        LocalVCColorScheme  provides colorScheme,
+        LocalVCTypography   provides AppTypography,
     ) {
         MaterialTheme(
-            colorScheme = VCTheme.colors,
+            colorScheme = colorScheme,
             shapes      = AppShapes,
-            typography  = VCTheme.typography,
+            typography  = AppTypography,
             content     = content
         )
     }
@@ -303,9 +346,6 @@ object VCTheme {
     val spacing: Spacing
         @Composable get() = LocalSpacing.current
 
-    val appPreferences: AppPreferences
-        @Composable get() = LocalAppPreferences.current
-
     val sizes: Sizes
         @Composable get() = LocalSizes.current
 
@@ -313,10 +353,10 @@ object VCTheme {
         @Composable get() = LocalElevation.current
 
     val colors: ColorScheme
-        @Composable get() = getColorScheme(appPreferences)
+        @Composable get() = LocalVCColorScheme.current
 
     val typography: Typography
-        @Composable get() = typography(appPreferences)
+        @Composable get() = LocalVCTypography.current
 
     val shapes: VCShapes
         @Composable get() = VCShapes()

@@ -35,13 +35,14 @@ es/virtualclubs/
 │   │   └── SafeResponse.kt         Response handler + automatic token refresh
 │   ├── remote/
 │   │   ├── api/
+│   │   │   ├── Endpoint.kt         Constantes de rutas API (/v1/auth/*, /v1/user/*)
 │   │   │   ├── AuthApi.kt          Authentication endpoints
 │   │   │   ├── RefreshApi.kt       Token refresh endpoint
 │   │   │   └── UserApi.kt          User info endpoint
 │   │   └── dto/                    Request/response DTOs
 │   ├── repository/                 Repository implementations
 │   └── session/
-│       └── UserSession.kt          In-memory cache: currentUser StateFlow + cachedAccessToken
+│       └── UserSession.kt          sessionState: StateFlow<SessionState> + cachedAccessToken
 │
 ├── di/                             DEPENDENCY INJECTION (Hilt)
 │   ├── DispatcherModule.kt         Binds ErrorDispatcher → GlobalUIManager
@@ -51,27 +52,33 @@ es/virtualclubs/
 │
 ├── domain/                         DOMAIN LAYER
 │   ├── model/
-│   │   ├── AuthTokens.kt           accessToken + refreshToken
+│   │   │   ── Entidades de dominio ──────────────────────────────────
 │   │   ├── Club.kt                 Club(id, name, sport, memberCount)
-│   │   ├── Endpoint.kt             API endpoint path constants
-│   │   ├── ErrorDispatcher.kt      Interface for dispatching errors (implemented by GlobalUIManager)
-│   │   ├── ErrorType.kt            Enum with 27 error types
 │   │   ├── User.kt                 User(email: String?)
-│   │   └── VirtualClubException.kt Custom project exception
+│   │   │   ── Autenticación / sesión ──────────────────────────────
+│   │   ├── AuthTokens.kt           accessToken + refreshToken (+ email opcional del backend)
+│   │   ├── SessionState.kt         sealed: LoggedOut | LoggedIn(user: User)
+│   │   │   ── Errores ─────────────────────────────────────────────
+│   │   ├── ErrorDispatcher.kt      Interfaz para despachar errores → implementada por GlobalUIManager
+│   │   ├── ErrorType.kt            Enum con 27 tipos (códigos 1-13 del backend, 14-27 solo Android)
+│   │   └── VirtualClubException.kt Excepción del proyecto que encapsula ErrorType
 │   ├── repository/                 Repository interfaces
 │   └── usecase/                    Use cases (business logic)
 │       ├── AuthUseCase.kt
+│       ├── GetSessionStateUseCase.kt   sessionState: Flow<SessionState> — used by ViewModels
 │       ├── GetUserInfoUseCase.kt
 │       ├── GoogleUseCase.kt
 │       ├── LogoutUserUseCase.kt
 │       ├── RefreshTokenUseCase.kt
 │       ├── RegisterUseCase.kt
+│       ├── RequestPasswordResetUseCase.kt
 │       └── token/                  GetAccessToken, GetRefreshToken, SaveTokens, ClearTokens
 │
 ├── presentation/                   PRESENTATION LAYER
 │   ├── components/                 Reusable composables
 │   │   ├── AppBar.kt
 │   │   ├── Buttons.kt
+│   │   ├── ListItems.kt                VCListItem + VCListToggleItem (icon, title, subtitle, arrow/toggle)
 │   │   ├── Scaffold.kt
 │   │   ├── TextFields.kt
 │   │   └── dialogs/
@@ -91,7 +98,9 @@ es/virtualclubs/
 │   │   │   └── dialogs/            ForgotPasswordDialog
 │   │   ├── home/                   Main home (HomePage + HomeViewModel)
 │   │   ├── resetPassword/          Password reset flow
-│   │   ├── settings/               Theme/font/server settings
+│   │   ├── settings/               Theme/font/language/notifications settings
+│   │   │   ├── components/         AppearanceSection, DebugServerSection, SettingRow, SettingToggleRow (internal)
+│   │   │   └── dialogs/            LanguagePickerDialog
 │   │   └── verifyemailresult/      Email verification result
 │   ├── MainActivity.kt             Entry point, sets up NavController + theme
 │   ├── ResetPasswordActivity.kt    Handles reset-password deep link
@@ -139,9 +148,31 @@ Base URL: `https://api-vc.rgal.dev/` (dev) · `https://virtualclubs-backend.onre
 
 ## Error Types
 
-`ErrorType` enum — 27 types:
+`ErrorType` enum — 27 valores en `domain/model/ErrorType.kt`.
 
-`INTERNAL_ERROR`, `INVALID_CREDENTIALS`, `USERNAME_NOT_FOUND`, `EMAIL_ALREADY_EXISTS`, `EMAIL_REQUIRED`, `PASSWORD_REQUIRED`, `USERNAME_REQUIRED`, `PASSWORD_MIN_LENGTH_ERROR`, `INVALID_EMAIL_FORMAT`, `FIELD_NULL`, `TOKEN_BLANK`, `INVALID_REFRESH_TOKEN`, `INVALID_GOOGLE_TOKEN`, `FAILED_SEND_EMAIL`, `INVALID_TOKEN`, `NO_LOCAL_PROVIDER`, `EMAIL_NOT_FOUND`, `INVALID_ACCESS_TOKEN`, `CANT_CONNECT_SERVER`, `MISSING_TOKENS`, `GOOGLE_SIGN_IN_FAILED`, `PASSWORD_NOT_EQUALS`, `GOOGLE_SIGN_IN_NO_TOKEN`, `GOOGLE_LOGIN_EXCEPTION`, `USER_NOT_FOUND`, `EMAIL_NOT_VERIFIED`, `UNKNOWN`
+Códigos **1–13** alineados con el backend (fuente de verdad):
+
+| Código | Tipo |
+|--------|------|
+| 1 | `INTERNAL_ERROR` |
+| 2 | `INVALID_CREDENTIALS` |
+| 3 | `INVALID_REFRESH_TOKEN` |
+| 4 | `INVALID_TOKEN` |
+| 5 | `USER_NOT_FOUND` |
+| 6 | `EMAIL_ALREADY_EXISTS` |
+| 7 | `FIELD_BLANK` |
+| 8 | `INVALID_EMAIL` |
+| 9 | `PASSWORD_TOO_SHORT` |
+| 10 | `PASSWORD_TOO_WEAK` |
+| 11 | `EMAIL_NOT_VERIFIED` |
+| 12 | `NO_LOCAL_PROVIDER` |
+| 13 | `RATE_LIMIT_EXCEEDED` |
+
+Códigos **14–27** solo en Android (sin equivalente backend):
+
+`FAILED_SEND_EMAIL`, `EMAIL_NOT_FOUND`, `INVALID_ACCESS_TOKEN`, `CANT_CONNECT_SERVER`, `MISSING_TOKENS`, `GOOGLE_SIGN_IN_FAILED`, `PASSWORD_NOT_EQUALS`, `GOOGLE_SIGN_IN_NO_TOKEN`, `GOOGLE_LOGIN_EXCEPTION`, `INVALID_GOOGLE_TOKEN`, `USERNAME_NOT_FOUND`, `EMAIL_REQUIRED`, `PASSWORD_REQUIRED`, `USERNAME_REQUIRED`
+
+Cada nuevo tipo requiere un caso en `ErrorHandler.kt` (presentación) para el mensaje de usuario.
 
 ---
 
@@ -255,9 +286,45 @@ Use `internal` for composables that must not be called from outside the screen f
 - Never in plain `SharedPreferences`, never logged
 - Email and session flags in `UserPreferences` (plain DataStore)
 
+### Session management
+
+`UserSession` (@Singleton) is the single in-memory source of truth for auth state:
+
+```kotlin
+sealed class SessionState {
+    data object LoggedOut : SessionState()
+    data class LoggedIn(val user: User) : SessionState()
+}
+```
+
+| Method | Effect |
+|--------|--------|
+| `login(user)` | emits `LoggedIn` |
+| `logout()` | emits `LoggedOut` **and** clears `cachedAccessToken` |
+| `cacheAccessToken(token)` | stores token in memory for fast interceptor reads |
+
+There are two logout paths — both must be kept in sync:
+
+**Voluntary logout** (user taps "Sign out"):
+```
+SettingsViewModel.logout()
+  ├── logoutUseCase()       → authRepository.logout() + userSession.logout()
+  ├── clearTokensUseCase()  → securePrefs.clearAll()
+  └── appNavigator.navigateToLoginAndClearStack()
+```
+
+**Forced logout** (invalid/missing token, triggered by `GlobalUIManager`):
+```
+SessionManager.logout()
+  ├── userPreferences.clearUser()     → clears email from DataStore
+  ├── securePrefs.clearAll()          → clears tokens from disk
+  ├── userSession.logout()            → clears sessionState + cachedAccessToken
+  └── appNavigator.navigateToLoginAndClearStack()
+```
+
 ### In-memory token cache
 
-Access tokens are cached in `UserSession` after the first read. `AuthInterceptor` reads synchronously from cache to avoid `runBlocking` on every request. The only `runBlocking` is in `NetworkModule` at Hilt graph construction time (dev builds only).
+Access tokens are cached in `UserSession.cachedAccessToken` after the first successful auth. `AuthInterceptor` reads synchronously from this cache to avoid `runBlocking` on every request. `UserSession.logout()` atomically clears both `sessionState` and the token cache. The only `runBlocking` in the project is in `NetworkModule` at Hilt graph construction time (dev builds only).
 
 ### Composables
 
@@ -265,6 +332,23 @@ Access tokens are cached in `UserSession` after the first read. `AuthInterceptor
 - `@Preview` on all reusable composables
 - `modifier: Modifier = Modifier` as first parameter after state
 - Do not call ViewModels directly from child composables — pass lambdas down
+
+### VCDialog — dialogs del sistema
+
+`VCDialog` es una interfaz de clase (no composable) que `GlobalUIManager` muestra mediante `VCScaffold`. Para añadir un diálogo:
+
+1. Crear una clase que implemente `VCDialog` en `presentation/screens/[screen]/dialogs/`.
+2. Implementar los campos obligatorios: `titleRes`, `confirmTextRes`, `onConfirm`.
+3. Implementar `ColumnScope.Content()` con el cuerpo del diálogo.
+4. Mostrar con `globalUIManager.showDialog(MyDialog(...))`.
+
+**Botón cancelar opcional:** sobrescribir `dismissTextRes` con un `R.string` — `VCScaffold` lo renderiza automáticamente y llama a `globalUIManager.hideDialog()`:
+```kotlin
+override val dismissTextRes = R.string.cancel
+```
+Por defecto es `null` (sin botón cancelar).
+
+**Estado reactivo en el diálogo:** usar `mutableStateOf(...)` a nivel de constructor de la clase — el snapshot system de Compose rastrea las lecturas dentro del bloque `@Composable Content()` y provoca recomposiciones correctamente.
 
 ### Testing strategy
 
@@ -283,8 +367,9 @@ Access tokens are cached in `UserSession` after the first read. `AuthInterceptor
 | `prod` flavor backend | Both flavors point to Render — a dedicated production URL is needed |
 | UI/instrumentation tests | No Compose UI tests implemented yet |
 | Apple / Facebook login | Buttons render correctly but `onApple` and `onFacebook` are `{ /* TODO */ }` — not yet implemented |
-| `collectAsState()` → `collectAsStateWithLifecycle()` | All screens use `collectAsState()` which does not respect Android lifecycle — migrate to `collectAsStateWithLifecycle()` |
-| Auth side effect in composition | `if (uiState is AuthUiState.Success) onLogged()` in `LoginPage` should be inside a `LaunchedEffect` |
+| Privacy Policy / Terms of Service | `SettingsPage` has `onClick = null` placeholders for Privacy Policy and Terms rows — URLs not yet implemented |
+| `SettingsViewModel` missing tests | No unit tests for the 6-flow combine and session state mapping logic |
+| Logout removed from Settings | `SettingsViewModel.logout()` and its UI button were removed in VC-92 — no logout path exists in the app until a replacement is implemented |
 
 ---
 
@@ -298,4 +383,6 @@ Access tokens are cached in `UserSession` after the first read. `AuthInterceptor
 - **New use cases** must be registered as `@Singleton` in `UseCaseModule`
 - **Models** should be `data class` — no logic in data classes
 - **Do not add** `runBlocking` outside of `NetworkModule` — use coroutines properly
+- **Domain model growth**: plain entities and value objects stay in `domain/model/`; create a subpackage only when a coherent group reaches 4+ closely related files. Current groups: auth/session (`AuthTokens`, `SessionState`, `User`), errors (`ErrorType`, `ErrorDispatcher`, `VirtualClubException`).
+- **Session state**: always read auth state from `UserSession.sessionState`, never from `UserPreferences` or other DataStore flows — those are for persistence, not runtime truth
 - **Update this file** when adding new routes, endpoints, or patterns

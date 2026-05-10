@@ -102,6 +102,13 @@ fun VCScaffold(
                 }
               }
             },
+            dismissButton = {
+              vcDialog.dismissTextRes?.let { resId ->
+                TextButton(onClick = { globalUIManager.hideDialog() }) {
+                  Text(stringResource(resId))
+                }
+              }
+            },
             properties = DialogProperties(
               dismissOnBackPress = vcDialog.dismissible,
               dismissOnClickOutside = vcDialog.dismissible

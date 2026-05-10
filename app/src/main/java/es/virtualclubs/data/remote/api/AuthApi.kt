@@ -8,7 +8,6 @@ import es.virtualclubs.data.remote.dto.RegisterRequest
 import es.virtualclubs.data.remote.dto.RequestPasswordResetRequest
 import es.virtualclubs.data.remote.dto.ResetPasswordRequest
 import es.virtualclubs.domain.model.AuthTokens
-import es.virtualclubs.domain.model.Endpoint
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.POST

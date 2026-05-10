@@ -16,14 +16,18 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import es.virtualclubs.BuildConfig
 import es.virtualclubs.data.local.datastore.UserPreferences
-import es.virtualclubs.data.local.secure.SecureUserPreferences
 import es.virtualclubs.data.managers.SafeCall
-import es.virtualclubs.domain.model.User
-import es.virtualclubs.presentation.managers.GlobalUIManager
-import es.virtualclubs.domain.model.ErrorType
-import es.virtualclubs.domain.repository.AuthRepository
-import es.virtualclubs.domain.repository.RefreshRepository
 import es.virtualclubs.data.session.UserSession
+import es.virtualclubs.domain.model.ErrorType
+import es.virtualclubs.domain.model.User
+import es.virtualclubs.domain.usecase.AuthUseCase
+import es.virtualclubs.domain.usecase.GoogleUseCase
+import es.virtualclubs.domain.usecase.RefreshTokenUseCase
+import es.virtualclubs.domain.usecase.RegisterUseCase
+import es.virtualclubs.domain.usecase.RequestPasswordResetUseCase
+import es.virtualclubs.domain.usecase.token.GetRefreshTokenUseCase
+import es.virtualclubs.domain.usecase.token.SaveTokensUseCase
+import es.virtualclubs.presentation.managers.GlobalUIManager
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -33,170 +37,173 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val repository: AuthRepository,
-    private val refreshRepository: RefreshRepository,
+    private val authUseCase: AuthUseCase,
+    private val registerUseCase: RegisterUseCase,
+    private val googleUseCase: GoogleUseCase,
+    private val refreshTokenUseCase: RefreshTokenUseCase,
+    private val requestPasswordResetUseCase: RequestPasswordResetUseCase,
+    private val saveTokensUseCase: SaveTokensUseCase,
+    private val getRefreshTokenUseCase: GetRefreshTokenUseCase,
     private val userPreferences: UserPreferences,
-    private val securePreferences: SecureUserPreferences,
     private val userSession: UserSession,
     private val safeCall: SafeCall,
     private val globalUIManager: GlobalUIManager,
     @param:ApplicationContext private val context: Context
 ) : ViewModel() {
-  private val _uiState = MutableStateFlow<AuthUiState>(AuthUiState.Idle)
-  val uiState: StateFlow<AuthUiState> = _uiState.asStateFlow()
-  private val _passwordResetUiState = MutableStateFlow<PasswordResetUiState>(PasswordResetUiState.Idle)
-  val passwordResetUiState: StateFlow<PasswordResetUiState> = _passwordResetUiState.asStateFlow()
 
-  init {
-    tryAutoLogin()
-  }
+    private val _uiState = MutableStateFlow<AuthUiState>(AuthUiState.Idle)
+    val uiState: StateFlow<AuthUiState> = _uiState.asStateFlow()
+    private val _passwordResetUiState = MutableStateFlow<PasswordResetUiState>(PasswordResetUiState.Idle)
+    val passwordResetUiState: StateFlow<PasswordResetUiState> = _passwordResetUiState.asStateFlow()
 
-  fun beginSignInGoogle(activity: Activity) {
-    viewModelScope.launch {
-      try {
-        val credentialManager = CredentialManager.create(context)
-        val googleIdOption = GetGoogleIdOption.Builder()
-          .setFilterByAuthorizedAccounts(false)
-          .setServerClientId(BuildConfig.GOOGLE_CLIENT_ID)
-          .build()
-        val request = GetCredentialRequest.Builder()
-          .addCredentialOption(googleIdOption)
-          .build()
-        val result = credentialManager.getCredential(activity, request)
-        processGoogleCredential(result)
-      } catch (_: GetCredentialCancellationException) {
-        // User dismissed the credential selector — not an error
-      } catch (_: GetCredentialException) {
-        onLoginFailed(ErrorType.GOOGLE_SIGN_IN_FAILED)
-      } catch (_: Exception) {
-        onLoginFailed(ErrorType.GOOGLE_LOGIN_EXCEPTION)
-      }
+    init {
+        tryAutoLogin()
     }
-  }
 
-  private suspend fun processGoogleCredential(result: GetCredentialResponse) {
-    val credential = result.credential
-    if (credential is CustomCredential &&
-      credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
-    ) {
-      val googleCredential = GoogleIdTokenCredential.createFrom(credential.data)
-      val idToken = googleCredential.idToken
-      val response = safeCall.safeCall { repository.google(idToken) }
-      if (response.isSuccess) {
-        val tokens = response.getOrNull()
-        if (tokens != null) {
-          userSession.updateUser(User(email = googleCredential.id))
-          securePreferences.saveTokens(tokens.accessToken, tokens.refreshToken)
-          _uiState.value = AuthUiState.Success
+    fun beginSignInGoogle(activity: Activity) {
+        viewModelScope.launch {
+            try {
+                val credentialManager = CredentialManager.create(context)
+                val googleIdOption = GetGoogleIdOption.Builder()
+                    .setFilterByAuthorizedAccounts(false)
+                    .setServerClientId(BuildConfig.GOOGLE_CLIENT_ID)
+                    .build()
+                val request = GetCredentialRequest.Builder()
+                    .addCredentialOption(googleIdOption)
+                    .build()
+                val result = credentialManager.getCredential(activity, request)
+                processGoogleCredential(result)
+            } catch (_: GetCredentialCancellationException) {
+                // User dismissed the credential selector — not an error
+            } catch (_: GetCredentialException) {
+                onLoginFailed(ErrorType.GOOGLE_SIGN_IN_FAILED)
+            } catch (_: Exception) {
+                onLoginFailed(ErrorType.GOOGLE_LOGIN_EXCEPTION)
+            }
+        }
+    }
+
+    private suspend fun processGoogleCredential(result: GetCredentialResponse) {
+        val credential = result.credential
+        if (credential is CustomCredential &&
+            credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
+        ) {
+            val googleCredential = GoogleIdTokenCredential.createFrom(credential.data)
+            val response = safeCall.safeCall { googleUseCase(googleCredential.idToken) }
+            if (response.isSuccess) {
+                val tokens = response.getOrNull()
+                if (tokens != null) {
+                    saveTokensUseCase(tokens.accessToken, tokens.refreshToken)
+                    userSession.login(User(email = googleCredential.id))
+                    _uiState.value = AuthUiState.Success
+                } else {
+                    globalUIManager.setError(ErrorType.MISSING_TOKENS)
+                    _uiState.value = AuthUiState.Idle
+                }
+            } else {
+                _uiState.value = AuthUiState.Idle
+            }
         } else {
-          globalUIManager.setError(ErrorType.MISSING_TOKENS)
-          _uiState.value = AuthUiState.Idle
+            onLoginFailed(ErrorType.GOOGLE_SIGN_IN_NO_TOKEN)
         }
-      } else {
-        _uiState.value = AuthUiState.Idle
-      }
-    } else {
-      onLoginFailed(ErrorType.GOOGLE_SIGN_IN_NO_TOKEN)
     }
-  }
 
-  fun onLoginFailed(errorType: ErrorType) {
-    globalUIManager.setError(errorType)
-    _uiState.value = AuthUiState.Idle
-  }
+    fun onLoginFailed(errorType: ErrorType) {
+        globalUIManager.setError(errorType)
+        _uiState.value = AuthUiState.Idle
+    }
 
-  private fun tryAutoLogin() {
-    viewModelScope.launch {
-      val hasSession = securePreferences.refreshToken.firstOrNull() != null
-      if (hasSession) {
-        globalUIManager.withLoading {
-          val response = refreshRepository.refresh()
-          _uiState.value = if (response.isSuccess) {
-            userSession.updateUser(User(email = userPreferences.userEmailFlow.firstOrNull()))
-            AuthUiState.Success
-          } else {
-            AuthUiState.Idle
-          }
+    private fun tryAutoLogin() {
+        viewModelScope.launch {
+            val hasSession = getRefreshTokenUseCase() != null
+            if (hasSession) {
+                globalUIManager.withLoading {
+                    val response = refreshTokenUseCase()
+                    _uiState.value = if (response.isSuccess) {
+                        userSession.login(User(email = userPreferences.userEmailFlow.firstOrNull()))
+                        AuthUiState.Success
+                    } else {
+                        AuthUiState.Idle
+                    }
+                }
+            }
         }
-      }
     }
-  }
 
-  fun loginUser(email: String, password: String) {
-    viewModelScope.launch {
-      _uiState.value = AuthUiState.AttemptingAuth
-      val response = safeCall.safeCall { repository.login(email, password) }
-      if (response.isSuccess) {
-        val tokens = response.getOrNull()
-        if (tokens != null) {
-          securePreferences.saveTokens(tokens.accessToken, tokens.refreshToken)
-          userPreferences.saveUser(email)
-          userSession.updateUser(User(email = email))
-          _uiState.value = AuthUiState.Success
-        } else {
-          globalUIManager.setError(ErrorType.MISSING_TOKENS)
-          _uiState.value = AuthUiState.Idle
+    fun loginUser(email: String, password: String) {
+        viewModelScope.launch {
+            _uiState.value = AuthUiState.AttemptingAuth
+            val response = safeCall.safeCall { authUseCase(email, password) }
+            if (response.isSuccess) {
+                val tokens = response.getOrNull()
+                if (tokens != null) {
+                    saveTokensUseCase(tokens.accessToken, tokens.refreshToken)
+                    userPreferences.saveUser(email)
+                    userSession.login(User(email = email))
+                    _uiState.value = AuthUiState.Success
+                } else {
+                    globalUIManager.setError(ErrorType.MISSING_TOKENS)
+                    _uiState.value = AuthUiState.Idle
+                }
+            } else {
+                _uiState.value = AuthUiState.Idle
+            }
         }
-      } else {
-        _uiState.value = AuthUiState.Idle
-      }
     }
-  }
 
-  fun registerUser(email: String, password: String, confirmPassword: String) {
-    viewModelScope.launch {
-      _uiState.value = AuthUiState.AttemptingAuth
+    fun registerUser(email: String, password: String, confirmPassword: String) {
+        viewModelScope.launch {
+            _uiState.value = AuthUiState.AttemptingAuth
 
-      if (password != confirmPassword) {
-        globalUIManager.setError(ErrorType.PASSWORD_NOT_EQUALS)
-        _uiState.value = AuthUiState.Idle
-        return@launch
-      }
+            if (password != confirmPassword) {
+                globalUIManager.setError(ErrorType.PASSWORD_NOT_EQUALS)
+                _uiState.value = AuthUiState.Idle
+                return@launch
+            }
 
-      val response = safeCall.safeCall { repository.register(email, password) }
-      if (response.isSuccess) {
-        val tokens = response.getOrNull()
-        if (tokens != null) {
-          userPreferences.saveUser(email)
-          securePreferences.saveTokens(tokens.accessToken, tokens.refreshToken)
-          userSession.updateUser(User(email = tokens.email ?: email))
-          _uiState.value = AuthUiState.Success
-        } else {
-          globalUIManager.setError(ErrorType.MISSING_TOKENS)
-          _uiState.value = AuthUiState.Idle
+            val response = safeCall.safeCall { registerUseCase(email, password) }
+            if (response.isSuccess) {
+                val tokens = response.getOrNull()
+                if (tokens != null) {
+                    saveTokensUseCase(tokens.accessToken, tokens.refreshToken)
+                    userPreferences.saveUser(email)
+                    userSession.login(User(email = tokens.email ?: email))
+                    _uiState.value = AuthUiState.Success
+                } else {
+                    globalUIManager.setError(ErrorType.MISSING_TOKENS)
+                    _uiState.value = AuthUiState.Idle
+                }
+            } else {
+                _uiState.value = AuthUiState.Idle
+            }
         }
-      } else {
-        _uiState.value = AuthUiState.Idle
-      }
     }
-  }
 
-  fun requestPasswordReset(email: String) {
-    viewModelScope.launch {
-      _passwordResetUiState.value = PasswordResetUiState.Attempting
+    fun requestPasswordReset(email: String) {
+        viewModelScope.launch {
+            _passwordResetUiState.value = PasswordResetUiState.Attempting
+            val response = safeCall.safeCall { requestPasswordResetUseCase(email) }
+            if (response.isSuccess) {
+                _passwordResetUiState.value = PasswordResetUiState.Success
+            } else {
+                _passwordResetUiState.value = PasswordResetUiState.Idle
+            }
+        }
+    }
 
-      val response = safeCall.safeCall { repository.requestPasswordReset(email) }
-      if (response.isSuccess) {
-        _passwordResetUiState.value = PasswordResetUiState.Success
-      } else {
+    fun resetPasswordRequest() {
         _passwordResetUiState.value = PasswordResetUiState.Idle
-      }
     }
-  }
-
-  fun resetPasswordRequest() {
-    _passwordResetUiState.value = PasswordResetUiState.Idle
-  }
 }
 
 sealed class AuthUiState {
-  object Success : AuthUiState()
-  object AttemptingAuth : AuthUiState()
-  object Idle : AuthUiState()
+    object Success : AuthUiState()
+    object AttemptingAuth : AuthUiState()
+    object Idle : AuthUiState()
 }
 
 sealed class PasswordResetUiState {
-  object Success : PasswordResetUiState()
-  object Attempting : PasswordResetUiState()
-  object Idle : PasswordResetUiState()
+    object Success : PasswordResetUiState()
+    object Attempting : PasswordResetUiState()
+    object Idle : PasswordResetUiState()
 }

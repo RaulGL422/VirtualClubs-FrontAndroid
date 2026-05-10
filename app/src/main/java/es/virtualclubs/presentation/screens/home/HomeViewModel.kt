@@ -5,12 +5,14 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import es.virtualclubs.data.managers.SafeCall
 import es.virtualclubs.domain.model.Club
-import es.virtualclubs.data.session.UserSession
+import es.virtualclubs.domain.model.SessionState
+import es.virtualclubs.domain.usecase.GetSessionStateUseCase
 import es.virtualclubs.domain.repository.UserRepository
 import es.virtualclubs.presentation.managers.GlobalUIManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -23,7 +25,7 @@ data class HomeUiState(
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val repository: UserRepository,
-    private val userSession: UserSession,
+    private val getSessionState: GetSessionStateUseCase,
     private val safeCall: SafeCall,
     private val globalUIManager: GlobalUIManager
 ) : ViewModel() {
@@ -40,7 +42,8 @@ class HomeViewModel @Inject constructor(
             globalUIManager.withLoading {
                 val result = safeCall.safeCall { repository.getUserInfo() }
                 if (result.isSuccess) {
-                    _uiState.update { it.copy(userEmail = userSession.currentUser.value.email) }
+                    val email = (getSessionState().first() as? SessionState.LoggedIn)?.user?.email
+                    _uiState.update { it.copy(userEmail = email) }
                 }
             }
         }

@@ -1,5 +1,6 @@
 package es.virtualclubs.domain.usecase
 
+import es.virtualclubs.domain.model.SessionState
 import es.virtualclubs.domain.model.User
 import es.virtualclubs.data.session.UserSession
 import es.virtualclubs.domain.model.ErrorType
@@ -43,18 +44,18 @@ class GetUserInfoUseCaseTest {
 
         useCase()
 
-        assertEquals(user, userSession.currentUser.value)
+        assertEquals(SessionState.LoggedIn(user), userSession.sessionState.value)
     }
 
     @Test
     fun `fallo al obtener info no actualiza UserSession`() = runTest {
         repository.getUserInfoResult = Result.failure(VirtualClubException(ErrorType.INTERNAL_ERROR))
-        userSession.updateUser(User(email = "previous@test.com"))
+        val previousUser = User(email = "previous@test.com")
+        userSession.login(previousUser)
 
         useCase()
 
-        // UserSession no debe cambiar si hay error
-        assertEquals(User(email = "previous@test.com"), userSession.currentUser.value)
+        assertEquals(SessionState.LoggedIn(previousUser), userSession.sessionState.value)
     }
 
     @Test
@@ -81,6 +82,8 @@ class GetUserInfoUseCaseTest {
 
         useCase()
 
-        assertNull(userSession.currentUser.value.email)
+        val state = userSession.sessionState.value
+        assertTrue(state is SessionState.LoggedIn)
+        assertNull((state as SessionState.LoggedIn).user.email)
     }
 }
