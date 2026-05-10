@@ -98,6 +98,7 @@ fun SettingsPage(
 
                 SectionHeader(stringResource(R.string.settings_device))
 
+                val restartRequiredMsg = stringResource(R.string.settings_language_restart_required)
                 SettingRow(
                     title    = stringResource(R.string.settings_language),
                     subtitle = stringResource(R.string.settings_language_subtitle),
@@ -114,11 +115,7 @@ fun SettingsPage(
                                             if (tag.isEmpty()) LocaleList.getEmptyLocaleList()
                                             else LocaleList.forLanguageTags(tag)
                                     } else {
-                                        Toast.makeText(
-                                            context,
-                                            stringResource(R.string.settings_language_restart_required),
-                                            Toast.LENGTH_SHORT
-                                        ).show()
+                                        Toast.makeText(context, restartRequiredMsg, Toast.LENGTH_SHORT).show()
                                     }
                                 }
                             )
