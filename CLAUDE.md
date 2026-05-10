@@ -65,11 +65,13 @@ es/virtualclubs/
 │   ├── repository/                 Repository interfaces
 │   └── usecase/                    Use cases (business logic)
 │       ├── AuthUseCase.kt
+│       ├── GetSessionStateUseCase.kt   sessionState: Flow<SessionState> — used by ViewModels
 │       ├── GetUserInfoUseCase.kt
 │       ├── GoogleUseCase.kt
 │       ├── LogoutUserUseCase.kt
 │       ├── RefreshTokenUseCase.kt
 │       ├── RegisterUseCase.kt
+│       ├── RequestPasswordResetUseCase.kt
 │       └── token/                  GetAccessToken, GetRefreshToken, SaveTokens, ClearTokens
 │
 ├── presentation/                   PRESENTATION LAYER
@@ -365,12 +367,9 @@ Por defecto es `null` (sin botón cancelar).
 | `prod` flavor backend | Both flavors point to Render — a dedicated production URL is needed |
 | UI/instrumentation tests | No Compose UI tests implemented yet |
 | Apple / Facebook login | Buttons render correctly but `onApple` and `onFacebook` are `{ /* TODO */ }` — not yet implemented |
-| `collectAsState()` → `collectAsStateWithLifecycle()` | `SettingsPage` already migrated; remaining: `AuthPage`, `HomePage` — migrate to `collectAsStateWithLifecycle()` |
-| Auth side effect in composition | `if (uiState is AuthUiState.Success) onLogged()` in `LoginPage` should be inside a `LaunchedEffect` |
 | Privacy Policy / Terms of Service | `SettingsPage` has `onClick = null` placeholders for Privacy Policy and Terms rows — URLs not yet implemented |
-| Missing `@Preview` on shared composables | `VCListItem`, `VCListToggleItem` (ListItems.kt) and `AppearanceSection` have no `@Preview` |
 | `SettingsViewModel` missing tests | No unit tests for the 6-flow combine and session state mapping logic |
-| `navigateToSettings()` missing `launchSingleTop` | `AppNavigator.navigateToSettings()` can stack multiple `SettingsPage` instances if called rapidly |
+| Logout removed from Settings | `SettingsViewModel.logout()` and its UI button were removed in VC-92 — no logout path exists in the app until a replacement is implemented |
 
 ---
 

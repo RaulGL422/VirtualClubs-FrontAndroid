@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import es.virtualclubs.data.local.datastore.AppPreferences
-import es.virtualclubs.data.session.UserSession
 import es.virtualclubs.domain.model.SessionState
+import es.virtualclubs.domain.usecase.GetSessionStateUseCase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,7 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val appPreferences: AppPreferences,
-    private val userSession: UserSession,
+    private val getSessionState: GetSessionStateUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsUiState())
@@ -41,7 +41,7 @@ class SettingsViewModel @Inject constructor(
 
             combine(
                 prefsFlow,
-                userSession.sessionState,
+                getSessionState(),
                 appPreferences.debugServerUrlFlow
             ) { prefs, sessionState, debugUrl ->
                 SettingsUiState(
