@@ -11,8 +11,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import es.virtualclubs.presentation.theme.VCPreviewTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,7 +27,7 @@ import es.virtualclubs.presentation.theme.VCTheme
 @Preview(showBackground = true)
 @Composable
 private fun VCListItemPreview() {
-    MaterialTheme {
+    VCPreviewTheme {
         Surface {
             VCListItem(
                 title    = "Idioma",
@@ -42,7 +42,7 @@ private fun VCListItemPreview() {
 @Preview(showBackground = true)
 @Composable
 private fun VCListItemNoActionPreview() {
-    MaterialTheme {
+    VCPreviewTheme {
         Surface {
             VCListItem(
                 title    = "Versión de la app",
@@ -105,7 +105,7 @@ fun VCListItem(
 @Preview(showBackground = true)
 @Composable
 private fun VCListToggleItemPreview() {
-    MaterialTheme {
+    VCPreviewTheme {
         Surface {
             VCListToggleItem(
                 title    = "Notificaciones",

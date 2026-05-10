@@ -26,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import es.virtualclubs.R
+import es.virtualclubs.presentation.theme.VCPreviewTheme
 import es.virtualclubs.presentation.theme.VCTheme
 import kotlin.math.roundToInt
 
@@ -166,7 +167,7 @@ internal fun AppearanceSection(
 @Preview(showBackground = true)
 @Composable
 private fun AppearanceSectionPreview() {
-    MaterialTheme {
+    VCPreviewTheme {
         Surface {
             AppearanceSection(
                 uiState          = SettingsUiState(isDarkTheme = null, contrastType = 0, fontSizeMultiplier = 1.0),

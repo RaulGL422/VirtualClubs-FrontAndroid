@@ -21,7 +21,7 @@ import es.virtualclubs.presentation.theme.VCTheme
 
 internal class LanguagePickerDialog(
     currentLanguage: String,
-    private val onLanguageSelected: (String) -> Unit
+    private val onLanguageSelected: @Composable (String) -> Unit
 ) : VCDialog {
 
     private val selected = mutableStateOf(currentLanguage)
