@@ -8,6 +8,7 @@ import androidx.credentials.GetCredentialRequest
 import androidx.credentials.GetCredentialResponse
 import androidx.credentials.exceptions.GetCredentialCancellationException
 import androidx.credentials.exceptions.GetCredentialException
+import androidx.credentials.exceptions.NoCredentialException
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
@@ -75,6 +76,8 @@ class AuthViewModel @Inject constructor(
                 processGoogleCredential(result)
             } catch (_: GetCredentialCancellationException) {
                 // User dismissed the credential selector — not an error
+            } catch (_: NoCredentialException) {
+                onLoginFailed(ErrorType.GOOGLE_SIGN_IN_FAILED)
             } catch (_: GetCredentialException) {
                 onLoginFailed(ErrorType.GOOGLE_SIGN_IN_FAILED)
             } catch (_: Exception) {

@@ -1,7 +1,5 @@
 package es.virtualclubs.presentation.components
 
-import android.R
-import android.graphics.drawable.shapes.Shape
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
@@ -87,7 +85,7 @@ fun VCIconRender(
 }
 
 @Composable
-fun VCButtonColors(
+fun vcButtonColors(
   style: VCButtonStyle,
   containerColor: Color? = null,
   contentColor: Color? = null,
@@ -140,13 +138,13 @@ sealed class VCButtonContent {
 @Composable
 fun VCButton(
   content: VCButtonContent,
-  style: VCButtonStyle = VCButtonStyle.Primary,
   modifier: Modifier = Modifier,
+  style: VCButtonStyle = VCButtonStyle.Primary,
   enabled: Boolean = true,
   height: Dp = 48.dp,
   iconSize: Dp = 20.dp,
   shape: RoundedCornerShape = VCTheme.shapes.medium,
-  colors: ButtonColors = VCButtonColors(style),
+  colors: ButtonColors = vcButtonColors(style),
   onClick: () -> Unit
 ) {
   val spacing = VCTheme.spacing
@@ -241,8 +239,8 @@ fun VCDropdownButton(
   @StringRes text: Int,
   options: List<String>,
   onSelected: (String) -> Unit,
-  style: VCButtonStyle = VCButtonStyle.Primary,
-  modifier: Modifier = Modifier
+  modifier: Modifier = Modifier,
+  style: VCButtonStyle = VCButtonStyle.Primary
 ) {
   var expanded by remember { mutableStateOf(false) }
 
