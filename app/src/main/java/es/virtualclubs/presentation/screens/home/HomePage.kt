@@ -21,11 +21,12 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import es.virtualclubs.R
 import es.virtualclubs.domain.model.Club
 import es.virtualclubs.presentation.components.VCButton
@@ -154,7 +155,7 @@ private fun ClubCard(club: Club) {
             }
             Spacer(Modifier.width(8.dp))
             Text(
-                text = stringResource(R.string.home_members, club.memberCount),
+                text = pluralStringResource(R.plurals.home_members, club.memberCount, club.memberCount),
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

@@ -32,6 +32,7 @@ import es.virtualclubs.presentation.theme.VirtualClubsTheme
 
 @Composable
 fun VCScaffold(
+  modifier: Modifier = Modifier,
   topBar: (@Composable () -> Unit)? = null,
   enableTopBar: Boolean = true,
   titleTopBar: Int? = null,
@@ -39,7 +40,6 @@ fun VCScaffold(
   topBarActions: (@Composable RowScope.() -> Unit)? = null,
   canGoBack: Boolean = false,
   onNavigateBack: (() -> Unit)? = null,
-  modifier: Modifier = Modifier,
   snackbarHost: @Composable () -> Unit = {},
   containerColor: Color = MaterialTheme.colorScheme.background,
   contentColor: Color = contentColorFor(containerColor),
