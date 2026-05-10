@@ -50,7 +50,9 @@ class AppNavigator @Inject constructor(
     }
 
     fun navigateToSettings() {
-        navController?.navigate(Screen.Settings.route)
+        navController?.navigate(Screen.Settings.route) {
+            launchSingleTop = true
+        }
     }
 
     fun navigate(route: String, builder: (NavOptionsBuilder.() -> Unit)) {

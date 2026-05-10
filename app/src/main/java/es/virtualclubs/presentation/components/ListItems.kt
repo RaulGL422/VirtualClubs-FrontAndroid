@@ -9,7 +9,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,15 +20,40 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import es.virtualclubs.presentation.theme.VCTheme
 
-/**
- * Fila de contenido con icono, título, subtítulo y flecha opcional.
- * Uso: ajustes, perfiles, listas de opciones navegables.
- *
- * @param onClick `null` desactiva la interacción y oculta la flecha.
- */
+@Preview(showBackground = true)
+@Composable
+private fun VCListItemPreview() {
+    MaterialTheme {
+        Surface {
+            VCListItem(
+                title    = "Idioma",
+                subtitle = "Español",
+                icon     = Icons.Filled.Notifications,
+                onClick  = {}
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun VCListItemNoActionPreview() {
+    MaterialTheme {
+        Surface {
+            VCListItem(
+                title    = "Versión de la app",
+                subtitle = "0.1.2 Alpha",
+                icon     = Icons.Filled.Notifications,
+                onClick  = null
+            )
+        }
+    }
+}
+
 @Composable
 fun VCListItem(
     title: String,
@@ -74,10 +102,22 @@ fun VCListItem(
     }
 }
 
-/**
- * Variante de [VCListItem] con `Switch` en lugar de flecha.
- * Uso: ajustes tipo on/off (notificaciones, modos, flags de funcionalidad).
- */
+@Preview(showBackground = true)
+@Composable
+private fun VCListToggleItemPreview() {
+    MaterialTheme {
+        Surface {
+            VCListToggleItem(
+                title    = "Notificaciones",
+                subtitle = "Recibir avisos de eventos",
+                icon     = Icons.Filled.Notifications,
+                checked  = true,
+                onToggle = {}
+            )
+        }
+    }
+}
+
 @Composable
 fun VCListToggleItem(
     title: String,

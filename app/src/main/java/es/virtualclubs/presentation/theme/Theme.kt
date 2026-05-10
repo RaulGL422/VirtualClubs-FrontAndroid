@@ -1,5 +1,6 @@
 package es.virtualclubs.presentation.theme
 
+import android.app.Activity
 import android.content.Context
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
@@ -9,11 +10,14 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
+import androidx.core.view.WindowCompat
 import es.virtualclubs.R
 import es.virtualclubs.data.local.datastore.AppPreferences
 
@@ -284,6 +288,17 @@ fun VirtualClubsTheme(
     preferences: AppPreferences,
     content: @Composable () -> Unit
 ) {
+    val isDarkTheme by preferences.darkThemeFlow.collectAsState(initial = null)
+    val effectiveDark = isDarkTheme ?: isSystemInDarkTheme()
+
+    val view = LocalView.current
+    if (!view.isInEditMode) {
+        SideEffect {
+            val window = (view.context as Activity).window
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !effectiveDark
+        }
+    }
+
     CompositionLocalProvider(
         LocalAppPreferences provides preferences,
         LocalSpacing        provides Spacing(),

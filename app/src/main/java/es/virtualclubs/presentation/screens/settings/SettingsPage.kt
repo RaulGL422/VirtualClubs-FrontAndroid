@@ -14,12 +14,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Article
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Shield
@@ -154,24 +154,17 @@ fun SettingsPage(
                 SectionHeader(stringResource(R.string.settings_about))
 
                 SettingRow(
-                    title    = stringResource(R.string.settings_app_version),
-                    subtitle = getAppVersion(context),
-                    icon     = Icons.Filled.Info,
-                    onClick  = null
-                )
-
-                SettingRow(
                     title    = stringResource(R.string.settings_privacy_policy),
                     subtitle = stringResource(R.string.settings_privacy_policy_subtitle),
                     icon     = Icons.Filled.Shield,
-                    onClick  = { /* TODO: open privacy policy URL */ }
+                    onClick  = null
                 )
 
                 SettingRow(
                     title    = stringResource(R.string.settings_terms),
                     subtitle = stringResource(R.string.settings_terms_subtitle),
                     icon     = Icons.Filled.Article,
-                    onClick  = { /* TODO: open terms of service URL */ }
+                    onClick  = null
                 )
 
                 if (BuildConfig.DEBUG) {
@@ -184,6 +177,14 @@ fun SettingsPage(
                     )
                 }
 
+                Spacer(Modifier.height(spacing.md))
+                Text(
+                    text      = getAppVersion(context),
+                    style     = VCTheme.typography.bodySmall,
+                    color     = VCTheme.colors.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                    modifier  = Modifier.fillMaxWidth()
+                )
                 Spacer(Modifier.height(spacing.xl))
             }
         }
@@ -195,7 +196,7 @@ private fun AccountCard(email: String) {
     val spacing = VCTheme.spacing
 
     Surface(
-        shape    = VCTheme.shapes.large,
+        shape    = VCTheme.shapes.medium,
         color    = VCTheme.colors.surfaceContainer,
         modifier = Modifier.fillMaxWidth()
     ) {

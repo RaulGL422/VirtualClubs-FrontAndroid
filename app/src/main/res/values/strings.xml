@@ -94,9 +94,9 @@
     <string name="settings_contrast_low">Bajo</string>
     <string name="settings_contrast_medium">Medio</string>
     <string name="settings_contrast_high">Alto</string>
-    <string name="settings_font_size">Tamaño de letra (%s)</string>
+    <string name="settings_font_size">Tamaño de letra</string>
     <string name="settings_logout">Cerrar sesión</string>
-    <string name="settings_device">Dispositivo</string>
+    <string name="settings_device">Aplicación</string>
     <string name="settings_language">Idioma</string>
     <string name="settings_language_subtitle">Cambiar el idioma de la aplicación</string>
     <string name="settings_notifications">Notificaciones</string>

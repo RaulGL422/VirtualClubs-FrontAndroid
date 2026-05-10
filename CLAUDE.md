@@ -76,6 +76,7 @@ es/virtualclubs/
 │   ├── components/                 Reusable composables
 │   │   ├── AppBar.kt
 │   │   ├── Buttons.kt
+│   │   ├── ListItems.kt                VCListItem + VCListToggleItem (icon, title, subtitle, arrow/toggle)
 │   │   ├── Scaffold.kt
 │   │   ├── TextFields.kt
 │   │   └── dialogs/
@@ -95,7 +96,9 @@ es/virtualclubs/
 │   │   │   └── dialogs/            ForgotPasswordDialog
 │   │   ├── home/                   Main home (HomePage + HomeViewModel)
 │   │   ├── resetPassword/          Password reset flow
-│   │   ├── settings/               Theme/font/server settings
+│   │   ├── settings/               Theme/font/language/notifications settings
+│   │   │   ├── components/         AppearanceSection, DebugServerSection, SettingRow, SettingToggleRow (internal)
+│   │   │   └── dialogs/            LanguagePickerDialog
 │   │   └── verifyemailresult/      Email verification result
 │   ├── MainActivity.kt             Entry point, sets up NavController + theme
 │   ├── ResetPasswordActivity.kt    Handles reset-password deep link
@@ -328,6 +331,23 @@ Access tokens are cached in `UserSession.cachedAccessToken` after the first succ
 - `modifier: Modifier = Modifier` as first parameter after state
 - Do not call ViewModels directly from child composables — pass lambdas down
 
+### VCDialog — dialogs del sistema
+
+`VCDialog` es una interfaz de clase (no composable) que `GlobalUIManager` muestra mediante `VCScaffold`. Para añadir un diálogo:
+
+1. Crear una clase que implemente `VCDialog` en `presentation/screens/[screen]/dialogs/`.
+2. Implementar los campos obligatorios: `titleRes`, `confirmTextRes`, `onConfirm`.
+3. Implementar `ColumnScope.Content()` con el cuerpo del diálogo.
+4. Mostrar con `globalUIManager.showDialog(MyDialog(...))`.
+
+**Botón cancelar opcional:** sobrescribir `dismissTextRes` con un `R.string` — `VCScaffold` lo renderiza automáticamente y llama a `globalUIManager.hideDialog()`:
+```kotlin
+override val dismissTextRes = R.string.cancel
+```
+Por defecto es `null` (sin botón cancelar).
+
+**Estado reactivo en el diálogo:** usar `mutableStateOf(...)` a nivel de constructor de la clase — el snapshot system de Compose rastrea las lecturas dentro del bloque `@Composable Content()` y provoca recomposiciones correctamente.
+
 ### Testing strategy
 
 - **Fakes** for repositories — configurable real implementations in `test/fakes/`, not mocks
@@ -345,8 +365,12 @@ Access tokens are cached in `UserSession.cachedAccessToken` after the first succ
 | `prod` flavor backend | Both flavors point to Render — a dedicated production URL is needed |
 | UI/instrumentation tests | No Compose UI tests implemented yet |
 | Apple / Facebook login | Buttons render correctly but `onApple` and `onFacebook` are `{ /* TODO */ }` — not yet implemented |
-| `collectAsState()` → `collectAsStateWithLifecycle()` | All screens use `collectAsState()` which does not respect Android lifecycle — migrate to `collectAsStateWithLifecycle()` |
+| `collectAsState()` → `collectAsStateWithLifecycle()` | `SettingsPage` already migrated; remaining: `AuthPage`, `HomePage` — migrate to `collectAsStateWithLifecycle()` |
 | Auth side effect in composition | `if (uiState is AuthUiState.Success) onLogged()` in `LoginPage` should be inside a `LaunchedEffect` |
+| Privacy Policy / Terms of Service | `SettingsPage` has `onClick = null` placeholders for Privacy Policy and Terms rows — URLs not yet implemented |
+| Missing `@Preview` on shared composables | `VCListItem`, `VCListToggleItem` (ListItems.kt) and `AppearanceSection` have no `@Preview` |
+| `SettingsViewModel` missing tests | No unit tests for the 6-flow combine and session state mapping logic |
+| `navigateToSettings()` missing `launchSingleTop` | `AppNavigator.navigateToSettings()` can stack multiple `SettingsPage` instances if called rapidly |
 
 ---
 
