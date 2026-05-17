@@ -1,26 +1,23 @@
 package es.virtualclubs.presentation.screens.resetPassword
 
-import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,10 +31,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import es.virtualclubs.R
@@ -58,7 +55,6 @@ fun ResetPasswordPage(
   screenType: ScreenType,
   viewModel: ResetPasswordViewModel = hiltViewModel(),
   onSettingsTap: () -> Unit,
-  onBack: () -> Unit,
   onPasswordResetSuccess: (String) -> Unit
 ) {
   val uiState by viewModel.uiState.collectAsState()
@@ -74,8 +70,6 @@ fun ResetPasswordPage(
 
   VCScaffold(
     titleTopBar = titlePage,
-    onNavigateBack = onBack,
-    canGoBack = true,
     topBarActions = {
       VCButton(
         content = VCButtonContent.Icon(VCIcon.Vector(Icons.Filled.Settings)),
@@ -95,45 +89,58 @@ fun ResetPasswordPage(
         modifier = Modifier
           .fillMaxWidth(
             when (screenType) {
-              ScreenType.Medium -> 0.7f
-              ScreenType.Small -> 0.9f
+              ScreenType.Medium -> 0.45f
+              ScreenType.Small -> 0.85f
             }
           )
           .wrapContentHeight(),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
       ) {
-        ResetPasswordHeader()
+        ResetPasswordIcon()
 
-        Text(text = stringResource(R.string.introduce_reset_password))
+        Spacer(modifier = Modifier.height(VCTheme.spacing.xxxl))
 
-        ResetPasswordField(
-          value = newPassword,
-          onValueChange = { newPassword = it },
-          placeholder = R.string.password_placeholder,
-          imeAction = ImeAction.Next,
-          onImeAction = { confirmPasswordFocusRequester.requestFocus() },
-          modifier = Modifier.focusRequester(newPasswordFocusRequester)
+        Text(
+          text = stringResource(R.string.introduce_reset_password),
+          style = MaterialTheme.typography.bodyMedium,
+          color = MaterialTheme.colorScheme.onSurfaceVariant,
+          textAlign = TextAlign.Center
         )
 
-        ResetPasswordField(
-          value = confirmPassword,
-          onValueChange = { confirmPassword = it },
-          placeholder = R.string.confirm_password_placeholder,
-          onImeAction = {
-            focusManager.clearFocus()
-            viewModel.resetPassword(token, newPassword, confirmPassword)
-          },
-          modifier = Modifier.focusRequester(confirmPasswordFocusRequester)
-        )
+        Spacer(modifier = Modifier.height(VCTheme.spacing.xxl))
 
-        Spacer(modifier = Modifier.height(VCTheme.spacing.sectionSpacingCompact))
+        Column(
+          verticalArrangement = Arrangement.spacedBy(VCTheme.spacing.lg),
+          horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+          ResetPasswordField(
+            value = newPassword,
+            onValueChange = { newPassword = it },
+            placeholder = R.string.password_placeholder,
+            imeAction = ImeAction.Next,
+            onImeAction = { confirmPasswordFocusRequester.requestFocus() },
+            modifier = Modifier.focusRequester(newPasswordFocusRequester)
+          )
+
+          ResetPasswordField(
+            value = confirmPassword,
+            onValueChange = { confirmPassword = it },
+            placeholder = R.string.confirm_password_placeholder,
+            onImeAction = {
+              focusManager.clearFocus()
+              viewModel.resetPassword(token, newPassword, confirmPassword)
+            },
+            modifier = Modifier.focusRequester(confirmPasswordFocusRequester)
+          )
+        }
+
+        Spacer(modifier = Modifier.height(VCTheme.spacing.xl))
 
         AnimatedVisibility(visible = globalUIManager.haveError()) {
           Text(
             text = stringResource(globalUIManager.getErrorId()),
             color = VCTheme.colors.error,
-            modifier = Modifier.padding(vertical = 8.dp)
+            modifier = Modifier.padding(bottom = VCTheme.spacing.md)
           )
         }
 
@@ -156,36 +163,23 @@ fun ResetPasswordPage(
 }
 
 @Composable
-private fun ResetPasswordHeader() {
-  Row(
-    modifier = Modifier.fillMaxWidth(),
-    horizontalArrangement = Arrangement.SpaceEvenly,
-    verticalAlignment = Alignment.CenterVertically
+private fun ResetPasswordIcon() {
+  Box(
+    modifier = Modifier
+      .size(88.dp)
+      .background(
+        color = MaterialTheme.colorScheme.primaryContainer,
+        shape = CircleShape
+      ),
+    contentAlignment = Alignment.Center
   ) {
-    ResetPasswordImage(
-      drawable = R.drawable.logo_whitout_text,
-      description = R.string.app_name
-    )
-    ResetPasswordImage(
-      drawable = R.drawable.recover_password,
-      description = R.string.recover_password
+    Icon(
+      imageVector = Icons.Filled.Lock,
+      contentDescription = null,
+      tint = MaterialTheme.colorScheme.onPrimaryContainer,
+      modifier = Modifier.size(44.dp)
     )
   }
-}
-
-@Composable
-private fun ResetPasswordImage(
-  @DrawableRes drawable: Int,
-  @StringRes description: Int,
-  modifier: Modifier = Modifier
-) {
-  Image(
-    painter = painterResource(drawable),
-    contentDescription = stringResource(description),
-    modifier = modifier
-      .fillMaxWidth(0.35f)
-      .aspectRatio(1f)
-  )
 }
 
 @Composable
