@@ -69,7 +69,6 @@ fun AppNavHost(
                 token = token,
                 screenType = screenType,
                 onSettingsTap = { appNavigator.navigateToSettings() },
-                onBack = { appNavigator.navigateBack() },
                 onPasswordResetSuccess = { appNavigator.navigateToLoginAndClearStackWithMessage(it) }
             )
         }

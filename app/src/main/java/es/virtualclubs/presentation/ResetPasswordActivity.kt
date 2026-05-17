@@ -13,7 +13,10 @@ import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import es.virtualclubs.VirtualClubsMainApp
 import es.virtualclubs.data.local.datastore.AppPreferences
+import es.virtualclubs.presentation.navigation.Screen
 import es.virtualclubs.presentation.theme.VirtualClubsTheme
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -28,20 +31,15 @@ class ResetPasswordActivity : ComponentActivity() {
 
     enableEdgeToEdge()
     setContent {
-      VirtualClubsTheme(
-        preferences = appPreferences
-      ) {
+      VirtualClubsTheme(preferences = appPreferences) {
         val windowSize = calculateWindowSizeClass(this)
         val controller = rememberNavController()
         navController = controller
 
-        VirtualClubsMainApp(
-          windowSize.widthSizeClass,
-          navController = controller
-        )
+        VirtualClubsMainApp(windowSize.widthSizeClass, navController = controller)
 
         LaunchedEffect(controller) {
-          controller.handleDeepLink(intent)
+          navigateToResetPassword(controller, intent)
         }
       }
     }
@@ -49,6 +47,16 @@ class ResetPasswordActivity : ComponentActivity() {
 
   override fun onNewIntent(intent: Intent) {
     super.onNewIntent(intent)
-    navController?.handleDeepLink(intent)
+    navController?.let { navigateToResetPassword(it, intent) }
+  }
+
+  private fun navigateToResetPassword(controller: NavHostController, intent: Intent) {
+    val token = intent.data?.getQueryParameter("token") ?: return
+    val encoded = URLEncoder.encode(token, StandardCharsets.UTF_8.toString())
+    val route = Screen.ResetPassword.route.replace("{token}", encoded)
+    controller.navigate(route) {
+      popUpTo(Screen.Auth.route) { inclusive = true }
+      launchSingleTop = true
+    }
   }
 }
