@@ -35,7 +35,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import es.virtualclubs.R
 import es.virtualclubs.ScreenType
@@ -166,7 +165,7 @@ fun ResetPasswordPage(
 private fun ResetPasswordIcon() {
   Box(
     modifier = Modifier
-      .size(88.dp)
+      .size(VCTheme.sizes.avatarXl)
       .background(
         color = MaterialTheme.colorScheme.primaryContainer,
         shape = CircleShape
@@ -177,7 +176,7 @@ private fun ResetPasswordIcon() {
       imageVector = Icons.Filled.Lock,
       contentDescription = null,
       tint = MaterialTheme.colorScheme.onPrimaryContainer,
-      modifier = Modifier.size(44.dp)
+      modifier = Modifier.size(VCTheme.sizes.iconXl)
     )
   }
 }
