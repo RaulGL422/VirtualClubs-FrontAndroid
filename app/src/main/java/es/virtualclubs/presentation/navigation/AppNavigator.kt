@@ -51,6 +51,13 @@ class AppNavigator @Inject constructor(
         }
     }
 
+    fun navigateToSplashAndClearStack() {
+        navigate(Screen.Splash.route) {
+            popUpTo(0) { inclusive = true }
+            launchSingleTop = true
+        }
+    }
+
     fun navigateBack() {
         val controller = navController ?: return
         if (controller.previousBackStackEntry == null) return

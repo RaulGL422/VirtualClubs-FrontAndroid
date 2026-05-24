@@ -93,6 +93,7 @@ es/virtualclubs/
 │   │   ├── NavGraph.kt             NavHost with all routes
 │   │   └── Screen.kt               Sealed class with all routes
 │   ├── screens/
+│   │   ├── splash/                 Splash + auto-login (SplashPage + SplashViewModel)
 │   │   ├── auth/                   Login/Register (AuthPage + AuthViewModel)
 │   │   │   ├── components/         AuthDivider, AuthToggle, SocialButtons (internal)
 │   │   │   └── dialogs/            ForgotPasswordDialog
@@ -120,6 +121,7 @@ Sealed class `Screen` — all routes:
 
 | Route | Screen | Deep Link |
 |-------|---------|-----------|
+| `splash` | Splash / auto-login (**start destination**) | — |
 | `auth/{message}` | Login / Registration | — |
 | `home` | Main home | — |
 | `settings` | Settings | — |
