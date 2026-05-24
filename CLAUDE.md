@@ -6,7 +6,7 @@ Android client for **VirtualClubs** — a platform to create and manage sports f
 
 - **Platform:** Android (Kotlin + Jetpack Compose)
 - **Architecture:** Clean Architecture + MVVM
-- **Version:** 0.1.2 Alpha | **AGP:** 9.2.0 | **Kotlin:** 2.2.10
+- **Version:** 0.2.0 Alpha | **AGP:** 9.2.0 | **Kotlin:** 2.2.10
 - **Compose BOM:** 2026.03.00 | **Hilt:** 2.57
 - **Min SDK:** 30 (Android 11) | **Target SDK:** 37 | **Compile SDK:** 37
 - **Backend:** https://api-vc.rgal.dev (dev) / https://virtualclubs-backend.onrender.com (prod)

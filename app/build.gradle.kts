@@ -15,8 +15,8 @@ android {
         applicationId = "es.virtualclubs"
         minSdk = 30
         targetSdk = 37
-        versionCode = 2
-        versionName = "0.1.2v Alpha"
+        versionCode = 3
+        versionName = "0.2.0 Alpha"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
