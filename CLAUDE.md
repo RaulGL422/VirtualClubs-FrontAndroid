@@ -395,7 +395,7 @@ Por defecto es `null` (sin botón cancelar).
 
 ### Architecture
 - **Keep layer boundaries**: Composable → ViewModel → UseCase → Repository. No layer skipping.
-- **Inject via interfaces**: ViewModels receive repository interfaces (not `*RepositoryImpl`); use cases receive repository interfaces — never concrete implementations
+- **Inject via interfaces**: use cases receive repository interfaces (not `*RepositoryImpl`) — never concrete implementations; ViewModels receive use cases, never repositories directly
 - **New error types** must have a corresponding case in `ErrorHandler.kt`
 - **New routes** must be added to both `Screen.kt` and `NavGraph.kt`
 - **New use cases** must be registered as `@Singleton` in `UseCaseModule`
