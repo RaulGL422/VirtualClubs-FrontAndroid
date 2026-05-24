@@ -8,6 +8,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.LaunchedEffect
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
@@ -43,15 +44,10 @@ class VerifyEmailActivity : ComponentActivity() {
         )
 
         LaunchedEffect(controller) {
-          val hasDeepLink = intent.data != null
-          if (hasDeepLink) {
+          if (intent.data != null) {
             controller.handleDeepLink(intent)
           } else if (BuildConfig.DEBUG) {
-            val status = intent.getStringExtra("debug_status") ?: "success"
-            controller.navigate(Screen.VerifyEmailResult.route.replace("{status}", status)) {
-              popUpTo(Screen.Auth.route) { inclusive = true }
-              launchSingleTop = true
-            }
+            navigateToVerifyResult(controller, intent)
           }
         }
       }
@@ -60,6 +56,18 @@ class VerifyEmailActivity : ComponentActivity() {
 
   override fun onNewIntent(intent: Intent) {
     super.onNewIntent(intent)
-    navController?.handleDeepLink(intent)
+    this.intent = intent
+    if (intent.data != null) {
+      navController?.handleDeepLink(intent)
+    } else if (BuildConfig.DEBUG) {
+      navController?.let { navigateToVerifyResult(it, intent) }
+    }
+  }
+
+  private fun navigateToVerifyResult(controller: NavController, intent: Intent) {
+    val status = intent.getStringExtra("debug_status") ?: "success"
+    controller.navigate(Screen.VerifyEmailResult.route.replace("{status}", status)) {
+      popUpTo(0) { inclusive = true }
+    }
   }
 }

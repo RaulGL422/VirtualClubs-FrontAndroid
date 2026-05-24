@@ -83,8 +83,9 @@ fun AppNavHost(
             )
         ) {
             VerifyEmailResultPage(
-                onGoToLogin = { appNavigator.navigateToLoginAndClearStack() },
-                onSettingsTap = { appNavigator.navigateToSettings() }
+                onGoToHome = { appNavigator.navigateToHomeAndClearStack() },
+                onSettingsTap = { appNavigator.navigateToSettings() },
+                screenType = screenType
             )
         }
     }
