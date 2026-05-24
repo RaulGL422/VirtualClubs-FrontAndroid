@@ -8,6 +8,21 @@ All notable changes to VirtualClubs Android. Format based on [Keep a Changelog](
 
 ---
 
+## [0.2.0] — Alpha — 2026-05-24
+
+### Added
+- Splash screen (`SplashPage` + `SplashViewModel`) as initial NavGraph destination; performs invisible session restore on launch, eliminating the flash of the login screen before auto-login — VC-95
+
+### Changed
+- `VerifyEmailResultPage` redesigned to match Auth screen layout (85%/45% responsive width, Stadium DS tokens, settings icon overlay); "Ir al inicio" now routes through the Splash auto-login flow — VC-93
+- `AuthPage` updated to Stadium Design System tokens (`VCTheme` colors, typography, spacing) — VC-89
+
+### Internal
+- `tryAutoLogin()` removed from `AuthViewModel`; session restoration is now exclusively owned by `SplashViewModel`
+- Unit tests added for `SplashViewModel` (no token → Login, valid token → Home, expired token → Login)
+
+---
+
 ## [0.1.2] — Alpha — 2026-04-08
 
 ### Added
