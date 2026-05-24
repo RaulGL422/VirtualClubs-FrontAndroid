@@ -303,22 +303,30 @@ sealed class SessionState {
 | `logout()` | emits `LoggedOut` **and** clears `cachedAccessToken` |
 | `cacheAccessToken(token)` | stores token in memory for fast interceptor reads |
 
-There are two logout paths — both must be kept in sync:
+All logout flows go through `LogoutUserUseCase(notifyBackend: Boolean)` — single source of truth for cleanup:
 
-**Voluntary logout** (user taps "Sign out"):
+```kotlin
+// notifyBackend = true  → voluntary logout (user taps "Sign out")
+// notifyBackend = false → forced logout (invalid/expired token)
+suspend operator fun invoke(notifyBackend: Boolean = true) {
+    if (notifyBackend) runCatching { repository.logout() } // best-effort
+    userSession.logout()        // clears sessionState + cachedAccessToken
+    clearTokensUseCase()        // clears tokens from disk (SecurePrefs)
+    userPreferences.clearUser() // clears email from DataStore
+}
+```
+
+**Voluntary logout** (user taps "Sign out" — UI pending VC-92):
 ```
 SettingsViewModel.logout()
-  ├── logoutUseCase()       → authRepository.logout() + userSession.logout()
-  ├── clearTokensUseCase()  → securePrefs.clearAll()
+  ├── logoutUserUseCase(notifyBackend = true)
   └── appNavigator.navigateToLoginAndClearStack()
 ```
 
 **Forced logout** (invalid/missing token, triggered by `GlobalUIManager`):
 ```
 SessionManager.logout()
-  ├── userPreferences.clearUser()     → clears email from DataStore
-  ├── securePrefs.clearAll()          → clears tokens from disk
-  ├── userSession.logout()            → clears sessionState + cachedAccessToken
+  ├── logoutUserUseCase(notifyBackend = false)
   └── appNavigator.navigateToLoginAndClearStack()
 ```
 
