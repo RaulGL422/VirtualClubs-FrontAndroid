@@ -11,8 +11,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
+import es.virtualclubs.BuildConfig
 import es.virtualclubs.VirtualClubsMainApp
 import es.virtualclubs.data.local.datastore.AppPreferences
+import es.virtualclubs.presentation.navigation.Screen
 import es.virtualclubs.presentation.theme.VirtualClubsTheme
 import javax.inject.Inject
 
@@ -41,7 +43,16 @@ class VerifyEmailActivity : ComponentActivity() {
         )
 
         LaunchedEffect(controller) {
-          controller.handleDeepLink(intent)
+          val hasDeepLink = intent.data != null
+          if (hasDeepLink) {
+            controller.handleDeepLink(intent)
+          } else if (BuildConfig.DEBUG) {
+            val status = intent.getStringExtra("debug_status") ?: "success"
+            controller.navigate(Screen.VerifyEmailResult.route.replace("{status}", status)) {
+              popUpTo(Screen.Auth.route) { inclusive = true }
+              launchSingleTop = true
+            }
+          }
         }
       }
     }
