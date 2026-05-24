@@ -10,17 +10,13 @@ import es.virtualclubs.domain.model.ErrorType
 import es.virtualclubs.domain.model.VirtualClubException
 import es.virtualclubs.domain.usecase.AuthUseCase
 import es.virtualclubs.domain.usecase.GoogleUseCase
-import es.virtualclubs.domain.usecase.RefreshTokenUseCase
 import es.virtualclubs.domain.usecase.RegisterUseCase
 import es.virtualclubs.domain.usecase.RequestPasswordResetUseCase
-import es.virtualclubs.domain.usecase.token.GetRefreshTokenUseCase
 import es.virtualclubs.domain.usecase.token.SaveTokensUseCase
 import es.virtualclubs.presentation.managers.GlobalUIManager
 import es.virtualclubs.utils.MainDispatcherRule
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -36,10 +32,8 @@ class AuthViewModelTest {
     private lateinit var authUseCase: AuthUseCase
     private lateinit var registerUseCase: RegisterUseCase
     private lateinit var googleUseCase: GoogleUseCase
-    private lateinit var refreshTokenUseCase: RefreshTokenUseCase
     private lateinit var requestPasswordResetUseCase: RequestPasswordResetUseCase
     private lateinit var saveTokensUseCase: SaveTokensUseCase
-    private lateinit var getRefreshTokenUseCase: GetRefreshTokenUseCase
     private lateinit var userPreferences: UserPreferences
     private lateinit var userSession: UserSession
     private lateinit var safeCall: SafeCall
@@ -55,33 +49,20 @@ class AuthViewModelTest {
         authUseCase = mockk()
         registerUseCase = mockk()
         googleUseCase = mockk()
-        refreshTokenUseCase = mockk()
         requestPasswordResetUseCase = mockk()
         saveTokensUseCase = mockk(relaxed = true)
-        getRefreshTokenUseCase = mockk()
         userPreferences = mockk(relaxed = true)
         userSession = UserSession()
         safeCall = SafeCall(mockk<ErrorDispatcher>(relaxed = true))
         globalUIManager = mockk(relaxed = true)
-
-        coEvery { globalUIManager.withLoading<Any?>(any()) } coAnswers {
-            @Suppress("UNCHECKED_CAST")
-            (args[0] as suspend () -> Any?).invoke()
-        }
-
-        // Sin sesión previa por defecto
-        coEvery { getRefreshTokenUseCase() } returns null
-        every { userPreferences.userEmailFlow } returns flowOf(null)
     }
 
     private fun buildViewModel() = AuthViewModel(
         authUseCase = authUseCase,
         registerUseCase = registerUseCase,
         googleUseCase = googleUseCase,
-        refreshTokenUseCase = refreshTokenUseCase,
         requestPasswordResetUseCase = requestPasswordResetUseCase,
         saveTokensUseCase = saveTokensUseCase,
-        getRefreshTokenUseCase = getRefreshTokenUseCase,
         userPreferences = userPreferences,
         userSession = userSession,
         safeCall = safeCall,
@@ -119,29 +100,6 @@ class AuthViewModelTest {
         advanceUntilIdle()
 
         vm.loginUser("user@test.com", "wrong")
-        advanceUntilIdle()
-
-        assertEquals(AuthUiState.Idle, vm.uiState.value)
-    }
-
-    // ─── autoLogin ────────────────────────────────────────────────────────────
-
-    @Test
-    fun `autoLogin con refresh token valido y refresh exitoso actualiza estado a Success`() = runTest {
-        coEvery { getRefreshTokenUseCase() } returns "stored-refresh-token"
-        coEvery { refreshTokenUseCase() } returns Result.success(Unit)
-        every { userPreferences.userEmailFlow } returns flowOf("user@test.com")
-        val vm = buildViewModel()
-        advanceUntilIdle()
-
-        assertEquals(AuthUiState.Success, vm.uiState.value)
-    }
-
-    @Test
-    fun `autoLogin con refresh token valido pero refresh fallido mantiene estado en Idle`() = runTest {
-        coEvery { getRefreshTokenUseCase() } returns "stored-refresh-token"
-        coEvery { refreshTokenUseCase() } returns Result.failure(VirtualClubException(ErrorType.INVALID_REFRESH_TOKEN))
-        val vm = buildViewModel()
         advanceUntilIdle()
 
         assertEquals(AuthUiState.Idle, vm.uiState.value)

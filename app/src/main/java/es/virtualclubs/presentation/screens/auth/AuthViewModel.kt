@@ -23,17 +23,14 @@ import es.virtualclubs.domain.model.ErrorType
 import es.virtualclubs.domain.model.User
 import es.virtualclubs.domain.usecase.AuthUseCase
 import es.virtualclubs.domain.usecase.GoogleUseCase
-import es.virtualclubs.domain.usecase.RefreshTokenUseCase
 import es.virtualclubs.domain.usecase.RegisterUseCase
 import es.virtualclubs.domain.usecase.RequestPasswordResetUseCase
-import es.virtualclubs.domain.usecase.token.GetRefreshTokenUseCase
 import es.virtualclubs.domain.usecase.token.SaveTokensUseCase
 import es.virtualclubs.presentation.managers.GlobalUIManager
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
 @HiltViewModel
@@ -41,10 +38,8 @@ class AuthViewModel @Inject constructor(
     private val authUseCase: AuthUseCase,
     private val registerUseCase: RegisterUseCase,
     private val googleUseCase: GoogleUseCase,
-    private val refreshTokenUseCase: RefreshTokenUseCase,
     private val requestPasswordResetUseCase: RequestPasswordResetUseCase,
     private val saveTokensUseCase: SaveTokensUseCase,
-    private val getRefreshTokenUseCase: GetRefreshTokenUseCase,
     private val userPreferences: UserPreferences,
     private val userSession: UserSession,
     private val safeCall: SafeCall,
@@ -56,10 +51,6 @@ class AuthViewModel @Inject constructor(
     val uiState: StateFlow<AuthUiState> = _uiState.asStateFlow()
     private val _passwordResetUiState = MutableStateFlow<PasswordResetUiState>(PasswordResetUiState.Idle)
     val passwordResetUiState: StateFlow<PasswordResetUiState> = _passwordResetUiState.asStateFlow()
-
-    init {
-        tryAutoLogin()
-    }
 
     fun beginSignInGoogle(activity: Activity) {
         viewModelScope.launch {
@@ -114,23 +105,6 @@ class AuthViewModel @Inject constructor(
     fun onLoginFailed(errorType: ErrorType) {
         globalUIManager.setError(errorType)
         _uiState.value = AuthUiState.Idle
-    }
-
-    private fun tryAutoLogin() {
-        viewModelScope.launch {
-            val hasSession = getRefreshTokenUseCase() != null
-            if (hasSession) {
-                globalUIManager.withLoading {
-                    val response = refreshTokenUseCase()
-                    _uiState.value = if (response.isSuccess) {
-                        userSession.login(User(email = userPreferences.userEmailFlow.firstOrNull()))
-                        AuthUiState.Success
-                    } else {
-                        AuthUiState.Idle
-                    }
-                }
-            }
-        }
     }
 
     fun loginUser(email: String, password: String) {
