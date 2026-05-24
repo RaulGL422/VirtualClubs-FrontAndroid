@@ -44,6 +44,13 @@ class AppNavigator @Inject constructor(
         }
     }
 
+    fun navigateToHomeAndClearStack() {
+        navigate(Screen.Home.route) {
+            popUpTo(0) { inclusive = true }
+            launchSingleTop = true
+        }
+    }
+
     fun navigateBack() {
         val controller = navController ?: return
         if (controller.previousBackStackEntry == null) return

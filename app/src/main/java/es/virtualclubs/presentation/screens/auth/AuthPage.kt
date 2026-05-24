@@ -41,6 +41,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -83,6 +84,7 @@ fun LoginPage(
   val snackbarHostState = remember { SnackbarHostState() }
   val scope = rememberCoroutineScope()
   val resetEmailSent = stringResource(R.string.password_reset_email_sent)
+  var messageShown by rememberSaveable { mutableStateOf(false) }
 
   LaunchedEffect(uiState) {
     if (uiState is AuthUiState.Success) onLogged()
@@ -101,7 +103,8 @@ fun LoginPage(
   }
 
   LaunchedEffect(message) {
-    if (message != null) {
+    if (message != null && !messageShown) {
+      messageShown = true
       snackbarHostState.showSnackbar(
         message = message,
         duration = SnackbarDuration.Short

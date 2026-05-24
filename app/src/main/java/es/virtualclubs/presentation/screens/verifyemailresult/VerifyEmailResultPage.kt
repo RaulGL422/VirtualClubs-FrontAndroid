@@ -14,10 +14,9 @@ import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,57 +28,73 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import es.virtualclubs.R
+import es.virtualclubs.ScreenType
 import es.virtualclubs.presentation.components.VCButton
 import es.virtualclubs.presentation.components.VCButtonContent
 import es.virtualclubs.presentation.components.VCButtonStyle
 import es.virtualclubs.presentation.components.VCIcon
 import es.virtualclubs.presentation.components.VCScaffold
+import es.virtualclubs.presentation.theme.VCPreviewTheme
 import es.virtualclubs.presentation.theme.VCTheme
 
 @Composable
 fun VerifyEmailResultPage(
   viewModel: VerifyEmailResultViewModel = hiltViewModel(),
-  onGoToLogin: () -> Unit,
-  onSettingsTap: () -> Unit
+  onGoToHome: () -> Unit,
+  onSettingsTap: () -> Unit,
+  screenType: ScreenType
 ) {
-  val uiState by viewModel.uiState.collectAsState()
+  val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-  VCScaffold(
-    titleTopBar = R.string.verify_email_result_page,
-    topBarActions = {
-      VCButton(
-        content = VCButtonContent.Icon(VCIcon.Vector(Icons.Filled.Settings)),
-        style = VCButtonStyle.Icon,
-        iconSize = VCTheme.sizes.iconMd,
-        onClick = onSettingsTap
-      )
+  VCScaffold(enableTopBar = false) { padding ->
+    val columnWidthFraction = when (screenType) {
+      ScreenType.Small -> 0.85f
+      ScreenType.Medium -> 0.45f
     }
-  ) { padding ->
+
     Box(
       modifier = Modifier
         .fillMaxSize()
         .padding(padding)
-        .padding(horizontal = 32.dp),
-      contentAlignment = Alignment.Center
     ) {
-      when (uiState) {
-        VerifyEmailResultUiState.Success -> VerifyEmailResultContent(
-          icon = Icons.Filled.CheckCircle,
-          iconTint = MaterialTheme.colorScheme.primary,
-          title = R.string.email_verified_success_title,
-          message = R.string.email_verified_success_message,
-          buttonText = R.string.go_to_login,
-          onButtonClick = onGoToLogin
-        )
-        VerifyEmailResultUiState.Error -> VerifyEmailResultContent(
-          icon = Icons.Filled.Cancel,
-          iconTint = MaterialTheme.colorScheme.error,
-          title = R.string.email_verified_error_title,
-          message = R.string.email_verified_error_message,
-          buttonText = R.string.go_to_login,
-          onButtonClick = onGoToLogin
-        )
+      Column(
+        modifier = Modifier
+          .fillMaxWidth(columnWidthFraction)
+          .align(Alignment.Center),
+        horizontalAlignment = Alignment.CenterHorizontally
+      ) {
+        when (uiState) {
+          VerifyEmailResultUiState.Success -> VerifyEmailResultContent(
+            icon = Icons.Filled.CheckCircle,
+            iconTint = VCTheme.colors.primary,
+            title = R.string.email_verified_success_title,
+            message = R.string.email_verified_success_message,
+            buttonText = R.string.go_to_home,
+            onButtonClick = onGoToHome
+          )
+          VerifyEmailResultUiState.Error -> VerifyEmailResultContent(
+            icon = Icons.Filled.Cancel,
+            iconTint = VCTheme.colors.error,
+            title = R.string.email_verified_error_title,
+            message = R.string.email_verified_error_message,
+            buttonText = R.string.go_to_home,
+            onButtonClick = onGoToHome
+          )
+        }
       }
+
+      VCButton(
+        content = VCButtonContent.Icon(VCIcon.Vector(Icons.Filled.Settings)),
+        style = VCButtonStyle.Icon,
+        iconSize = VCTheme.sizes.iconMd,
+        onClick = onSettingsTap,
+        modifier = Modifier
+          .align(Alignment.TopEnd)
+          .padding(
+            top = VCTheme.spacing.screenPaddingDouble,
+            end = VCTheme.spacing.screenHorizontal
+          )
+      )
     }
   }
 }
@@ -94,6 +109,7 @@ private fun VerifyEmailResultContent(
   onButtonClick: () -> Unit
 ) {
   Column(
+    modifier = Modifier.fillMaxWidth(),
     horizontalAlignment = Alignment.CenterHorizontally,
     verticalArrangement = Arrangement.spacedBy(24.dp)
   ) {
@@ -105,14 +121,14 @@ private fun VerifyEmailResultContent(
     )
     Text(
       text = stringResource(title),
-      style = MaterialTheme.typography.headlineSmall,
+      style = VCTheme.typography.headlineSmall,
       textAlign = TextAlign.Center
     )
     Text(
       text = stringResource(message),
-      style = MaterialTheme.typography.bodyMedium,
+      style = VCTheme.typography.bodyMedium,
       textAlign = TextAlign.Center,
-      color = MaterialTheme.colorScheme.onSurfaceVariant
+      color = VCTheme.colors.onSurfaceVariant
     )
     VCButton(
       content = VCButtonContent.Text(buttonText),
@@ -128,13 +144,13 @@ private fun VerifyEmailResultContent(
 @Preview(showBackground = true, name = "Éxito")
 @Composable
 private fun VerifyEmailResultSuccessPreview() {
-  MaterialTheme {
+  VCPreviewTheme {
     VerifyEmailResultContent(
       icon = Icons.Filled.CheckCircle,
-      iconTint = MaterialTheme.colorScheme.primary,
+      iconTint = VCTheme.colors.primary,
       title = R.string.email_verified_success_title,
       message = R.string.email_verified_success_message,
-      buttonText = R.string.go_to_login,
+      buttonText = R.string.go_to_home,
       onButtonClick = {}
     )
   }
@@ -143,13 +159,13 @@ private fun VerifyEmailResultSuccessPreview() {
 @Preview(showBackground = true, name = "Error")
 @Composable
 private fun VerifyEmailResultErrorPreview() {
-  MaterialTheme {
+  VCPreviewTheme {
     VerifyEmailResultContent(
       icon = Icons.Filled.Cancel,
-      iconTint = MaterialTheme.colorScheme.error,
+      iconTint = VCTheme.colors.error,
       title = R.string.email_verified_error_title,
       message = R.string.email_verified_error_message,
-      buttonText = R.string.go_to_login,
+      buttonText = R.string.go_to_home,
       onButtonClick = {}
     )
   }

@@ -75,6 +75,7 @@
     <string name="email_verified_error_title">Error de verificación</string>
     <string name="email_verified_error_message">El enlace de verificación no es válido o ha expirado. Inicia sesión para solicitar un nuevo correo de verificación.</string>
     <string name="go_to_login">Ir al inicio de sesión</string>
+    <string name="go_to_home">Ir al inicio</string>
     <string name="settings_account">Cuenta</string>
     <string name="settings_appearance">Apariencia</string>
     <string name="settings_theme">Tema</string>
