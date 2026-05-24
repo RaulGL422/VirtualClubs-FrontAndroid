@@ -13,6 +13,7 @@ import es.virtualclubs.presentation.screens.auth.LoginPage
 import es.virtualclubs.presentation.screens.home.HomePage
 import es.virtualclubs.presentation.screens.resetPassword.ResetPasswordPage
 import es.virtualclubs.presentation.screens.settings.SettingsPage
+import es.virtualclubs.presentation.screens.splash.SplashPage
 import es.virtualclubs.presentation.screens.verifyemailresult.VerifyEmailResultPage
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
@@ -29,8 +30,15 @@ fun AppNavHost(
 
     NavHost(
         navController = navController,
-        startDestination = Screen.Auth.route
+        startDestination = Screen.Splash.route
     ) {
+        composable(Screen.Splash.route) {
+            SplashPage(
+                onNavigateToHome = { appNavigator.navigateToHomeAndClearStack() },
+                onNavigateToLogin = { appNavigator.navigateToLoginAndClearStack() }
+            )
+        }
+
         composable(Screen.Auth.route) { backStackEntry ->
             val message = backStackEntry.arguments?.getString("message")
             LoginPage(
@@ -83,7 +91,7 @@ fun AppNavHost(
             )
         ) {
             VerifyEmailResultPage(
-                onGoToHome = { appNavigator.navigateToHomeAndClearStack() },
+                onGoToHome = { appNavigator.navigateToSplashAndClearStack() },
                 onSettingsTap = { appNavigator.navigateToSettings() },
                 screenType = screenType
             )

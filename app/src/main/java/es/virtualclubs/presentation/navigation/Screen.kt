@@ -3,6 +3,7 @@ package es.virtualclubs.presentation.navigation
 import es.virtualclubs.R
 
 sealed class Screen(val route: String, val nameId: Int) {
+  object Splash : Screen("splash", R.string.app_name)
   object Auth : Screen("auth/{message}", R.string.authentication_page)
   object Settings : Screen("settings", R.string.settings_page)
   object ResetPassword : Screen("resetPassword/{token}", R.string.reset_password_page)
