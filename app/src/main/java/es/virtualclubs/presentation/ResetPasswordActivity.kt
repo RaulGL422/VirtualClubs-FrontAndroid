@@ -3,6 +3,7 @@ package es.virtualclubs.presentation
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import es.virtualclubs.BuildConfig
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
@@ -51,7 +52,8 @@ class ResetPasswordActivity : ComponentActivity() {
   }
 
   private fun navigateToResetPassword(controller: NavHostController, intent: Intent) {
-    val token = intent.data?.getQueryParameter("token") ?: return
+    val token = intent.data?.getQueryParameter("token")
+      ?: if (BuildConfig.DEBUG) "preview-token" else return
     val encoded = URLEncoder.encode(token, StandardCharsets.UTF_8.toString())
     val route = Screen.ResetPassword.route.replace("{token}", encoded)
     controller.navigate(route) {
