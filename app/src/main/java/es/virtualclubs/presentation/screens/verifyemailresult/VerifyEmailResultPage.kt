@@ -16,7 +16,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,7 +44,7 @@ fun VerifyEmailResultPage(
   onSettingsTap: () -> Unit,
   screenType: ScreenType
 ) {
-  val uiState by viewModel.uiState.collectAsState()
+  val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
   VCScaffold(enableTopBar = false) { padding ->
     val columnWidthFraction = when (screenType) {
@@ -150,7 +150,7 @@ private fun VerifyEmailResultSuccessPreview() {
       iconTint = VCTheme.colors.primary,
       title = R.string.email_verified_success_title,
       message = R.string.email_verified_success_message,
-      buttonText = R.string.go_to_login,
+      buttonText = R.string.go_to_home,
       onButtonClick = {}
     )
   }
@@ -165,7 +165,7 @@ private fun VerifyEmailResultErrorPreview() {
       iconTint = VCTheme.colors.error,
       title = R.string.email_verified_error_title,
       message = R.string.email_verified_error_message,
-      buttonText = R.string.go_to_login,
+      buttonText = R.string.go_to_home,
       onButtonClick = {}
     )
   }
