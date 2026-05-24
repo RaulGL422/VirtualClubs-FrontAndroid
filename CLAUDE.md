@@ -303,22 +303,30 @@ sealed class SessionState {
 | `logout()` | emits `LoggedOut` **and** clears `cachedAccessToken` |
 | `cacheAccessToken(token)` | stores token in memory for fast interceptor reads |
 
-There are two logout paths — both must be kept in sync:
+All logout flows go through `LogoutUserUseCase(notifyBackend: Boolean)` — single source of truth for cleanup:
 
-**Voluntary logout** (user taps "Sign out"):
+```kotlin
+// notifyBackend = true  → voluntary logout (user taps "Sign out")
+// notifyBackend = false → forced logout (invalid/expired token)
+suspend operator fun invoke(notifyBackend: Boolean = true) {
+    if (notifyBackend) runCatching { repository.logout() } // best-effort
+    userSession.logout()        // clears sessionState + cachedAccessToken
+    clearTokensUseCase()        // clears tokens from disk (SecurePrefs)
+    userPreferences.clearUser() // clears email from DataStore
+}
+```
+
+**Voluntary logout** (user taps "Sign out" — UI pending VC-92):
 ```
 SettingsViewModel.logout()
-  ├── logoutUseCase()       → authRepository.logout() + userSession.logout()
-  ├── clearTokensUseCase()  → securePrefs.clearAll()
+  ├── logoutUserUseCase(notifyBackend = true)
   └── appNavigator.navigateToLoginAndClearStack()
 ```
 
 **Forced logout** (invalid/missing token, triggered by `GlobalUIManager`):
 ```
 SessionManager.logout()
-  ├── userPreferences.clearUser()     → clears email from DataStore
-  ├── securePrefs.clearAll()          → clears tokens from disk
-  ├── userSession.logout()            → clears sessionState + cachedAccessToken
+  ├── logoutUserUseCase(notifyBackend = false)
   └── appNavigator.navigateToLoginAndClearStack()
 ```
 
@@ -375,9 +383,19 @@ Por defecto es `null` (sin botón cancelar).
 
 ## Rules for Claude
 
-- **Never commit directly** to `main` or `development` — always use feature/fix branches
+### Security
+- **Prioritize secure code** (OWASP Mobile Top 10) — this app handles tokens, credentials, and the full authentication flow
+- **Before changing any auth, token, or session logic**, explain the security impact first
 - **Never hardcode** `GOOGLE_CLIENT_ID` or any secret in source files — always read from `BuildConfig`
+- **Tokens always in `SecureUserPreferences`** (AES/GCM) — never in plain `SharedPreferences`, never logged
+
+### Branch & commit discipline
+- **Never commit directly** to `main` or `development` — always use feature/fix branches
+- **Branch names: ASCII only** — no accented characters or special symbols (e.g. `fix/vc-3-token` not `fix/vc-3-tóken`)
+
+### Architecture
 - **Keep layer boundaries**: Composable → ViewModel → UseCase → Repository. No layer skipping.
+- **Inject via interfaces**: use cases receive repository interfaces (not `*RepositoryImpl`) — never concrete implementations; ViewModels receive use cases, never repositories directly
 - **New error types** must have a corresponding case in `ErrorHandler.kt`
 - **New routes** must be added to both `Screen.kt` and `NavGraph.kt`
 - **New use cases** must be registered as `@Singleton` in `UseCaseModule`
@@ -385,4 +403,15 @@ Por defecto es `null` (sin botón cancelar).
 - **Do not add** `runBlocking` outside of `NetworkModule` — use coroutines properly
 - **Domain model growth**: plain entities and value objects stay in `domain/model/`; create a subpackage only when a coherent group reaches 4+ closely related files. Current groups: auth/session (`AuthTokens`, `SessionState`, `User`), errors (`ErrorType`, `ErrorDispatcher`, `VirtualClubException`).
 - **Session state**: always read auth state from `UserSession.sessionState`, never from `UserPreferences` or other DataStore flows — those are for persistence, not runtime truth
+
+### API versioning
+- **Prefer the current active version** when consuming backend endpoints
+- **When the backend deprecates an endpoint** (response header `Deprecation: true`), open a Notion task to migrate before the `Sunset` date — never keep consuming a sunsetted endpoint
+- **Additive changes** (new optional fields, new endpoints) do not require an Android release; breaking changes (field renamed/removed) do
+
+### Pending features
+- **Do not delete commented-out code** that marks pending features (`/* TODO */` stubs, `onClick = null` placeholders) — leave the context intact until the feature is implemented
+
+### Documentation
 - **Update this file** when adding new routes, endpoints, or patterns
+- **When adding a new API endpoint** consumed from the app, update the API Endpoints table above
