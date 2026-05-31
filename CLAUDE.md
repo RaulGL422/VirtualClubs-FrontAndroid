@@ -408,7 +408,7 @@ Por defecto es `null` (sin botón cancelar).
 
 ### API versioning
 - **Prefer the current active version** when consuming backend endpoints
-- **When the backend deprecates an endpoint** (response header `Deprecation: true`), open a Notion task to migrate before the `Sunset` date — never keep consuming a sunsetted endpoint
+- **When the backend deprecates an endpoint** (response header `Deprecation: true`), open a Plane work item to migrate before the `Sunset` date — never keep consuming a sunsetted endpoint
 - **Additive changes** (new optional fields, new endpoints) do not require an Android release; breaking changes (field renamed/removed) do
 
 ### Pending features

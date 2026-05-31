@@ -2,6 +2,7 @@
   "permissions": {
     "allow": [
       "Bash(./gradlew compileDevDebugKotlin*)",
+      "Bash(./gradlew compileProdDebugKotlin*)",
       "Bash(./gradlew assembleDevDebug*)",
       "Bash(./gradlew testDevDebugUnitTest*)",
       "Bash(./gradlew test*)",
@@ -31,6 +32,12 @@
             "command": "input=$(cat); if echo \"$input\" | grep -q '\"git commit'; then output=$(./gradlew compileDevDebugKotlin -q 2>&1); code=$?; if [ $code -ne 0 ]; then safe=$(echo \"$output\" | head -20 | tr '\"' '`' | tr '\\n' ' '); printf '{\"continue\":false,\"stopReason\":\"Compilacion Kotlin fallida. Corrige los errores antes de commitear: %s\"}' \"$safe\"; exit 0; fi; fi",
             "timeout": 180,
             "statusMessage": "Verificando compilacion Kotlin antes del commit..."
+          },
+          {
+            "type": "command",
+            "command": "input=$(cat); if echo \"$input\" | grep -q '\"git commit'; then staged=$(git diff --cached --name-only -- '*.kt' 2>/dev/null | head -50); if [ -n \"$staged\" ]; then violations=$(echo \"$staged\" | xargs grep -l 'Log\\.d\\|Log\\.v\\|println(' 2>/dev/null); if [ -n \"$violations\" ]; then files=$(echo \"$violations\" | tr '\\n' ' '); printf '{\"continue\":false,\"stopReason\":\"Debug logging (Log.d/println) found in staged files: %s Remove before committing.\"}' \"$files\"; exit 0; fi; fi; fi",
+            "timeout": 10,
+            "statusMessage": "Buscando logs de debug en archivos staged..."
           }
         ]
       }
