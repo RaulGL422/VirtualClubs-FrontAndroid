@@ -28,3 +28,6 @@ google-services.json
 # Claude Code — personal settings only (commands are public)
 .claude/settings.local.json
 .claude/workflows/
+
+# BFG Repo Cleaner report
+..bfg-report/
