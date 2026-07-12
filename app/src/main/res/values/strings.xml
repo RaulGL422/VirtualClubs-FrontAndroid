@@ -68,7 +68,10 @@
     </plurals>
     <string name="email_not_verified">Email no verificado</string>
     <string name="email_not_verified_message">Debes verificar tu correo para continuar.</string>
-    <string name="password_too_weak">La contraseña es demasiado débil. Usa letras, números y símbolos.</string>
+    <string name="password_too_weak">La contraseña es demasiado débil. Usa letras y números.</string>
+    <string name="password_req_min_length">Al menos 6 caracteres</string>
+    <string name="password_req_letter">Al menos una letra</string>
+    <string name="password_req_number">Al menos un número</string>
     <string name="rate_limit_exceeded">Demasiados intentos. Espera unos minutos antes de volver a intentarlo.</string>
     <string name="email_verified_success_title">¡Email verificado!</string>
     <string name="email_verified_success_message">Tu cuenta ha sido verificada correctamente. Ya puedes iniciar sesión.</string>

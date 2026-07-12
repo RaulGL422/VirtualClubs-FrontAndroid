@@ -58,7 +58,9 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import es.virtualclubs.R
 import es.virtualclubs.ScreenType
 import es.virtualclubs.presentation.managers.LocalGlobalUIManager
+import es.virtualclubs.presentation.components.PasswordRequirements
 import es.virtualclubs.presentation.components.RoundedTextField
+import es.virtualclubs.presentation.components.meetsAllPasswordRequirements
 import es.virtualclubs.presentation.components.VCButton
 import es.virtualclubs.presentation.components.VCButtonContent
 import es.virtualclubs.presentation.components.VCButtonStyle
@@ -237,6 +239,11 @@ fun LoginContent(
         )
 
         if (!isLogin) {
+          Spacer(modifier = Modifier.height(VCTheme.spacing.md))
+          PasswordRequirements(
+            password = password,
+            modifier = Modifier.fillMaxWidth()
+          )
           Spacer(modifier = Modifier.height(VCTheme.spacing.sectionSpacingCompact))
           RoundedTextField(
             value = confirmPassword,
@@ -281,7 +288,8 @@ fun LoginContent(
 
         VCButton(
           content = VCButtonContent.Text(if (isLogin) R.string.login else R.string.register),
-          enabled = uiState !is AuthUiState.AttemptingAuth,
+          enabled = uiState !is AuthUiState.AttemptingAuth &&
+              (isLogin || meetsAllPasswordRequirements(password)),
           onClick = {
             if (isLogin) onLogin(email, password)
             else onRegister(email, password, confirmPassword)
