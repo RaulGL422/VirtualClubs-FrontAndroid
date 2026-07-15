@@ -39,7 +39,9 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import es.virtualclubs.R
 import es.virtualclubs.ScreenType
 import es.virtualclubs.presentation.managers.LocalGlobalUIManager
+import es.virtualclubs.presentation.components.PasswordRequirements
 import es.virtualclubs.presentation.components.RoundedTextField
+import es.virtualclubs.presentation.components.meetsAllPasswordRequirements
 import es.virtualclubs.presentation.components.VCButton
 import es.virtualclubs.presentation.components.VCButtonContent
 import es.virtualclubs.presentation.components.VCButtonStyle
@@ -109,7 +111,6 @@ fun ResetPasswordPage(
         Spacer(modifier = Modifier.height(VCTheme.spacing.xxl))
 
         Column(
-          verticalArrangement = Arrangement.spacedBy(VCTheme.spacing.lg),
           horizontalAlignment = Alignment.CenterHorizontally
         ) {
           ResetPasswordField(
@@ -118,8 +119,19 @@ fun ResetPasswordPage(
             placeholder = R.string.password_placeholder,
             imeAction = ImeAction.Next,
             onImeAction = { confirmPasswordFocusRequester.requestFocus() },
-            modifier = Modifier.focusRequester(newPasswordFocusRequester)
+            modifier = Modifier
+              .fillMaxWidth()
+              .focusRequester(newPasswordFocusRequester)
           )
+
+          Spacer(modifier = Modifier.height(VCTheme.spacing.md))
+
+          PasswordRequirements(
+            password = newPassword,
+            modifier = Modifier.fillMaxWidth()
+          )
+
+          Spacer(modifier = Modifier.height(VCTheme.spacing.lg))
 
           ResetPasswordField(
             value = confirmPassword,
@@ -129,7 +141,9 @@ fun ResetPasswordPage(
               focusManager.clearFocus()
               viewModel.resetPassword(token, newPassword, confirmPassword)
             },
-            modifier = Modifier.focusRequester(confirmPasswordFocusRequester)
+            modifier = Modifier
+              .fillMaxWidth()
+              .focusRequester(confirmPasswordFocusRequester)
           )
         }
 
@@ -145,7 +159,7 @@ fun ResetPasswordPage(
 
         VCButton(
           content = VCButtonContent.Text(R.string.change_password),
-          enabled = newPassword.isNotBlank() &&
+          enabled = meetsAllPasswordRequirements(newPassword) &&
               confirmPassword.isNotBlank() &&
               uiState !is ResetPasswordUiState.Attempting,
           shape = VCTheme.shapes.small,
