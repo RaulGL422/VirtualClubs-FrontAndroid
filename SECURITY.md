@@ -6,7 +6,7 @@ VirtualClubs Android is currently in **Alpha**. Security fixes are applied to th
 
 | Version | Supported |
 |---------|-----------|
-| 0.1.x (latest) | ✅ Yes |
+| 0.2.x (latest) | ✅ Yes |
 | Older | ❌ No |
 
 ---

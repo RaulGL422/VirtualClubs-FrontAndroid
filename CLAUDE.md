@@ -6,8 +6,8 @@ Android client for **VirtualClubs** — a platform to create and manage sports f
 
 - **Platform:** Android (Kotlin + Jetpack Compose)
 - **Architecture:** Clean Architecture + MVVM
-- **Version:** 0.2.0 Alpha | **AGP:** 9.2.0 | **Kotlin:** 2.2.10
-- **Compose BOM:** 2026.03.00 | **Hilt:** 2.57
+- **Version:** 0.2.0 Alpha | **AGP:** 9.2.1 | **Kotlin:** 2.3.21
+- **Compose BOM:** 2026.05.00 | **Hilt:** 2.59.2
 - **Min SDK:** 30 (Android 11) | **Target SDK:** 37 | **Compile SDK:** 37
 - **Backend:** https://api-vc.rgal.dev (dev) / https://virtualclubs-backend.onrender.com (prod)
 
@@ -394,6 +394,7 @@ Por defecto es `null` (sin botón cancelar).
 ### Branch & commit discipline
 - **Never commit directly** to `main` or `development` — always use feature/fix branches
 - **Branch names: ASCII only** — no accented characters or special symbols (e.g. `fix/vc-3-token` not `fix/vc-3-tóken`)
+- **Documented exception**: `.github/workflows/graphify.yml` auto-commits `graphify-out/` to `development` on every push, authored by the `graphify-bot` identity. This is the only allowed exception — it touches only generated, non-executable graph artifacts, never application code.
 
 ### Architecture
 - **Keep layer boundaries**: Composable → ViewModel → UseCase → Repository. No layer skipping.
@@ -417,3 +418,13 @@ Por defecto es `null` (sin botón cancelar).
 ### Documentation
 - **Update this file** when adding new routes, endpoints, or patterns
 - **When adding a new API endpoint** consumed from the app, update the API Endpoints table above
+
+## graphify
+
+This project has a knowledge graph at graphify-out/ with god nodes, community structure, and cross-file relationships.
+
+Rules:
+- For codebase questions, first run `graphify query "<question>"` when graphify-out/graph.json exists. Use `graphify path "<A>" "<B>"` for relationships and `graphify explain "<concept>"` for focused concepts. These return a scoped subgraph, usually much smaller than GRAPH_REPORT.md or raw grep output.
+- If graphify-out/wiki/index.md exists, use it for broad navigation instead of raw source browsing.
+- Read graphify-out/GRAPH_REPORT.md only for broad architecture review or when query/path/explain do not surface enough context.
+- After modifying code, run `graphify update .` to keep the graph current (AST-only, no API cost).
