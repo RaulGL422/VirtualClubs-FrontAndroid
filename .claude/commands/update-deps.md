@@ -14,19 +14,20 @@ Compara las versiones actuales contra el conocimiento de las últimas versiones 
 
 | Dependencia | Versión actual | Notas |
 |-------------|---------------|-------|
-| AGP (`agp`) | 9.1.0 | |
-| Kotlin (`kotlin`) | 2.2.10 | |
-| Compose BOM (`composeBom`) | 2025.07.00 | |
-| Hilt (`hiltAndroid`) | 2.57 | |
-| Navigation Compose | 2.9.3 | |
-| DataStore | 1.1.7 | |
-| Security Crypto | 1.1.0 | |
-| Retrofit | 3.0.0 | |
-| OkHttp Logging | 5.1.0 | |
-| Lifecycle KTX | 2.9.2 | |
-| Credentials | 1.5.0 | |
-| Play Services Auth | 21.4.0 | |
-| Core KTX | 1.16.0 | |
+| AGP (`agp`) | 9.2.1 | |
+| Kotlin (`kotlin`) | 2.3.21 | |
+| Compose BOM (`composeBom`) | 2026.05.00 | |
+| Hilt (`hilt`) | 2.59.2 | |
+| Navigation Compose (`navigationCompose`) | 2.9.8 | |
+| DataStore (`datastorePreferences`) | 1.2.1 | |
+| Security Crypto (`securityCrypto`) | 1.1.0 | |
+| Retrofit (`converterGson`) | 3.0.0 | |
+| OkHttp Logging (`loggingInterceptor`) | 5.3.2 | |
+| Lifecycle KTX (`lifecycleRuntimeKtx`) | 2.10.0 | |
+| Credentials (`credentials`) | 1.6.0 | Also backs Play Services Auth — consolidated under the same version key |
+| Core KTX (`coreKtx`) | 1.18.0 | |
+
+**Nota**: esta tabla es un snapshot de referencia — el Paso 1 ya indica leer `gradle/libs.versions.toml` en vivo como fuente de verdad real; si estos valores difieren del archivo, confía en el archivo.
 
 ## Paso 3: Clasificar las actualizaciones
 

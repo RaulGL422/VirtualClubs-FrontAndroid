@@ -138,8 +138,6 @@ git add CHANGELOG.md app/build.gradle.kts CLAUDE.md
 chore(release): bump version to v[X.Y.Z]
 
 Includes: [VC-N list]
-
-Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
 ```
 
 ```bash

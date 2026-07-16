@@ -14,7 +14,7 @@ Read the key security files in the project:
 - `data/local/secure/SecureUserPreferences.kt` — token storage
 - `data/local/secure/EncryptionUtils.kt` — encryption implementation
 - `di/NetworkModule.kt` — network configuration
-- `domain/model/AuthInterceptor.kt` — token handling in requests
+- `data/managers/AuthInterceptor.kt` — token handling in requests
 - `data/managers/SafeResponse.kt` — network error handling
 - `AndroidManifest.xml` — permissions and configuration
 - `app/build.gradle.kts` — build configuration (minify, debuggable)
@@ -67,6 +67,9 @@ If a specific file was passed, read it as well.
 - [ ] Are dependencies up to date? (run `/update-deps` if in doubt)
 - [ ] Is `androidx.security:security-crypto` at a recent version?
 
+### A9 — Coroutine / Threading Hygiene
+- [ ] Is there no `runBlocking` outside of `NetworkModule` (the only allowed exception, dev-build Hilt graph construction)? A stray `runBlocking` on the main thread can freeze the UI and, on auth-related paths, create races with token refresh.
+
 ---
 
 ## Step 3: Search in the code
@@ -88,6 +91,9 @@ grep -rn "println\|System\.out" app/src/main/java --include="*.kt"
 
 # HTTP instead of HTTPS
 grep -rn "http://" app/src/main/java --include="*.kt"
+
+# runBlocking outside NetworkModule (only allowed exception)
+grep -rln "runBlocking" app/src/main/java --include="*.kt" | grep -v "di/NetworkModule.kt"
 ```
 
 ---
