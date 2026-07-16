@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/RaulGL422/VirtualClubs-FrontAndroid/actions/workflows/ci.yml/badge.svg)](https://github.com/RaulGL422/VirtualClubs-FrontAndroid/actions/workflows/ci.yml)
 ![Min SDK](https://img.shields.io/badge/min%20SDK-30-brightgreen)
-![Kotlin](https://img.shields.io/badge/Kotlin-2.2.10-7F52FF?logo=kotlin&logoColor=white)
+![Kotlin](https://img.shields.io/badge/Kotlin-2.3.21-7F52FF?logo=kotlin&logoColor=white)
 
 > [Read in English](README.md)
 
@@ -57,14 +57,14 @@ Cliente Android para **VirtualClubs** — una plataforma para crear y gestionar 
 |---|---|
 | UI | Jetpack Compose + Material 3 |
 | Arquitectura | Clean Architecture + MVVM |
-| DI | Hilt 2.57 |
+| DI | Hilt 2.59.2 |
 | Navegación | Jetpack Navigation Compose + deep links |
 | Red | Retrofit + OkHttp (certificate pinning) |
 | Auth | Google CredentialManager |
 | Almacenamiento seguro | AndroidKeyStore + cifrado AES/GCM |
 | Almacenamiento local | DataStore Preferences |
 | Testing | MockK + Kotlin Fakes + Coroutines Test |
-| Lenguaje | Kotlin 2.2.10 |
+| Lenguaje | Kotlin 2.3.21 |
 | Min SDK | 30 (Android 11) |
 
 ---

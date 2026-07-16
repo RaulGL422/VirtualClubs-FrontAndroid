@@ -33,7 +33,11 @@ google-services.json
 ..bfg-report/
 
 # graphify — regenerable cache and machine-local paths only.
-# graph.json / GRAPH_REPORT.md / graph.html / manifest.json / cost.json stay tracked.
+# graph.json / GRAPH_REPORT.md / graph.html / manifest.json stay tracked.
+# cost.json is an append-only run log that the CI workflow updates on every
+# push to development — tracking it would churn the history on every merge
+# for no diffable value, so it's regenerated locally but not committed.
 graphify-out/cache/
+graphify-out/cost.json
 graphify-out/.graphify_python
 graphify-out/.graphify_root

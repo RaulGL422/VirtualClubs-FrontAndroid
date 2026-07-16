@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/RaulGL422/VirtualClubs-FrontAndroid/actions/workflows/ci.yml/badge.svg)](https://github.com/RaulGL422/VirtualClubs-FrontAndroid/actions/workflows/ci.yml)
 ![Min SDK](https://img.shields.io/badge/min%20SDK-30-brightgreen)
-![Kotlin](https://img.shields.io/badge/Kotlin-2.2.10-7F52FF?logo=kotlin&logoColor=white)
+![Kotlin](https://img.shields.io/badge/Kotlin-2.3.21-7F52FF?logo=kotlin&logoColor=white)
 
 > [Leer en español](README.es.md)
 
@@ -59,14 +59,14 @@ A few design decisions worth noting:
 |---|---|
 | UI | Jetpack Compose + Material 3 |
 | Architecture | Clean Architecture + MVVM |
-| DI | Hilt 2.57 |
+| DI | Hilt 2.59.2 |
 | Navigation | Jetpack Navigation Compose + deep links |
 | Networking | Retrofit + OkHttp (certificate pinning) |
 | Auth | Google CredentialManager |
 | Secure storage | AndroidKeyStore + AES/GCM encryption |
 | Local storage | DataStore Preferences |
 | Testing | MockK + Kotlin Fakes + Coroutines Test |
-| Language | Kotlin 2.2.10 |
+| Language | Kotlin 2.3.21 |
 | Min SDK | 30 (Android 11) |
 
 ---
