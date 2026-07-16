@@ -31,7 +31,7 @@ jobs:
           restore-keys: ${{ runner.os }}-gradle-
 
       - name: Set up Android SDK platform 37
-        run: $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platforms;android-37" "build-tools;35.0.0"
+        run: $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platforms;android-37.0" "build-tools;35.0.0"
 
       - name: Create local.properties
         run: echo "sdk.dir=$ANDROID_HOME" > local.properties
