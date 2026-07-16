@@ -85,13 +85,7 @@ Flujo que se ejecutará:
 
 **Nombre de rama:** kebab-case ASCII, sin tildes. Formato: `[prefijo]/vc-[N]-[nombre-kebab]`. Máximo 55 caracteres.
 
-```bash
-git fetch origin development
-git checkout development
-git pull origin development
-git checkout -b [nombre-rama]
-git push --set-upstream origin [nombre-rama]
-```
+Con ese nombre ya calculado, ejecuta el mismo procedimiento de `/new-feature` Pasos 3-4 (fetch/checkout/pull de `development`, `checkout -b`, push con `--set-upstream`) — no reimplementes los comandos aquí, ese comando es la fuente única de verdad para la creación de ramas.
 
 Actualiza el estado en Plane a **En progreso**:
 `mcp__plane__update_work_item` (`project_id: "ee9b3862-a518-4a58-a39a-40ec993204e3"`, `work_item_id: [id]`, `state_id: "52e0ee6e-f973-4826-b511-661bcb8f0e29"`)
@@ -135,56 +129,29 @@ Si hay fallos, detente. No hacer commit con tests en rojo.
 
 Tipo según los cambios: `feat` / `fix` / `refactor` / `chore` / `perf` / `test` / `docs`
 
-```
-[type]([scope]): concise description in English
+Ejecuta el flujo de `/commit` completo (incluyendo su guard de rama protegida del Step 1 y la confirmación del Step 5) para generar y confirmar el mensaje. Usa como cuerpo adicional:
 
+```
 Ref: VC-[N]
-
-Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
 ```
 
-Muestra el mensaje y espera confirmación antes de hacer el commit.
-
-```bash
-git add [archivos modificados — listar antes de confirmar, nunca git add -A sin mostrar]
-git commit -m "[mensaje]"
-git push origin [rama-actual]
-```
+No reimplementes aquí los pasos de `git add`/`commit`/`push` — son responsabilidad de `/commit`.
 
 ---
 
 ## Paso 8: Crear el Pull Request
 
-Título (máx 70 chars) y descripción en inglés con secciones:
-- **What does this PR do?** — 2-3 puntos basados en los checkboxes completados
-- **Main changes** — archivos modificados
-- **How to test** — pasos concretos para verificar el cambio
-- **Checklist** — ítems marcados como `☑`
+Ejecuta el flujo de `/create-pr` completo (incluyendo su verificación de `gh auth status` del Step 3), con:
+- **Título** (máx 70 chars) en inglés
+- **Descripción** con las secciones estándar de `/create-pr` — **What does this PR do?** (basado en los checkboxes completados), **Main changes**, **How to test**, **Checklist** (ítems marcados como `☑`)
 
-```bash
-gh pr create --title "[title]" --body "[description]" --base development
-```
+No reimplementes aquí `gh pr create` — es responsabilidad de `/create-pr`, que además lanza automáticamente `/review-pr` al terminar (ver Paso 9).
 
 ---
 
 ## Paso 9: Revisión automática del PR
 
-Analiza el diff evaluando:
-
-### 🔴 Critical Errors
-Excepciones no manejadas, NullPointerException potenciales, lógica rota, `TODO`/`FIXME` sin ticket, `Log.d`/`println` olvidados.
-
-### 🔐 Security (OWASP Mobile Top 10)
-Tokens o credenciales en logs, secretos hardcodeados (usar `BuildConfig`), tokens fuera de `SecureUserPreferences`, `runBlocking` fuera de `NetworkModule`.
-
-### 🏗️ Architecture
-Capa respetada (Composable → ViewModel → UseCase → Repository), no ViewModels en Composables (pasar lambdas), no repositorios inyectados directamente en ViewModels, interfaces no implementaciones, MutableStateFlow no expuesto, nuevos errores tienen case en `ErrorHandler.kt`, nuevas rutas en `Screen.kt` y `NavGraph.kt`.
-
-### 🎨 UI
-Design System: no hex hardcodeados fuera de `Color.kt`, no `fontSize`/`fontWeight` directos (usar `MaterialTheme.typography`), `@Preview` en composables nuevos, `modifier: Modifier = Modifier` en composables reutilizables.
-
-### ✅ Tests
-Nuevos use cases y ViewModels tienen tests, `MainDispatcherRule` en tests con corrutinas, Fakes para repositorios (no Mocks).
+`/create-pr` ya invoca `/review-pr` automáticamente al crear el PR (su Step 6) — usa ese resultado en vez de re-derivar aquí una lista de criterios propia. Si por algún motivo no se lanzó, ejecútalo explícitamente: `/review-pr [numero]`.
 
 **Actualizar Plane según veredicto:**
 

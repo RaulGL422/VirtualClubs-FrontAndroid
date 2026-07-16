@@ -101,6 +101,7 @@ If files in `domain/usecase/` changed or were created:
 - [ ] Has `operator fun invoke(...)` as the entry point
 - [ ] Contains business logic — not just a pass-through to the repository
 - [ ] Does **not** import from `presentation/`
+- [ ] The use case is registered in `UseCaseModule` (grep `di/UseCaseModule.kt` for the class name — CLAUDE.md requires every new use case to be `@Singleton`-provided there)
 
 ---
 

@@ -31,3 +31,17 @@ google-services.json
 
 # BFG Repo Cleaner report
 ..bfg-report/
+
+# graphify — regenerable cache and machine-local paths only.
+# graph.json / GRAPH_REPORT.md / graph.html / manifest.json stay tracked.
+# cost.json is an append-only run log that the CI workflow updates on every
+# push to development — tracking it would churn the history on every merge
+# for no diffable value, so it's regenerated locally but not committed.
+graphify-out/cache/
+graphify-out/cost.json
+# dated graph backups (YYYY-MM-DD/) some graphify versions/setups write before
+# each update — local safety net only, not observed with the current version
+# but harmless to ignore preemptively for parity with the sibling repo.
+graphify-out/[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]/
+graphify-out/.graphify_python
+graphify-out/.graphify_root
