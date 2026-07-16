@@ -1,13 +1,18 @@
-# Graph Report - .  (2026-07-15)
+# Graph Report - VirtualClubs-FrontAndroid  (2026-07-16)
 
 ## Corpus Check
-- 170 files · ~73,337 words
+- 156 files · ~74,609 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 786 nodes · 1179 edges · 57 communities (37 shown, 20 thin omitted)
-- Extraction: 90% EXTRACTED · 10% INFERRED · 0% AMBIGUOUS · INFERRED: 122 edges (avg confidence: 0.8)
-- Token cost: 167,652 input · 0 output
+- 827 nodes · 1266 edges · 66 communities (47 shown, 19 thin omitted)
+- Extraction: 89% EXTRACTED · 11% INFERRED · 0% AMBIGUOUS · INFERRED: 139 edges (avg confidence: 0.8)
+- Token cost: 0 input · 0 output
+
+## Graph Freshness
+- Built from commit: `7a25987d`
+- Run `git rev-parse HEAD` and compare to check if the graph is stale.
+- Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - Auth API & Repository
@@ -63,18 +68,27 @@
 - /explain Command
 - /project-status Command
 - CI Workflow
+- SettingsPage
+- FakeAuthRepository
+- VCScaffold
+- GetSessionStateUseCaseTest
+- RoundedTextField
+- SettingsViewModelTest
+- AppBar.kt
+- AppNavHost
+- VerifyEmailResultPage
 
 ## God Nodes (most connected - your core abstractions)
 1. `ErrorType` - 35 edges
-2. `VirtualClubException` - 31 edges
-3. `UserSession` - 20 edges
-4. `User` - 20 edges
-5. `GlobalUIManager` - 19 edges
-6. `FakeAuthRepository` - 19 edges
+2. `VirtualClubException` - 33 edges
+3. `User` - 27 edges
+4. `UserSession` - 26 edges
+5. `FakeAuthRepository` - 23 edges
+6. `GlobalUIManager` - 21 edges
 7. `AuthViewModelTest` - 19 edges
 8. `VCButton()` - 18 edges
-9. `AuthTokens` - 17 edges
-10. `LoginContent()` - 17 edges
+9. `AppPreferences` - 17 edges
+10. `AuthTokens` - 17 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `GitHub Pull Request Template` --semantically_similar_to--> `/check-structure command`  [INFERRED] [semantically similar]
@@ -96,15 +110,15 @@
 - **Commit, PR creation, PR template, and PR review flow** — claude_commands_commit_commit, claude_commands_create_pr_createpr, claude_commands_review_pr_reviewpr, github_pull_request_template_pullrequesttemplate [EXTRACTED 0.90]
 - **Design system token enforcement across theme files and /check-ds** — claude_commands_check_ds_checkds, presentation_theme_color_color, presentation_theme_type_type, presentation_theme_shape_shape, presentation_theme_theme_theme, concept_stadiumdesignsystem [EXTRACTED 0.90]
 
-## Communities (57 total, 20 thin omitted)
+## Communities (66 total, 19 thin omitted)
 
 ### Community 0 - "Auth API & Repository"
-Cohesion: 0.06
-Nodes (16): AuthApi, RefreshApi, ApiResponse, AuthRequest, GoogleAuthRequest, RefreshRequest, RegisterRequest, RequestPasswordResetRequest (+8 more)
+Cohesion: 0.07
+Nodes (16): AuthApi, RefreshApi, ApiResponse, getOrThrow(), T, AuthRequest, GoogleAuthRequest, RefreshRequest (+8 more)
 
 ### Community 1 - "Auth & Reset UI Screens"
-Cohesion: 0.05
-Nodes (39): Activity, Modifier, meetsAllPasswordRequirements(), PasswordRequirement, PasswordRequirements(), ImageVector, ImeAction, Modifier (+31 more)
+Cohesion: 0.17
+Nodes (11): Activity, Attempting, AttemptingAuth, AuthUiState, AuthViewModel, Idle, StateFlow, ViewModel (+3 more)
 
 ### Community 2 - "Claude Commands & Docs"
 Cohesion: 0.07
@@ -115,12 +129,12 @@ Cohesion: 0.06
 Nodes (19): AuthInterceptor, Result, T, SafeResponse, UserApi, UserInfoDto, Result, RefreshRepositoryImpl (+11 more)
 
 ### Community 4 - "Settings UI Components"
-Cohesion: 0.06
-Nodes (25): ImageVector, Modifier, VCListItem(), VCListToggleItem(), AppearanceSection(), AppearanceSectionPreview(), Modifier, DebugServerSection() (+17 more)
+Cohesion: 0.15
+Nodes (8): AppearanceSection(), AppearanceSectionPreview(), Modifier, StateFlow, ViewModel, PrefsSnapshot, SettingsUiState, SettingsViewModel
 
 ### Community 5 - "Secure Token Storage"
-Cohesion: 0.07
-Nodes (9): Context, Flow, SecureUserPreferences, ClearTokensUseCase, GetAccessTokenUseCase, GetRefreshTokenUseCase, ClearTokensUseCaseTest, GetAccessTokenUseCaseTest (+1 more)
+Cohesion: 0.05
+Nodes (11): Context, Flow, SecureUserPreferences, ClearTokensUseCase, GetAccessTokenUseCase, GetRefreshTokenUseCase, SaveTokensUseCase, ClearTokensUseCaseTest (+3 more)
 
 ### Community 6 - "Error Type Catalog"
 Cohesion: 0.06
@@ -131,16 +145,16 @@ Cohesion: 0.09
 Nodes (9): DispatcherModule, ErrorDispatcher, EmailNotVerifiedDialog, VCDialog, DialogState, ErrorUiState, GlobalUIManager, StateFlow (+1 more)
 
 ### Community 8 - "Home Screen & Club Model"
-Cohesion: 0.09
-Nodes (25): Club, AppBar(), Error, Modifier, RowScope, None, UiMessage, Color (+17 more)
+Cohesion: 0.21
+Nodes (12): Club, ClubCard(), HomeActions(), HomeContent(), HomeContentWithClubsPreview(), HomeEmptyClubs(), HomeHeader(), HomePage() (+4 more)
 
 ### Community 9 - "Splash & Token Refresh"
 Cohesion: 0.09
 Nodes (11): RefreshTokenUseCase, Home, StateFlow, ViewModel, Login, SplashDestination, SplashViewModel, RefreshTokenUseCaseTest (+3 more)
 
 ### Community 10 - "VC Button Component"
-Cohesion: 0.12
-Nodes (29): ButtonContent(), Drawable, Icon, Color, Modifier, Text, TextAndIcon, VCButton() (+21 more)
+Cohesion: 0.15
+Nodes (24): ButtonContent(), Drawable, Icon, Color, Modifier, Text, TextAndIcon, VCButton() (+16 more)
 
 ### Community 11 - "Session Manager & DI Entry Point"
 Cohesion: 0.11
@@ -159,16 +173,20 @@ Cohesion: 0.21
 Nodes (6): Flow, UserPreferences, Context, PreferencesModule, DataStore, Preferences
 
 ### Community 15 - "User Model & Logout Tests"
-Cohesion: 0.16
-Nodes (3): User, LogoutUserUseCaseTest, Exception
+Cohesion: 0.13
+Nodes (3): LogoutUserUseCase, LogoutUserUseCaseTest, Exception
 
 ### Community 16 - "GetUserInfo Use Case"
-Cohesion: 0.17
-Nodes (3): GetUserInfoUseCase, Result, GetUserInfoUseCaseTest
+Cohesion: 0.18
+Nodes (4): User, GetUserInfoUseCase, Result, GetUserInfoUseCaseTest
 
 ### Community 19 - "Motion & Animation Theme"
 Cohesion: 0.17
 Nodes (4): VCDuration, VCEasing, VCSpring, VCTween
+
+### Community 23 - "SaveTokens Use Case"
+Cohesion: 0.18
+Nodes (10): ImageVector, Modifier, VCListItem(), VCListToggleItem(), ImageVector, Modifier, SettingRow(), ImageVector (+2 more)
 
 ### Community 24 - "Verify Email Activity"
 Cohesion: 0.27
@@ -179,28 +197,28 @@ Cohesion: 0.33
 Nodes (5): Bundle, ComponentActivity, Intent, NavHostController, ResetPasswordActivity
 
 ### Community 28 - "Reset Password ViewModel"
-Cohesion: 0.33
-Nodes (7): Attempting, Idle, StateFlow, ViewModel, ResetPasswordUiState, ResetPasswordViewModel, Success
+Cohesion: 0.19
+Nodes (8): Attempting, Idle, StateFlow, ViewModel, ResetPasswordUiState, ResetPasswordViewModel, Success, ResetPasswordViewModelTest
 
 ### Community 29 - "Encryption Utils"
 Cohesion: 0.36
 Nodes (3): EncryptionUtils, ByteArray, SecretKey
 
 ### Community 30 - "Session State & GetSessionState"
-Cohesion: 0.32
-Nodes (5): LoggedIn, LoggedOut, SessionState, GetSessionStateUseCase, Flow
+Cohesion: 0.47
+Nodes (4): LoggedIn, LoggedOut, SessionState, Flow
 
 ### Community 31 - "Screen Navigation Routes"
 Cohesion: 0.46
 Nodes (7): Auth, Home, ResetPassword, Screen, Settings, Splash, VerifyEmailResult
 
 ### Community 32 - "SafeCall Wrapper"
-Cohesion: 0.29
+Cohesion: 0.25
 Nodes (3): Result, T, SafeCall
 
 ### Community 34 - "Verify Email Result ViewModel"
-Cohesion: 0.43
-Nodes (6): Error, StateFlow, ViewModel, Success, VerifyEmailResultUiState, VerifyEmailResultViewModel
+Cohesion: 0.24
+Nodes (7): Error, StateFlow, ViewModel, Success, VerifyEmailResultUiState, VerifyEmailResultViewModel, VerifyEmailResultViewModelTest
 
 ### Community 35 - "Test Dispatcher Rule"
 Cohesion: 0.40
@@ -222,6 +240,10 @@ Nodes (3): gradlew script, die(), warn()
 Cohesion: 0.67
 Nodes (4): Play Store App Icon (Crossed Dumbbells), VirtualClubs Wordmark - Light Text Variant (logo_text_black.png), VirtualClubs Wordmark - Dark Blue Text Variant (logo_text_white.png), VirtualClubs Icon-Only Mark (logo_whitout_text.png)
 
+### Community 41 - "Logout Use Case"
+Cohesion: 0.24
+Nodes (9): Modifier, meetsAllPasswordRequirements(), PasswordRequirement, PasswordRequirements(), ImeAction, Modifier, ResetPasswordField(), ResetPasswordIcon() (+1 more)
+
 ### Community 42 - "MainActivity"
 Cohesion: 0.50
 Nodes (3): ComponentActivity, NavHostController, MainActivity
@@ -230,6 +252,38 @@ Nodes (3): ComponentActivity, NavHostController, MainActivity
 Cohesion: 0.50
 Nodes (3): NavHostController, VirtualClubsMainApp(), WindowWidthSizeClass
 
+### Community 44 - "Fake User Repository"
+Cohesion: 0.27
+Nodes (3): FakeUserRepository, Result, HomeViewModelTest
+
+### Community 46 - "ApiResponse DTO"
+Cohesion: 0.24
+Nodes (8): Modifier, LoginContent(), LoginPage(), AuthDivider(), Color, Modifier, SocialButton(), SocialIconButton()
+
+### Community 57 - "SettingsPage"
+Cohesion: 0.22
+Nodes (7): DebugServerSection(), LanguagePickerDialog, AccountCard(), SectionHeader(), SettingsPage(), getAppVersion(), Context
+
+### Community 59 - "VCScaffold"
+Cohesion: 0.22
+Nodes (7): Color, Modifier, RowScope, VCScaffold(), SplashPage(), Composable, WindowInsets
+
+### Community 61 - "RoundedTextField"
+Cohesion: 0.25
+Nodes (6): ImageVector, ImeAction, Modifier, RoundedTextField(), ForgotPasswordDialog(), KeyboardType
+
+### Community 63 - "AppBar.kt"
+Cohesion: 0.38
+Nodes (6): AppBar(), Error, Modifier, RowScope, None, UiMessage
+
+### Community 64 - "AppNavHost"
+Cohesion: 0.29
+Nodes (5): AppNavHost(), NavHostController, ScreenType, Medium, Small
+
+### Community 65 - "VerifyEmailResultPage"
+Cohesion: 0.47
+Nodes (5): Color, ImageVector, VerifyEmailResultContent(), VerifyEmailResultErrorPreview(), VerifyEmailResultPage()
+
 ## Ambiguous Edges - Review These
 - `Play Store App Icon (Crossed Dumbbells)` → `VirtualClubs Icon-Only Mark (logo_whitout_text.png)`  [AMBIGUOUS]
   app/src/main/ic_launcher-playstore.png · relation: conceptually_related_to
@@ -237,22 +291,22 @@ Nodes (3): NavHostController, VirtualClubsMainApp(), WindowWidthSizeClass
 ## Knowledge Gaps
 - **55 isolated node(s):** `Small`, `Medium`, `Endpoint`, `NONE`, `ERROR` (+50 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **20 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **19 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **What is the exact relationship between `Play Store App Icon (Crossed Dumbbells)` and `VirtualClubs Icon-Only Mark (logo_whitout_text.png)`?**
   _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
-- **Why does `UserSession` connect `UserSession Core` to `SafeCall Wrapper`, `Auth Interceptor & Network DI`, `Logout Use Case`, `Splash & Token Refresh`, `User Model & Logout Tests`, `GetUserInfo Use Case`, `UserSession Tests`, `SaveTokens Use Case`, `AuthViewModel Tests`, `Session State & GetSessionState`?**
-  _High betweenness centrality (0.151) - this node is a cross-community bridge._
-- **Why does `AuthViewModel` connect `Auth & Reset UI Screens` to `AuthViewModel Tests`?**
-  _High betweenness centrality (0.138) - this node is a cross-community bridge._
-- **Why does `AuthViewModelTest` connect `AuthViewModel Tests` to `SafeCall Wrapper`, `UserSession Core`, `Global Error UI Manager`, `App Preferences & DataStore DI`, `Request Password Reset Use Case`, `Auth Use Case`, `Register Use Case`, `Google Sign-In Use Case`, `SaveTokens Use Case`?**
-  _High betweenness centrality (0.122) - this node is a cross-community bridge._
-- **Are the 29 inferred relationships involving `VirtualClubException` (e.g. with `.saveAccessToken()` and `.saveRefreshToken()`) actually correct?**
-  _`VirtualClubException` has 29 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 13 inferred relationships involving `User` (e.g. with `.loginUser()` and `.processGoogleCredential()`) actually correct?**
-  _`User` has 13 INFERRED edges - model-reasoned connections that need verification._
+- **Why does `UserSession` connect `UserSession Core` to `SafeCall Wrapper`, `Auth Interceptor & Network DI`, `Secure Token Storage`, `Splash & Token Refresh`, `Fake User Repository`, `User Model & Logout Tests`, `GetUserInfo Use Case`, `UserSession Tests`, `SettingsViewModelTest`, `AuthViewModel Tests`, `GetSessionStateUseCaseTest`, `Session State & GetSessionState`?**
+  _High betweenness centrality (0.172) - this node is a cross-community bridge._
+- **Why does `VirtualClubException` connect `VirtualClubException & SafeCall Tests` to `SafeCall Wrapper`, `Auth API & Repository`, `Auth Interceptor & Network DI`, `Secure Token Storage`, `Splash & Token Refresh`, `Fake User Repository`, `SafeResponse Tests`, `User Model & Logout Tests`, `GetUserInfo Use Case`, `Auth Use Case`, `Register Use Case`, `Request Password Reset Use Case`, `Google Sign-In Use Case`, `AuthViewModel Tests`?**
+  _High betweenness centrality (0.101) - this node is a cross-community bridge._
+- **Why does `AppPreferences` connect `App Preferences Impl` to `Auth Interceptor & Network DI`, `Typography Theme`, `MainActivity`, `Theme Elevation & Shape`, `App Preferences & DataStore DI`, `Verify Email Activity`, `Reset Password Activity`, `SettingsViewModelTest`?**
+  _High betweenness centrality (0.098) - this node is a cross-community bridge._
+- **Are the 31 inferred relationships involving `VirtualClubException` (e.g. with `.saveAccessToken()` and `.saveRefreshToken()`) actually correct?**
+  _`VirtualClubException` has 31 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 20 inferred relationships involving `User` (e.g. with `.loginUser()` and `.processGoogleCredential()`) actually correct?**
+  _`User` has 20 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `Small`, `Medium`, `Endpoint` to the rest of the system?**
   _55 weakly-connected nodes found - possible documentation gaps or missing edges._

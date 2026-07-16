@@ -1,852 +1,887 @@
 {
   ".claude/settings.json": {
-    "mtime": 1784115770.8028302,
-    "ast_hash": "6a0724ad2994af4ff30f0b67d740cb02",
-    "semantic_hash": "6a0724ad2994af4ff30f0b67d740cb02"
+    "mtime": 1784203119.7522757,
+    "ast_hash": "af4a6780457f7b739b6838b5f1ce3393",
+    "semantic_hash": ""
   },
   "app/build.gradle.kts": {
-    "mtime": 1779658406.9425316,
-    "ast_hash": "463e78e99a59619f7619f0f46c69d870",
-    "semantic_hash": "463e78e99a59619f7619f0f46c69d870"
+    "mtime": 1784203119.7552097,
+    "ast_hash": "73dec37b70fcfe4130b456f1f62790fe",
+    "semantic_hash": ""
   },
   "app/src/androidTest/java/es/virtualclubs/ExampleInstrumentedTest.kt": {
-    "mtime": 1777818731.0921457,
-    "ast_hash": "1301d6508c2ae303ddab1591e65843e6",
-    "semantic_hash": "1301d6508c2ae303ddab1591e65843e6"
+    "mtime": 1784203119.755433,
+    "ast_hash": "cfc0ac78d489b4e6f12e81011226cebc",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/App.kt": {
-    "mtime": 1777818731.0943666,
-    "ast_hash": "ebf638aec5a8aad5a663a9d463c7a9d9",
-    "semantic_hash": "ebf638aec5a8aad5a663a9d463c7a9d9"
+    "mtime": 1784203119.758137,
+    "ast_hash": "e2504744150788f096bc48474c246675",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/ScreenType.kt": {
-    "mtime": 1777818731.0943666,
-    "ast_hash": "1242b449d6a7fde77bdb6c1928f5027b",
-    "semantic_hash": "1242b449d6a7fde77bdb6c1928f5027b"
+    "mtime": 1784203119.758232,
+    "ast_hash": "9272f2ce45cd46da3ec22f26315c5ea8",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/VirtualClubsMainApp.kt": {
-    "mtime": 1777818731.0953658,
-    "ast_hash": "013778d0719b49c2398de48b697a6b47",
-    "semantic_hash": "013778d0719b49c2398de48b697a6b47"
+    "mtime": 1784203119.758232,
+    "ast_hash": "223c807bf113b788fa9b1e3ac47c9a68",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/data/local/datastore/AppPreferences.kt": {
-    "mtime": 1778415606.3605816,
-    "ast_hash": "041245146bbf6574530402a9b5a77125",
-    "semantic_hash": "041245146bbf6574530402a9b5a77125"
+    "mtime": 1784203119.758338,
+    "ast_hash": "73b3d952c2e0bc5f303db60e91dc0afe",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/data/local/datastore/UserPreferences.kt": {
-    "mtime": 1778191261.9304771,
-    "ast_hash": "eeb1fbd4a38fe6cf6a1612b768191e6f",
-    "semantic_hash": "eeb1fbd4a38fe6cf6a1612b768191e6f"
+    "mtime": 1784203119.758453,
+    "ast_hash": "3d76f4c72752454c84c570527197b286",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/data/local/secure/EncryptionUtils.kt": {
-    "mtime": 1777818731.0963655,
-    "ast_hash": "901f81c7f6d127000c578c0585711f64",
-    "semantic_hash": "901f81c7f6d127000c578c0585711f64"
+    "mtime": 1784203119.758453,
+    "ast_hash": "e0592061efb4752a387831b6afa7aed2",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/data/local/secure/SecureUserPreferences.kt": {
-    "mtime": 1777818731.0963655,
-    "ast_hash": "dd3977c988c4f49dc45e47a933323800",
-    "semantic_hash": "dd3977c988c4f49dc45e47a933323800"
+    "mtime": 1784203119.7585776,
+    "ast_hash": "07b69bf138dbc1406c184128173c2669",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/data/managers/AuthInterceptor.kt": {
-    "mtime": 1778193771.7088282,
+    "mtime": 1784203119.7585776,
     "ast_hash": "2635a376924b62be0884b25ae72bc0cb",
     "semantic_hash": "2635a376924b62be0884b25ae72bc0cb"
   },
   "app/src/main/java/es/virtualclubs/data/managers/SafeCall.kt": {
-    "mtime": 1777818731.0973656,
-    "ast_hash": "3a26829231b92a5ea963661a8e0eb002",
-    "semantic_hash": "3a26829231b92a5ea963661a8e0eb002"
+    "mtime": 1784203119.758693,
+    "ast_hash": "894da66a2cd11ba0201c9950d5dcba86",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/data/managers/SafeResponse.kt": {
-    "mtime": 1777818731.0973656,
-    "ast_hash": "efa254a3dcfce3c775fa04f97c878419",
-    "semantic_hash": "efa254a3dcfce3c775fa04f97c878419"
+    "mtime": 1784203119.758693,
+    "ast_hash": "fffdea24ad0e6b0ceb0549e77534dc02",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/data/remote/api/AuthApi.kt": {
-    "mtime": 1778415606.3620923,
-    "ast_hash": "f423151f8e741bfaa40f4ed8a8e7cbeb",
-    "semantic_hash": "f423151f8e741bfaa40f4ed8a8e7cbeb"
+    "mtime": 1784203119.7588103,
+    "ast_hash": "00fac9ee4b78d32d9e2a8d6bfad880b2",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/data/remote/api/Endpoint.kt": {
-    "mtime": 1778415606.362602,
-    "ast_hash": "eeb860458c85c5ceb8a0fefc72804ee2",
-    "semantic_hash": "eeb860458c85c5ceb8a0fefc72804ee2"
+    "mtime": 1784203119.7588687,
+    "ast_hash": "dcf51131a747291f5d978491a9b2551b",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/data/remote/api/RefreshApi.kt": {
-    "mtime": 1777818731.099365,
-    "ast_hash": "b56584921a1ba5c9da2bd3b44ac4f22c",
-    "semantic_hash": "b56584921a1ba5c9da2bd3b44ac4f22c"
+    "mtime": 1784203119.7588687,
+    "ast_hash": "a53edab87f0e39d564db22f249c6bfc9",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/data/remote/api/UserApi.kt": {
-    "mtime": 1778415606.3636057,
-    "ast_hash": "15b381ccdb5021673331d3ab800e9104",
-    "semantic_hash": "15b381ccdb5021673331d3ab800e9104"
+    "mtime": 1784203119.7588687,
+    "ast_hash": "532aacf85791609e6e60f2286b3f0987",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/data/remote/dto/ApiResponse.kt": {
-    "mtime": 1777818731.1003654,
-    "ast_hash": "dea19bef6b05710fb3b7dfdb691324e7",
-    "semantic_hash": "dea19bef6b05710fb3b7dfdb691324e7"
+    "mtime": 1784203119.7588687,
+    "ast_hash": "f72791628fb1a7c2b34a2182db954f1d",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/data/remote/dto/AuthRequest.kt": {
-    "mtime": 1766758917.8482842,
-    "ast_hash": "a8a706d0fcc673fcbf97708eda4483fb",
-    "semantic_hash": "a8a706d0fcc673fcbf97708eda4483fb"
+    "mtime": 1784203119.7590287,
+    "ast_hash": "9cc81608f9d333c1e816001993fbed90",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/data/remote/dto/GoogleAuthRequest.kt": {
-    "mtime": 1766758917.8494134,
-    "ast_hash": "45a0be4cddb19bcbf484e8528976315a",
-    "semantic_hash": "45a0be4cddb19bcbf484e8528976315a"
+    "mtime": 1784203119.7590287,
+    "ast_hash": "6b7174978796175d18071020e259cdfd",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/data/remote/dto/RefreshRequest.kt": {
-    "mtime": 1766758917.8512034,
-    "ast_hash": "ce6ce6fac77dde0f849da992dda90288",
-    "semantic_hash": "ce6ce6fac77dde0f849da992dda90288"
+    "mtime": 1784203119.7590287,
+    "ast_hash": "5a56d7e9a6442f24eb4c4ff6c799078d",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/data/remote/dto/RegisterRequest.kt": {
-    "mtime": 1766758917.8517036,
-    "ast_hash": "73b872063274fe3468fbc95d5e4bfdde",
-    "semantic_hash": "73b872063274fe3468fbc95d5e4bfdde"
+    "mtime": 1784203119.7590287,
+    "ast_hash": "1056d9d2c93d86c77d32d355533f2bfb",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/data/remote/dto/RequestPasswordResetRequest.kt": {
-    "mtime": 1766758917.8530145,
-    "ast_hash": "8f4d9727d8a155b71ce9a73894a1182e",
-    "semantic_hash": "8f4d9727d8a155b71ce9a73894a1182e"
+    "mtime": 1784203119.7590287,
+    "ast_hash": "cf9574da8537dfa9931539156f8308af",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/data/remote/dto/ResetPasswordRequest.kt": {
-    "mtime": 1777818731.1013653,
-    "ast_hash": "60575958b7e138ae8cdf7c2f5e4b6275",
-    "semantic_hash": "60575958b7e138ae8cdf7c2f5e4b6275"
+    "mtime": 1784203119.7590287,
+    "ast_hash": "9cbe07a9d3da017483d0e3532a606410",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/data/remote/dto/ResponseType.kt": {
-    "mtime": 1766758917.8541417,
-    "ast_hash": "3d46424533b8d6a317bb079be2a404b5",
-    "semantic_hash": "3d46424533b8d6a317bb079be2a404b5"
+    "mtime": 1784203119.7590287,
+    "ast_hash": "a983e7a4c3c149f6861dea01f77c2bb9",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/data/remote/dto/UserInfoDto.kt": {
-    "mtime": 1777818731.1013653,
-    "ast_hash": "65e4a8cc421e9b6329bed906bb472263",
-    "semantic_hash": "65e4a8cc421e9b6329bed906bb472263"
+    "mtime": 1784203119.7590287,
+    "ast_hash": "7b2b3ddf59e9f41373ba6b557cfc5d5c",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/data/repository/AuthRepositoryImpl.kt": {
-    "mtime": 1777818731.102366,
-    "ast_hash": "f430a1449bf78f4c3f0264d77f1154a1",
-    "semantic_hash": "f430a1449bf78f4c3f0264d77f1154a1"
+    "mtime": 1784203119.7590287,
+    "ast_hash": "2a8bd212742ff394f819e863ddece559",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/data/repository/RefreshRepositoryImpl.kt": {
-    "mtime": 1777818731.102366,
-    "ast_hash": "2ce6fff2184abccd7b0153f021123297",
-    "semantic_hash": "2ce6fff2184abccd7b0153f021123297"
+    "mtime": 1784203119.759335,
+    "ast_hash": "f4e5c3e3e940aa63fe5a9e90eb885e2f",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/data/repository/UserRepositoryImpl.kt": {
-    "mtime": 1778193746.9374528,
-    "ast_hash": "7bea549bec0878046eb3bff6edd976a5",
-    "semantic_hash": "7bea549bec0878046eb3bff6edd976a5"
+    "mtime": 1784203119.759335,
+    "ast_hash": "3dfebfb6fe3ff511e9891d5851ffd500",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/data/session/UserSession.kt": {
-    "mtime": 1778415606.364108,
-    "ast_hash": "11d120cf283598a50d989fe1727e71a7",
-    "semantic_hash": "11d120cf283598a50d989fe1727e71a7"
+    "mtime": 1784203119.759335,
+    "ast_hash": "34a55e3b3fdd4b724f026b83e0ae8410",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/di/DispatcherModule.kt": {
-    "mtime": 1777818731.103366,
-    "ast_hash": "9b33ef5f3f6f3adf6222b850d2d60e68",
-    "semantic_hash": "9b33ef5f3f6f3adf6222b850d2d60e68"
+    "mtime": 1784203119.759335,
+    "ast_hash": "fe1272f45aed3b376763ea36a8915df9",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/di/GlobalUIEntryPoint.kt": {
-    "mtime": 1777818731.1043656,
-    "ast_hash": "d386ec4a2621a87df863dd8f3b544511",
-    "semantic_hash": "d386ec4a2621a87df863dd8f3b544511"
+    "mtime": 1784203119.7596073,
+    "ast_hash": "cb10321d372cac7785c02cf4786f5670",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/di/NetworkModule.kt": {
-    "mtime": 1778193776.0240257,
-    "ast_hash": "56def315141d80cf14f42203d6ac84e5",
-    "semantic_hash": "56def315141d80cf14f42203d6ac84e5"
+    "mtime": 1784203119.7596073,
+    "ast_hash": "a34639341997ea14eee285a67de6f707",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/di/PreferencesModule.kt": {
-    "mtime": 1766758917.8605156,
-    "ast_hash": "d8b0de38b3daefe2e87c4d65cff86574",
-    "semantic_hash": "d8b0de38b3daefe2e87c4d65cff86574"
+    "mtime": 1784203119.7596073,
+    "ast_hash": "8d64e472f629f72887b7639f9a18cd1b",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/domain/model/AuthTokens.kt": {
-    "mtime": 1777818731.1073656,
-    "ast_hash": "b7f3183865423f78a9809b12a2df1d69",
-    "semantic_hash": "b7f3183865423f78a9809b12a2df1d69"
+    "mtime": 1784203119.759778,
+    "ast_hash": "ec211e6c9b18ebec4986f9f7bd7c4e04",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/domain/model/Club.kt": {
-    "mtime": 1778193734.6341658,
+    "mtime": 1784203119.7598326,
     "ast_hash": "66e60a62562f95596e0fa2b4498f3963",
     "semantic_hash": "66e60a62562f95596e0fa2b4498f3963"
   },
   "app/src/main/java/es/virtualclubs/domain/model/ErrorDispatcher.kt": {
-    "mtime": 1777818731.108366,
-    "ast_hash": "bdac8bd4f4d83569f3a334b043680765",
-    "semantic_hash": "bdac8bd4f4d83569f3a334b043680765"
+    "mtime": 1784203119.7598326,
+    "ast_hash": "19b3bdfd945ac5ad44b29f0eb26dbc27",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/domain/model/ErrorType.kt": {
-    "mtime": 1777818731.108366,
-    "ast_hash": "df1071e5f72566e05b518e735f04e951",
-    "semantic_hash": "df1071e5f72566e05b518e735f04e951"
+    "mtime": 1784203119.7598326,
+    "ast_hash": "7a73ee0b86d7169f22cfedaaa0e485d7",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/domain/model/SessionState.kt": {
-    "mtime": 1778415606.3656223,
-    "ast_hash": "1e60771fa0f45bc879e76bef5af9fa59",
-    "semantic_hash": "1e60771fa0f45bc879e76bef5af9fa59"
+    "mtime": 1784203119.7598326,
+    "ast_hash": "06b571f208a6188e590b9210310497c9",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/domain/model/User.kt": {
-    "mtime": 1778193733.581611,
+    "mtime": 1784203119.7598326,
     "ast_hash": "39abb2b20b8c945a39e2eb80641d122c",
     "semantic_hash": "39abb2b20b8c945a39e2eb80641d122c"
   },
   "app/src/main/java/es/virtualclubs/domain/model/VirtualClubException.kt": {
-    "mtime": 1777818731.108366,
-    "ast_hash": "d8c3713476e67cd807b883512311aa00",
-    "semantic_hash": "d8c3713476e67cd807b883512311aa00"
+    "mtime": 1784203119.7598326,
+    "ast_hash": "5f019c914604634cd5e5e91fdc397445",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/domain/repository/AuthRepository.kt": {
-    "mtime": 1777818731.1093657,
-    "ast_hash": "3fe3da8c118b2054b350983620096247",
-    "semantic_hash": "3fe3da8c118b2054b350983620096247"
+    "mtime": 1784203119.7598326,
+    "ast_hash": "e8d425bdd4dbc9cc2b716dfbb1eabd4c",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/domain/repository/RefreshRepository.kt": {
-    "mtime": 1777818731.1093657,
-    "ast_hash": "a801d9f58b5a9a1d3d62e3bcfb8f1d4b",
-    "semantic_hash": "a801d9f58b5a9a1d3d62e3bcfb8f1d4b"
+    "mtime": 1784203119.7600935,
+    "ast_hash": "4187beda7a2f513b4902c81d8f5d27f9",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/domain/repository/UserRepository.kt": {
-    "mtime": 1778193748.0751617,
-    "ast_hash": "5dd37adb34a95171f676c9b36b4a86dd",
-    "semantic_hash": "5dd37adb34a95171f676c9b36b4a86dd"
+    "mtime": 1784203119.7600935,
+    "ast_hash": "6f45f5f466e788d896c502e6a3df485b",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/domain/usecase/AuthUseCase.kt": {
-    "mtime": 1777818731.1103656,
-    "ast_hash": "d82c537904ed7aed628f7fe7fcaef95f",
-    "semantic_hash": "d82c537904ed7aed628f7fe7fcaef95f"
+    "mtime": 1784203119.7600935,
+    "ast_hash": "9ff8e0ec7a2b5450c221452c94726d34",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/domain/usecase/GetSessionStateUseCase.kt": {
-    "mtime": 1778415606.3661213,
-    "ast_hash": "3dace37a8b5abc7081c488ca94a86730",
-    "semantic_hash": "3dace37a8b5abc7081c488ca94a86730"
+    "mtime": 1784203119.7602181,
+    "ast_hash": "149e6cdff37b84bee1e5efc4efd3cf81",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/domain/usecase/GetUserInfoUseCase.kt": {
-    "mtime": 1778415606.3676233,
-    "ast_hash": "af36136d905c308a4c88efbf033b1a74",
-    "semantic_hash": "af36136d905c308a4c88efbf033b1a74"
+    "mtime": 1784203119.7602181,
+    "ast_hash": "1b6a19a4b12635ad40881c389db654a2",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/domain/usecase/GoogleUseCase.kt": {
-    "mtime": 1777818731.1113653,
-    "ast_hash": "24c065e41d4008e2f29bde86246344f8",
-    "semantic_hash": "24c065e41d4008e2f29bde86246344f8"
+    "mtime": 1784203119.7602181,
+    "ast_hash": "dcea03d604fb801e586122c1f769ee98",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/domain/usecase/LogoutUserUseCase.kt": {
-    "mtime": 1779633706.8091185,
-    "ast_hash": "9230b9b5a4dc83f320ac6f2fb42a784e",
-    "semantic_hash": "9230b9b5a4dc83f320ac6f2fb42a784e"
+    "mtime": 1784203119.7602181,
+    "ast_hash": "b9436a12ccd6cb6038036b08ab0a0bc4",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/domain/usecase/RefreshTokenUseCase.kt": {
-    "mtime": 1777818731.1123652,
-    "ast_hash": "fd4c388eab2b5235affc23f300ac7622",
-    "semantic_hash": "fd4c388eab2b5235affc23f300ac7622"
+    "mtime": 1784203119.7602181,
+    "ast_hash": "c379a8d764f13a841f10296134085094",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/domain/usecase/RegisterUseCase.kt": {
-    "mtime": 1777818731.1123652,
-    "ast_hash": "346edd8d75011129277505a81b04a800",
-    "semantic_hash": "346edd8d75011129277505a81b04a800"
+    "mtime": 1784203119.7602181,
+    "ast_hash": "ca4330d001eae2628f796cfeabec2b4c",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/domain/usecase/RequestPasswordResetUseCase.kt": {
-    "mtime": 1778415606.3686213,
-    "ast_hash": "ada1cb879ac15c65c94f4e244d0c12f6",
-    "semantic_hash": "ada1cb879ac15c65c94f4e244d0c12f6"
+    "mtime": 1784203119.7602181,
+    "ast_hash": "447f584745855906e38ec331e470d3f7",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/domain/usecase/token/ClearTokensUseCase.kt": {
-    "mtime": 1778415606.369123,
-    "ast_hash": "2a249aa0b9ef1033e12be7c85fb95c9e",
-    "semantic_hash": "2a249aa0b9ef1033e12be7c85fb95c9e"
+    "mtime": 1784203119.7602181,
+    "ast_hash": "474df1ed0e3f9d133fe3b102139b1bb0",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/domain/usecase/token/GetAccessTokenUseCase.kt": {
-    "mtime": 1777818731.1133654,
-    "ast_hash": "474f1bfa8c5e1a9ea4646f042394f469",
-    "semantic_hash": "474f1bfa8c5e1a9ea4646f042394f469"
+    "mtime": 1784203119.7605035,
+    "ast_hash": "f13631f046757bfe7c9ff8c48cc4defb",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/domain/usecase/token/GetRefreshTokenUseCase.kt": {
-    "mtime": 1777818731.1143663,
-    "ast_hash": "f116d4c74d86011f7ea312acaab97400",
-    "semantic_hash": "f116d4c74d86011f7ea312acaab97400"
+    "mtime": 1784203119.7605035,
+    "ast_hash": "7bf0ca1b4739a1313f597275788aa614",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/domain/usecase/token/SaveTokensUseCase.kt": {
-    "mtime": 1777818731.1143663,
-    "ast_hash": "1ee6be6861fb3451556d593548a97b89",
-    "semantic_hash": "1ee6be6861fb3451556d593548a97b89"
+    "mtime": 1784203119.7605035,
+    "ast_hash": "58e15dd7d6aad06e8e093e119ffcd7bb",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/presentation/MainActivity.kt": {
-    "mtime": 1777818731.1153655,
-    "ast_hash": "f2a669cb88f0a4510b52531f7d6ac2c3",
-    "semantic_hash": "f2a669cb88f0a4510b52531f7d6ac2c3"
+    "mtime": 1784203119.7605035,
+    "ast_hash": "399c79e8162e0e7c2e41343b234bb262",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/presentation/ResetPasswordActivity.kt": {
-    "mtime": 1779633706.8091185,
-    "ast_hash": "d9c5b586044f2484b4f8ccabdd1154e7",
-    "semantic_hash": "d9c5b586044f2484b4f8ccabdd1154e7"
+    "mtime": 1784203119.7606564,
+    "ast_hash": "66f7c52c0293c925bcb1dbf72cbb21a7",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/presentation/VerifyEmailActivity.kt": {
-    "mtime": 1779654063.940643,
-    "ast_hash": "941dd61418360dab44f37134beb3379b",
-    "semantic_hash": "941dd61418360dab44f37134beb3379b"
+    "mtime": 1784203119.7606564,
+    "ast_hash": "d377b6f7e693b7b9a95eb6d11d49721b",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/presentation/components/AppBar.kt": {
-    "mtime": 1778415606.3701227,
-    "ast_hash": "925611fcb521a49b9b693f6773cd124b",
-    "semantic_hash": "925611fcb521a49b9b693f6773cd124b"
+    "mtime": 1784203119.7606564,
+    "ast_hash": "971a353531cb3f489882fb233d102f1f",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/presentation/components/Buttons.kt": {
-    "mtime": 1778420749.4833338,
-    "ast_hash": "c5a61d296db368b7c79b1e081c1cc707",
-    "semantic_hash": "c5a61d296db368b7c79b1e081c1cc707"
+    "mtime": 1784203119.7608142,
+    "ast_hash": "383c401ef1f15fc2da27897c85fbf8f6",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/presentation/components/ListItems.kt": {
-    "mtime": 1778415606.370623,
-    "ast_hash": "21befe42adad673d01e9f8a4cbfacc34",
-    "semantic_hash": "21befe42adad673d01e9f8a4cbfacc34"
+    "mtime": 1784203119.7608142,
+    "ast_hash": "7efeec9896b02c50b92a02a4cc93314a",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/presentation/components/PasswordRequirements.kt": {
-    "mtime": 1783779930.7392197,
+    "mtime": 1784203119.7608142,
     "ast_hash": "2eb2b84f0b03ba437dd1e26662f14cae",
     "semantic_hash": "2eb2b84f0b03ba437dd1e26662f14cae"
   },
   "app/src/main/java/es/virtualclubs/presentation/components/Scaffold.kt": {
-    "mtime": 1778420749.4853349,
-    "ast_hash": "ee11ad9753487a9a4d8ffa8e5b436300",
-    "semantic_hash": "ee11ad9753487a9a4d8ffa8e5b436300"
+    "mtime": 1784203119.7608142,
+    "ast_hash": "14fd973af5299dec4874fe52ef2b252a",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/presentation/components/TextFields.kt": {
-    "mtime": 1777818731.117366,
-    "ast_hash": "665adfdaff479a505ee53414eab8540a",
-    "semantic_hash": "665adfdaff479a505ee53414eab8540a"
+    "mtime": 1784203119.7608142,
+    "ast_hash": "75802cef116537b16f5c54f9a2502fd6",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/presentation/components/dialogs/EmailNotVerifiedDialog.kt": {
-    "mtime": 1778194443.9111083,
-    "ast_hash": "04b16954a8879da9754ad33d65a76946",
-    "semantic_hash": "04b16954a8879da9754ad33d65a76946"
+    "mtime": 1784203119.7608142,
+    "ast_hash": "7aff16356eba79ca2dc7e721e31db715",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/presentation/components/dialogs/VCDialog.kt": {
-    "mtime": 1778415606.3731906,
-    "ast_hash": "0296e6ce1a2c3052465655a8865c828b",
-    "semantic_hash": "0296e6ce1a2c3052465655a8865c828b"
+    "mtime": 1784203119.7611136,
+    "ast_hash": "c6abeac7b5f0690fe076a5e09c61ab86",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/presentation/managers/ErrorHandler.kt": {
-    "mtime": 1778194427.878262,
+    "mtime": 1784203119.7611136,
     "ast_hash": "d45c4b17e650c53e0d6687c9985d91c1",
     "semantic_hash": "d45c4b17e650c53e0d6687c9985d91c1"
   },
   "app/src/main/java/es/virtualclubs/presentation/managers/GlobalUIManager.kt": {
-    "mtime": 1778194439.9925404,
-    "ast_hash": "94369d5396f226ed4a9ee3cf6eeacb65",
-    "semantic_hash": "94369d5396f226ed4a9ee3cf6eeacb65"
+    "mtime": 1784203119.7612207,
+    "ast_hash": "47cb52b9cb029472e2f48abb1701739b",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/presentation/managers/SessionManager.kt": {
-    "mtime": 1779633706.8116243,
-    "ast_hash": "0de4824270e0418abcde4d49b0f0a5f5",
-    "semantic_hash": "0de4824270e0418abcde4d49b0f0a5f5"
+    "mtime": 1784203119.7612207,
+    "ast_hash": "063a6b08ba6a5af9bbd90d51855ed977",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/presentation/navigation/AppNavigator.kt": {
-    "mtime": 1779657911.9348392,
-    "ast_hash": "8919e935afea47c0595a35c14e4e46c9",
-    "semantic_hash": "8919e935afea47c0595a35c14e4e46c9"
+    "mtime": 1784203119.7612207,
+    "ast_hash": "ed3a7d57f91ac73dbe9a3316e16ef345",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/presentation/navigation/NavGraph.kt": {
-    "mtime": 1779657911.9368398,
-    "ast_hash": "d1c93337e7d406c820fd6bfe0718b84f",
-    "semantic_hash": "d1c93337e7d406c820fd6bfe0718b84f"
+    "mtime": 1784203119.7613754,
+    "ast_hash": "2d25e2e7ace73fb964f678c92e828932",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/presentation/navigation/Screen.kt": {
-    "mtime": 1779657911.937841,
-    "ast_hash": "4053233cdbc5419880567fa992f64771",
-    "semantic_hash": "4053233cdbc5419880567fa992f64771"
+    "mtime": 1784203119.7613754,
+    "ast_hash": "b9f17edddfe2aec740f7b9ef76706bd4",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/presentation/screens/auth/AuthPage.kt": {
-    "mtime": 1780239466.937516,
-    "ast_hash": "762b8aa791091c5968f9bc386b9453d9",
-    "semantic_hash": "762b8aa791091c5968f9bc386b9453d9"
+    "mtime": 1784203119.761516,
+    "ast_hash": "a642d6a91228218f538ccf4fc33dab2a",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/presentation/screens/auth/AuthViewModel.kt": {
-    "mtime": 1779657911.9388394,
-    "ast_hash": "27adc1aaa9ec93cd744881fb04268b4a",
-    "semantic_hash": "27adc1aaa9ec93cd744881fb04268b4a"
+    "mtime": 1784203119.7616253,
+    "ast_hash": "4fea9a025cd2793494ab5946facbe717",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/presentation/screens/auth/components/AuthDivider.kt": {
-    "mtime": 1778191261.9344747,
-    "ast_hash": "24e87e48a7bcf09b8576d921f351bc8c",
-    "semantic_hash": "24e87e48a7bcf09b8576d921f351bc8c"
+    "mtime": 1784203119.7616253,
+    "ast_hash": "c2ba979768ffd03335e32671ac2a0eff",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/presentation/screens/auth/components/AuthToggle.kt": {
-    "mtime": 1778191261.935478,
-    "ast_hash": "3d9654c06526406726533c93545cf729",
-    "semantic_hash": "3d9654c06526406726533c93545cf729"
+    "mtime": 1784203119.7617538,
+    "ast_hash": "5b68ea648c00c6ffa2aad0bb60dec1a6",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/presentation/screens/auth/components/SocialButtons.kt": {
-    "mtime": 1778191261.9364762,
-    "ast_hash": "ea1610e0bc05543021d7c81457913a29",
-    "semantic_hash": "ea1610e0bc05543021d7c81457913a29"
+    "mtime": 1784203119.7617538,
+    "ast_hash": "1d4a928fa678ada87de092d514ac921b",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/presentation/screens/auth/dialogs/ForgotPasswordDialog.kt": {
-    "mtime": 1778191261.9374757,
-    "ast_hash": "8d10d44e6b4643032b603882f74eac29",
-    "semantic_hash": "8d10d44e6b4643032b603882f74eac29"
+    "mtime": 1784203119.7617538,
+    "ast_hash": "59701c46890bc4966ff78537adf89000",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/presentation/screens/home/HomePage.kt": {
-    "mtime": 1778420749.490892,
-    "ast_hash": "6c7add119984f2066374f1ee947ad96e",
-    "semantic_hash": "6c7add119984f2066374f1ee947ad96e"
+    "mtime": 1784203119.7617538,
+    "ast_hash": "4c39bb64cb0338f50b89aec5e92c55c8",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/presentation/screens/home/HomeViewModel.kt": {
-    "mtime": 1778415606.3788512,
-    "ast_hash": "76f725b008ad83082d3469fd77d5f9f4",
-    "semantic_hash": "76f725b008ad83082d3469fd77d5f9f4"
+    "mtime": 1784203119.7620451,
+    "ast_hash": "27f11b8091e4f646722e57566ae9f0c1",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/presentation/screens/resetPassword/ResetPasswordPage.kt": {
-    "mtime": 1780239481.242982,
-    "ast_hash": "5a79a188f9a81437f0199f66091209ec",
-    "semantic_hash": "5a79a188f9a81437f0199f66091209ec"
+    "mtime": 1784203119.7620451,
+    "ast_hash": "cab5d5188700e258729f28f74f761538",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/presentation/screens/resetPassword/ResetPasswordViewModel.kt": {
-    "mtime": 1777818731.1253655,
-    "ast_hash": "b9e27df5e03ddf95da971a8f2d8c18cc",
-    "semantic_hash": "b9e27df5e03ddf95da971a8f2d8c18cc"
+    "mtime": 1784203119.7622368,
+    "ast_hash": "35883cdc49a29394bea0f3496feae42c",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/presentation/screens/settings/SettingsPage.kt": {
-    "mtime": 1778420749.4944015,
-    "ast_hash": "62cc8ba815edd120470ff550ab6bc996",
-    "semantic_hash": "62cc8ba815edd120470ff550ab6bc996"
+    "mtime": 1784203119.7622368,
+    "ast_hash": "9e4b68c45d258ff1d4064afcf09300a4",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/presentation/screens/settings/SettingsViewModel.kt": {
-    "mtime": 1778415606.380852,
-    "ast_hash": "655523fcde61d3519902825a61204ea4",
-    "semantic_hash": "655523fcde61d3519902825a61204ea4"
+    "mtime": 1784203119.76234,
+    "ast_hash": "bf13c73bf0fa7248a45d30523b33da67",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/presentation/screens/settings/components/AppearanceSection.kt": {
-    "mtime": 1778415606.38186,
-    "ast_hash": "9eed4535007f78ab4cbabe89f60d093a",
-    "semantic_hash": "9eed4535007f78ab4cbabe89f60d093a"
+    "mtime": 1784203119.76234,
+    "ast_hash": "f91c07d94a6a868c9b08ef65a85831a1",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/presentation/screens/settings/components/DebugServerSection.kt": {
-    "mtime": 1778415606.3828664,
-    "ast_hash": "b37c22d88e91c171aeb5fadddee63055",
-    "semantic_hash": "b37c22d88e91c171aeb5fadddee63055"
+    "mtime": 1784203119.762492,
+    "ast_hash": "1861cd329b758ef6f96c84796fba0162",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/presentation/screens/settings/components/SettingRow.kt": {
-    "mtime": 1778415606.3838663,
-    "ast_hash": "4d33683c525b66d97d522726d1084fb2",
-    "semantic_hash": "4d33683c525b66d97d522726d1084fb2"
+    "mtime": 1784203119.762492,
+    "ast_hash": "0f13a95b386202beb77346266e5c6ed4",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/presentation/screens/settings/components/SettingToggleRow.kt": {
-    "mtime": 1778415606.3848689,
-    "ast_hash": "713ec8ba9094d1cf80435e4e2a6664b4",
-    "semantic_hash": "713ec8ba9094d1cf80435e4e2a6664b4"
+    "mtime": 1784203119.762492,
+    "ast_hash": "d5aeb1ea8a195ec6893350d2687e35aa",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/presentation/screens/settings/dialogs/LanguagePickerDialog.kt": {
-    "mtime": 1778415606.3858654,
-    "ast_hash": "e299f2a052cc3f629438530adff0004c",
-    "semantic_hash": "e299f2a052cc3f629438530adff0004c"
+    "mtime": 1784203119.762492,
+    "ast_hash": "bd3af480efcae7fe99c82422b71472f8",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/presentation/screens/splash/SplashPage.kt": {
-    "mtime": 1779657911.9413993,
-    "ast_hash": "2dff5b3d097e6449a8bc6efade3238f7",
-    "semantic_hash": "2dff5b3d097e6449a8bc6efade3238f7"
+    "mtime": 1784203119.762492,
+    "ast_hash": "1e7d8125446ddd471475ae0348dc60f4",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/presentation/screens/splash/SplashViewModel.kt": {
-    "mtime": 1779657911.9424088,
-    "ast_hash": "b7eccd01b66cf1ef06b82b3a459fd625",
-    "semantic_hash": "b7eccd01b66cf1ef06b82b3a459fd625"
+    "mtime": 1784203119.762736,
+    "ast_hash": "8e3262e35281e1dfa12ce974288ea858",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/presentation/screens/verifyemailresult/VerifyEmailResultPage.kt": {
-    "mtime": 1779654063.9471667,
-    "ast_hash": "2a9ca28de71c8e3d8ed912c980fb957c",
-    "semantic_hash": "2a9ca28de71c8e3d8ed912c980fb957c"
+    "mtime": 1784203119.762736,
+    "ast_hash": "d4c2b8d5847b36cc64a3f2d79757e8c3",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/presentation/screens/verifyemailresult/VerifyEmailResultViewModel.kt": {
-    "mtime": 1777818731.1273656,
-    "ast_hash": "0ff1499000e43447e266305c9f52bd5a",
-    "semantic_hash": "0ff1499000e43447e266305c9f52bd5a"
+    "mtime": 1784203119.7628565,
+    "ast_hash": "f079853c7d8bdfbb01ec0fca7f976b46",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/presentation/theme/Color.kt": {
-    "mtime": 1777818731.1283658,
-    "ast_hash": "f8e7944e4379abf66ea8fca411c97dc6",
-    "semantic_hash": "f8e7944e4379abf66ea8fca411c97dc6"
+    "mtime": 1784203119.7628565,
+    "ast_hash": "b5c4bcc37a7910f1c7a8bb0fdee3045c",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/presentation/theme/Elevation.kt": {
-    "mtime": 1777818731.1283658,
-    "ast_hash": "702832966d311ab21052fffaea572f29",
-    "semantic_hash": "702832966d311ab21052fffaea572f29"
+    "mtime": 1784203119.7630084,
+    "ast_hash": "7e33133ff3c219bfc5da21c2d3a97bfb",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/presentation/theme/Gradient.kt": {
-    "mtime": 1777818731.1293666,
-    "ast_hash": "98c081902a2e5350e812957f8e13b992",
-    "semantic_hash": "98c081902a2e5350e812957f8e13b992"
+    "mtime": 1784203119.7630084,
+    "ast_hash": "46c22ed3188d089e7d7ff090648a39be",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/presentation/theme/Motion.kt": {
-    "mtime": 1777818731.1293666,
-    "ast_hash": "2b0b1f372f15c1a4e6c6a4fb25cdaaa3",
-    "semantic_hash": "2b0b1f372f15c1a4e6c6a4fb25cdaaa3"
+    "mtime": 1784203119.7630084,
+    "ast_hash": "a0f6c253881e94439f712a919b72b866",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/presentation/theme/Shape.kt": {
-    "mtime": 1777818731.1293666,
-    "ast_hash": "bb6f6485f89f9ef98a2d646be52d9c11",
-    "semantic_hash": "bb6f6485f89f9ef98a2d646be52d9c11"
+    "mtime": 1784203119.7630084,
+    "ast_hash": "4fb45be82afb2a21120db98f99a92047",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/presentation/theme/Sizes.kt": {
-    "mtime": 1777818731.130365,
-    "ast_hash": "15e52a3782d69c14b75f2bcce3841beb",
-    "semantic_hash": "15e52a3782d69c14b75f2bcce3841beb"
+    "mtime": 1784203119.7630084,
+    "ast_hash": "911f63192eb1ae06fc3beaaedf2e9e45",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/presentation/theme/Spacing.kt": {
-    "mtime": 1777818731.130365,
-    "ast_hash": "8e9ca1929ba7c42ebcee444c09fb5f2e",
-    "semantic_hash": "8e9ca1929ba7c42ebcee444c09fb5f2e"
+    "mtime": 1784203119.7630084,
+    "ast_hash": "f681cd2a99cf90cf657ae5f2c4e37163",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/presentation/theme/Theme.kt": {
-    "mtime": 1778415606.386865,
-    "ast_hash": "c33fcf81b01f9b2c5bc68bfd7f04ab52",
-    "semantic_hash": "c33fcf81b01f9b2c5bc68bfd7f04ab52"
+    "mtime": 1784203119.7630084,
+    "ast_hash": "d379bb06bd377b08031d618123d70953",
+    "semantic_hash": ""
   },
   "app/src/main/java/es/virtualclubs/presentation/theme/Type.kt": {
-    "mtime": 1777818731.1313665,
-    "ast_hash": "62c43eff2fdd7c00d31741b6395ff8b4",
-    "semantic_hash": "62c43eff2fdd7c00d31741b6395ff8b4"
+    "mtime": 1784203119.7630084,
+    "ast_hash": "f178d1e8c82112508d01286c04d367a7",
+    "semantic_hash": ""
   },
   "app/src/test/java/es/virtualclubs/data/managers/SafeCallTest.kt": {
-    "mtime": 1777818731.139186,
-    "ast_hash": "30f2d9ad3cde6302e448b0d7d24f0c8a",
-    "semantic_hash": "30f2d9ad3cde6302e448b0d7d24f0c8a"
+    "mtime": 1784203119.7712853,
+    "ast_hash": "5158dbd0e3b38b57d9462f6fa16e5656",
+    "semantic_hash": ""
   },
   "app/src/test/java/es/virtualclubs/data/managers/SafeResponseTest.kt": {
-    "mtime": 1777818731.139186,
-    "ast_hash": "31f79c0aa1dd3534eb1a48ef8a3c6034",
-    "semantic_hash": "31f79c0aa1dd3534eb1a48ef8a3c6034"
+    "mtime": 1784203119.771367,
+    "ast_hash": "4a9a7e3a75b05022ff35ae2b0d81dff3",
+    "semantic_hash": ""
   },
   "app/src/test/java/es/virtualclubs/data/session/UserSessionTest.kt": {
-    "mtime": 1779633706.8126297,
-    "ast_hash": "77b05676cdaa1ac082d3cd5413c8f50d",
-    "semantic_hash": "77b05676cdaa1ac082d3cd5413c8f50d"
+    "mtime": 1784203119.771367,
+    "ast_hash": "6d969767aa281fea48f260fb3f65c4dc",
+    "semantic_hash": ""
   },
   "app/src/test/java/es/virtualclubs/domain/usecase/AuthUseCaseTest.kt": {
-    "mtime": 1777818731.140185,
-    "ast_hash": "c429f9618e87d8ab06c48c2e8cec5ca8",
-    "semantic_hash": "c429f9618e87d8ab06c48c2e8cec5ca8"
+    "mtime": 1784203119.7715514,
+    "ast_hash": "9a9acf9b1f86255700bb631a3dd2fae7",
+    "semantic_hash": ""
   },
   "app/src/test/java/es/virtualclubs/domain/usecase/GetUserInfoUseCaseTest.kt": {
-    "mtime": 1778415606.3893654,
-    "ast_hash": "a956b780bfa8e633659ae4065079c481",
-    "semantic_hash": "a956b780bfa8e633659ae4065079c481"
+    "mtime": 1784203119.7716253,
+    "ast_hash": "1f9249441984e8421844717d9f591ef1",
+    "semantic_hash": ""
   },
   "app/src/test/java/es/virtualclubs/domain/usecase/GoogleUseCaseTest.kt": {
-    "mtime": 1777818731.1414423,
-    "ast_hash": "6b252e02e23052feded0b848df0084dd",
-    "semantic_hash": "6b252e02e23052feded0b848df0084dd"
+    "mtime": 1784203119.7716253,
+    "ast_hash": "13ada80f7fd7bfa592fb86f4e792662d",
+    "semantic_hash": ""
   },
   "app/src/test/java/es/virtualclubs/domain/usecase/LogoutUserUseCaseTest.kt": {
-    "mtime": 1779633706.8146324,
-    "ast_hash": "d7266f8409cf5b5e59471dfd3e82b1e7",
-    "semantic_hash": "d7266f8409cf5b5e59471dfd3e82b1e7"
+    "mtime": 1784203119.7716253,
+    "ast_hash": "d42a5550c0f3817d8a83f71b44de7412",
+    "semantic_hash": ""
   },
   "app/src/test/java/es/virtualclubs/domain/usecase/RefreshTokenUseCaseTest.kt": {
-    "mtime": 1777818731.1414423,
-    "ast_hash": "d5728b4b276bb659a433f7d17ab8450f",
-    "semantic_hash": "d5728b4b276bb659a433f7d17ab8450f"
+    "mtime": 1784203119.7716253,
+    "ast_hash": "6b9e029a7fbed898c82ec03b885cf08d",
+    "semantic_hash": ""
   },
   "app/src/test/java/es/virtualclubs/domain/usecase/RegisterUseCaseTest.kt": {
-    "mtime": 1777818731.1424465,
-    "ast_hash": "4dbed6b5d9c785a8c2aa74eb2e55e5cc",
-    "semantic_hash": "4dbed6b5d9c785a8c2aa74eb2e55e5cc"
+    "mtime": 1784203119.7716253,
+    "ast_hash": "f3d56d7c91ad14ac0c33746f162dcfec",
+    "semantic_hash": ""
   },
   "app/src/test/java/es/virtualclubs/domain/usecase/token/ClearTokensUseCaseTest.kt": {
-    "mtime": 1778415606.3908658,
-    "ast_hash": "5f7117dc30f964f8b157b53134441103",
-    "semantic_hash": "5f7117dc30f964f8b157b53134441103"
+    "mtime": 1784203119.7716253,
+    "ast_hash": "d3f49912bf18586fa5e4d1dd15b568ca",
+    "semantic_hash": ""
   },
   "app/src/test/java/es/virtualclubs/domain/usecase/token/GetAccessTokenUseCaseTest.kt": {
-    "mtime": 1777818731.1434464,
-    "ast_hash": "c1fc09d8f4a9c8580d64acfd71f9fe82",
-    "semantic_hash": "c1fc09d8f4a9c8580d64acfd71f9fe82"
+    "mtime": 1784203119.7719333,
+    "ast_hash": "da6667750d67018d48e118dd2d532e2f",
+    "semantic_hash": ""
   },
   "app/src/test/java/es/virtualclubs/domain/usecase/token/GetRefreshTokenUseCaseTest.kt": {
-    "mtime": 1777818731.1434464,
-    "ast_hash": "aef765e6284fa22d47497df3e54a5bc0",
-    "semantic_hash": "aef765e6284fa22d47497df3e54a5bc0"
+    "mtime": 1784203119.7719333,
+    "ast_hash": "9212d554fd7486d3eaa0a4638e1c4c32",
+    "semantic_hash": ""
   },
   "app/src/test/java/es/virtualclubs/domain/usecase/token/SaveTokensUseCaseTest.kt": {
-    "mtime": 1777818731.1444483,
-    "ast_hash": "9ac983bfccc7c82e5659f22fcc1b5e3c",
-    "semantic_hash": "9ac983bfccc7c82e5659f22fcc1b5e3c"
+    "mtime": 1784203119.7719333,
+    "ast_hash": "827c21f8989e7b9753c66c5e4bcf831b",
+    "semantic_hash": ""
   },
   "app/src/test/java/es/virtualclubs/fakes/FakeAuthRepository.kt": {
-    "mtime": 1777818731.1444483,
-    "ast_hash": "5466320edd616fbee74b0ec57aaf558f",
-    "semantic_hash": "5466320edd616fbee74b0ec57aaf558f"
+    "mtime": 1784203119.7719333,
+    "ast_hash": "93770ed281432c05cc7a1e338d9171fb",
+    "semantic_hash": ""
   },
   "app/src/test/java/es/virtualclubs/fakes/FakeRefreshRepository.kt": {
-    "mtime": 1777818731.1454463,
-    "ast_hash": "a7dee808599b8ab237a6697b60228b55",
-    "semantic_hash": "a7dee808599b8ab237a6697b60228b55"
+    "mtime": 1784203119.7720816,
+    "ast_hash": "bc27bd3a64fb157f8c12c445d005f9da",
+    "semantic_hash": ""
   },
   "app/src/test/java/es/virtualclubs/fakes/FakeUserRepository.kt": {
-    "mtime": 1778193967.2528336,
-    "ast_hash": "41d34488809d92ebf5f1fc8a66925fab",
-    "semantic_hash": "41d34488809d92ebf5f1fc8a66925fab"
+    "mtime": 1784203119.7720816,
+    "ast_hash": "5059b46e744f420405a6af5cad00e481",
+    "semantic_hash": ""
   },
   "app/src/test/java/es/virtualclubs/presentation/managers/SessionManagerTest.kt": {
-    "mtime": 1779633706.8156345,
-    "ast_hash": "bf3aa593cf751983a5c940ee992f6c61",
-    "semantic_hash": "bf3aa593cf751983a5c940ee992f6c61"
+    "mtime": 1784203119.7721846,
+    "ast_hash": "756666b5c99cbd4174cf52c1f860b56b",
+    "semantic_hash": ""
   },
   "app/src/test/java/es/virtualclubs/presentation/screens/auth/AuthViewModelTest.kt": {
-    "mtime": 1779657911.9434056,
-    "ast_hash": "7c35dceba8d84ad978cdac11e5edf4c0",
-    "semantic_hash": "7c35dceba8d84ad978cdac11e5edf4c0"
+    "mtime": 1784203119.772287,
+    "ast_hash": "17c78077770435c43e16ea43e4087b5a",
+    "semantic_hash": ""
   },
   "app/src/test/java/es/virtualclubs/presentation/screens/splash/SplashViewModelTest.kt": {
-    "mtime": 1779657911.9444075,
-    "ast_hash": "92c3b95034719391fba632fb54de15c2",
-    "semantic_hash": "92c3b95034719391fba632fb54de15c2"
+    "mtime": 1784203119.772287,
+    "ast_hash": "dbed6c919fca80964c1683c78d79e3be",
+    "semantic_hash": ""
   },
   "app/src/test/java/es/virtualclubs/utils/MainDispatcherRule.kt": {
-    "mtime": 1777818731.148446,
-    "ast_hash": "ad6cdaf418999a37fa085279bd54bad7",
-    "semantic_hash": "ad6cdaf418999a37fa085279bd54bad7"
+    "mtime": 1784203119.772287,
+    "ast_hash": "4abe7baaf7fde0011c5f52e481782f35",
+    "semantic_hash": ""
   },
   "build.gradle.kts": {
-    "mtime": 1777818731.1494462,
-    "ast_hash": "10672f1151467d24c6b6d588e26f2366",
-    "semantic_hash": "10672f1151467d24c6b6d588e26f2366"
+    "mtime": 1784203119.772287,
+    "ast_hash": "5cd28ee14a2323115cbc79bea4e0ba9d",
+    "semantic_hash": ""
   },
   "gradlew": {
-    "mtime": 1766758917.9600325,
-    "ast_hash": "c6ea21dea2d500b277296894708cf792",
-    "semantic_hash": "c6ea21dea2d500b277296894708cf792"
+    "mtime": 1784203119.7732782,
+    "ast_hash": "02c16663c6f0aa37f98d94d698c22b8c",
+    "semantic_hash": ""
   },
   "settings.gradle.kts": {
-    "mtime": 1766758917.9615333,
-    "ast_hash": "8f56de74146ba9b25f725beacba4c792",
-    "semantic_hash": "8f56de74146ba9b25f725beacba4c792"
+    "mtime": 1784203119.7758427,
+    "ast_hash": "9334fe53b6ffd49fb5e04ca3a17bf034",
+    "semantic_hash": ""
   },
   ".claude/commands/add-api-endpoint.md": {
-    "mtime": 1780227821.8433728,
+    "mtime": 1784203119.7521107,
     "ast_hash": "cce2d93b981af76e7c9a33ced831efe4",
     "semantic_hash": "cce2d93b981af76e7c9a33ced831efe4"
   },
   ".claude/commands/add-error-type.md": {
-    "mtime": 1780227841.76391,
+    "mtime": 1784203119.7522757,
     "ast_hash": "869d83261aac4c9ff9f8b0e454adcec5",
     "semantic_hash": "869d83261aac4c9ff9f8b0e454adcec5"
   },
   ".claude/commands/add-screen.md": {
-    "mtime": 1777818731.075148,
-    "ast_hash": "9608094dc5672ede031a6934b7754e63",
-    "semantic_hash": "9608094dc5672ede031a6934b7754e63"
+    "mtime": 1784203119.7522757,
+    "ast_hash": "5b5d7c439c1d51bae8a4701aac4a01ff",
+    "semantic_hash": ""
   },
   ".claude/commands/add-test.md": {
-    "mtime": 1777818731.0761454,
-    "ast_hash": "e05cc6a608f4fdadf5e1eb43d92f9888",
-    "semantic_hash": "e05cc6a608f4fdadf5e1eb43d92f9888"
+    "mtime": 1784203119.7522757,
+    "ast_hash": "f4daf4ec2e7cfcd2b3a31e587640b1f0",
+    "semantic_hash": ""
   },
   ".claude/commands/add-usecase.md": {
-    "mtime": 1780227805.114475,
+    "mtime": 1784203119.7522757,
     "ast_hash": "be46224b4fb384694c57404b3abcea0c",
     "semantic_hash": "be46224b4fb384694c57404b3abcea0c"
   },
   ".claude/commands/check-ds.md": {
-    "mtime": 1779634718.6933854,
-    "ast_hash": "73009fb533f6bae9e018f3bdce383bc5",
-    "semantic_hash": "73009fb533f6bae9e018f3bdce383bc5"
+    "mtime": 1784203119.7522757,
+    "ast_hash": "9f51cef666add8374a07f3ac1a43d5de",
+    "semantic_hash": ""
   },
   ".claude/commands/check-security.md": {
-    "mtime": 1777818731.0761454,
-    "ast_hash": "61808663e4e2ee9f317dfe4a2c36e031",
-    "semantic_hash": "61808663e4e2ee9f317dfe4a2c36e031"
+    "mtime": 1784203119.7522757,
+    "ast_hash": "eff5fd4348b39f20fc274f9cd208d6a3",
+    "semantic_hash": ""
   },
   ".claude/commands/check-structure.md": {
-    "mtime": 1779634718.6953845,
-    "ast_hash": "6ea091a094fb75d10847278064d18117",
-    "semantic_hash": "6ea091a094fb75d10847278064d18117"
+    "mtime": 1784203119.7522757,
+    "ast_hash": "b59924bfb19dc22aa685f11093b1ced1",
+    "semantic_hash": ""
   },
   ".claude/commands/commit.md": {
-    "mtime": 1777818731.0771453,
-    "ast_hash": "ae8571019b604542e425844454da938b",
-    "semantic_hash": "ae8571019b604542e425844454da938b"
+    "mtime": 1784203119.7522757,
+    "ast_hash": "b7334616e389fe86069e4540d3abbe74",
+    "semantic_hash": ""
   },
   ".claude/commands/create-pr.md": {
-    "mtime": 1777818731.078146,
-    "ast_hash": "a35a85dcb78f61659e55437199c4faa8",
-    "semantic_hash": "a35a85dcb78f61659e55437199c4faa8"
+    "mtime": 1784203119.7522757,
+    "ast_hash": "6ce5826f3c5785694d92b76afa69b854",
+    "semantic_hash": ""
   },
   ".claude/commands/do-task.md": {
-    "mtime": 1780227778.2433047,
-    "ast_hash": "4d6834ef20b7ee40b7bcf1209a844c91",
-    "semantic_hash": "4d6834ef20b7ee40b7bcf1209a844c91"
+    "mtime": 1784203119.7522757,
+    "ast_hash": "8228458a34fab18a9a91312ccbb75b72",
+    "semantic_hash": ""
   },
   ".claude/commands/explain.md": {
-    "mtime": 1777818731.0791452,
-    "ast_hash": "84e0bd0fcf79016d3920430fce03007f",
-    "semantic_hash": "84e0bd0fcf79016d3920430fce03007f"
+    "mtime": 1784203119.7522757,
+    "ast_hash": "f5a3305e6e1fa9e8abee996807cce162",
+    "semantic_hash": ""
   },
   ".claude/commands/new-feature.md": {
-    "mtime": 1777818731.0791452,
-    "ast_hash": "a22ad9ab8701deaf86812bb88f2712c4",
-    "semantic_hash": "a22ad9ab8701deaf86812bb88f2712c4"
+    "mtime": 1784203119.7522757,
+    "ast_hash": "db08440282d90c1ccd616ecc0ece64b8",
+    "semantic_hash": ""
   },
   ".claude/commands/project-status.md": {
-    "mtime": 1777818731.080145,
-    "ast_hash": "68dc9b3247b3a57d071aebe15189bb80",
-    "semantic_hash": "68dc9b3247b3a57d071aebe15189bb80"
+    "mtime": 1784203119.7522757,
+    "ast_hash": "7740174dc4334c5ccdf02cb3040b0abc",
+    "semantic_hash": ""
   },
   ".claude/commands/release-debug.md": {
-    "mtime": 1780227867.5786242,
-    "ast_hash": "a93b13226c9c9626062cd8b2724423f2",
-    "semantic_hash": "a93b13226c9c9626062cd8b2724423f2"
+    "mtime": 1784203119.7522757,
+    "ast_hash": "05d742293bc258a2787c4914a901feac",
+    "semantic_hash": ""
   },
   ".claude/commands/review-pr.md": {
-    "mtime": 1777818731.080145,
-    "ast_hash": "8b70ea9cb161ff05ba658e396bcaed4f",
-    "semantic_hash": "8b70ea9cb161ff05ba658e396bcaed4f"
+    "mtime": 1784203119.7522757,
+    "ast_hash": "8d2253fdd0a343198030a1ffc3f4ff6b",
+    "semantic_hash": ""
   },
   ".claude/commands/update-deps.md": {
-    "mtime": 1777818731.081149,
-    "ast_hash": "c21735b6946b03e9875419a4e79f9b99",
-    "semantic_hash": "c21735b6946b03e9875419a4e79f9b99"
+    "mtime": 1784203119.7522757,
+    "ast_hash": "d99c4d6cfe5a4a55ed43e33fa02c8d1c",
+    "semantic_hash": ""
   },
   ".github/pull_request_template.md": {
-    "mtime": 1777818731.0821495,
-    "ast_hash": "e168db64d76eb2a13e9998d018f3df14",
-    "semantic_hash": "e168db64d76eb2a13e9998d018f3df14"
+    "mtime": 1784203119.7522757,
+    "ast_hash": "01e7c78fb69d91253f701a7707ab1e55",
+    "semantic_hash": ""
   },
   ".github/workflows/ci.yml": {
-    "mtime": 1779633706.802606,
-    "ast_hash": "1f2624ecb50d00e927e6011402477a52",
-    "semantic_hash": "1f2624ecb50d00e927e6011402477a52"
+    "mtime": 1784203119.7532344,
+    "ast_hash": "266d06565d569dce3d0dfa36f7adcef2",
+    "semantic_hash": ""
   },
   "CHANGELOG.md": {
-    "mtime": 1779658406.9385333,
-    "ast_hash": "54dcbb99f133056798c9c3b6f2a20546",
-    "semantic_hash": "54dcbb99f133056798c9c3b6f2a20546"
+    "mtime": 1784203119.7544618,
+    "ast_hash": "bf471176cdc60d06a4adabb7fa68fb3b",
+    "semantic_hash": ""
   },
   "CLAUDE.md": {
-    "mtime": 1784115770.7961466,
-    "ast_hash": "d2bb36507bd73bf1df09387d72e902b0",
-    "semantic_hash": "d2bb36507bd73bf1df09387d72e902b0"
+    "mtime": 1784203119.7544618,
+    "ast_hash": "68a7e81a853edd3012b03d14fc16d2e5",
+    "semantic_hash": ""
   },
   "CONTRIBUTING.md": {
-    "mtime": 1777818731.0881455,
-    "ast_hash": "f5768580025c422e76a7792a0b9efabe",
-    "semantic_hash": "f5768580025c422e76a7792a0b9efabe"
+    "mtime": 1784203119.7544618,
+    "ast_hash": "17c95135781d304e123791ad2df22765",
+    "semantic_hash": ""
   },
   "README.es.md": {
-    "mtime": 1778191261.9264326,
-    "ast_hash": "b10da30c4b55a76b3a984694384021cf",
-    "semantic_hash": "b10da30c4b55a76b3a984694384021cf"
+    "mtime": 1784203119.7544618,
+    "ast_hash": "160d01212794e452d0616f559db89d16",
+    "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1778191261.928431,
-    "ast_hash": "1896945698f50fb6aaa1329a0d22b81f",
-    "semantic_hash": "1896945698f50fb6aaa1329a0d22b81f"
+    "mtime": 1784203119.7544618,
+    "ast_hash": "e652c26cc2ae6ed409c8bbc89d7cdb2d",
+    "semantic_hash": ""
   },
   "SECURITY.md": {
-    "mtime": 1777818731.0891457,
-    "ast_hash": "c09236eef431477e8b6febde118aaed3",
-    "semantic_hash": "c09236eef431477e8b6febde118aaed3"
+    "mtime": 1784203119.7544618,
+    "ast_hash": "b92c7fdc9c6b74f670e87602bb7dcecc",
+    "semantic_hash": ""
   },
   "app/src/main/ic_launcher-playstore.png": {
-    "mtime": 1766758917.8339903,
+    "mtime": 1784203119.7568426,
     "ast_hash": "2d3a91f217b9cbe7e35ab5b8a276a486",
     "semantic_hash": "2d3a91f217b9cbe7e35ab5b8a276a486"
   },
   "app/src/main/res/drawable-mdpi/logo_text_black.png": {
-    "mtime": 1766758917.9015224,
+    "mtime": 1784203119.7634664,
     "ast_hash": "ffa272b051205dbd3fa260db290e57c0",
     "semantic_hash": "ffa272b051205dbd3fa260db290e57c0"
   },
   "app/src/main/res/drawable-mdpi/logo_text_white.png": {
-    "mtime": 1766758917.9025226,
+    "mtime": 1784203119.7634664,
     "ast_hash": "1c07ca412c6aa74ca0b63a7c79d9d4c7",
     "semantic_hash": "1c07ca412c6aa74ca0b63a7c79d9d4c7"
   },
   "app/src/main/res/drawable-mdpi/logo_whitout_text.png": {
-    "mtime": 1766758917.904023,
+    "mtime": 1784203119.7634664,
     "ast_hash": "0225b6f16ebdac57fca37802c61aa4b3",
     "semantic_hash": "0225b6f16ebdac57fca37802c61aa4b3"
   },
   "app/src/main/res/mipmap-hdpi/ic_launcher.webp": {
-    "mtime": 1766758917.9290273,
+    "mtime": 1784203119.769873,
     "ast_hash": "3431e91b7e78eb20c109c06ba39ae0b4",
     "semantic_hash": "3431e91b7e78eb20c109c06ba39ae0b4"
   },
   "app/src/main/res/mipmap-hdpi/ic_launcher_foreground.webp": {
-    "mtime": 1766758917.9300272,
+    "mtime": 1784203119.7699783,
     "ast_hash": "f66577a17b0ee51deb4bd48a930d265b",
     "semantic_hash": "f66577a17b0ee51deb4bd48a930d265b"
   },
   "app/src/main/res/mipmap-hdpi/ic_launcher_round.webp": {
-    "mtime": 1766758917.9310272,
+    "mtime": 1784203119.7699783,
     "ast_hash": "2ab23a0cbc7c04136d673915edf1dce0",
     "semantic_hash": "2ab23a0cbc7c04136d673915edf1dce0"
   },
   "app/src/main/res/mipmap-mdpi/ic_launcher.webp": {
-    "mtime": 1766758917.9320276,
+    "mtime": 1784203119.7699783,
     "ast_hash": "3081a456d3a565e0a5d50f30eac96f75",
     "semantic_hash": "3081a456d3a565e0a5d50f30eac96f75"
   },
   "app/src/main/res/mipmap-mdpi/ic_launcher_foreground.webp": {
-    "mtime": 1766758917.933028,
+    "mtime": 1784203119.7701144,
     "ast_hash": "a5c2ee04fa19c131eacbd0d2d03afe47",
     "semantic_hash": "a5c2ee04fa19c131eacbd0d2d03afe47"
   },
   "app/src/main/res/mipmap-mdpi/ic_launcher_round.webp": {
-    "mtime": 1766758917.933528,
+    "mtime": 1784203119.7701144,
     "ast_hash": "8ef547fc98d42cc914fc21ec4e770a76",
     "semantic_hash": "8ef547fc98d42cc914fc21ec4e770a76"
   },
   "app/src/main/res/mipmap-xhdpi/ic_launcher.webp": {
-    "mtime": 1766758917.9350283,
+    "mtime": 1784203119.7701144,
     "ast_hash": "85bedd09ebab6de5c614042827e914c1",
     "semantic_hash": "85bedd09ebab6de5c614042827e914c1"
   },
   "app/src/main/res/mipmap-xhdpi/ic_launcher_foreground.webp": {
-    "mtime": 1766758917.9360282,
+    "mtime": 1784203119.7702503,
     "ast_hash": "9aedcb52a08d9d7a77e3d4ce73f31d0b",
     "semantic_hash": "9aedcb52a08d9d7a77e3d4ce73f31d0b"
   },
   "app/src/main/res/mipmap-xhdpi/ic_launcher_round.webp": {
-    "mtime": 1766758917.9370284,
+    "mtime": 1784203119.7702503,
     "ast_hash": "2dcfc3e34e86cf391fa24700a8f20fa5",
     "semantic_hash": "2dcfc3e34e86cf391fa24700a8f20fa5"
   },
   "app/src/main/res/mipmap-xxhdpi/ic_launcher.webp": {
-    "mtime": 1766758917.9380288,
+    "mtime": 1784203119.7702503,
     "ast_hash": "e172e165590895685d7083ebefbd3c0d",
     "semantic_hash": "e172e165590895685d7083ebefbd3c0d"
   },
   "app/src/main/res/mipmap-xxhdpi/ic_launcher_foreground.webp": {
-    "mtime": 1766758917.9410288,
+    "mtime": 1784203119.770481,
     "ast_hash": "34f2c6350996fcb3ec2692b9409eaa45",
     "semantic_hash": "34f2c6350996fcb3ec2692b9409eaa45"
   },
   "app/src/main/res/mipmap-xxhdpi/ic_launcher_round.webp": {
-    "mtime": 1766758917.942029,
+    "mtime": 1784203119.770481,
     "ast_hash": "5b01c7565b5527d14540e283714cfaec",
     "semantic_hash": "5b01c7565b5527d14540e283714cfaec"
   },
   "app/src/main/res/mipmap-xxxhdpi/ic_launcher.webp": {
-    "mtime": 1766758917.9435296,
+    "mtime": 1784203119.770481,
     "ast_hash": "742dadbe5fd2217f2c22398745332c2f",
     "semantic_hash": "742dadbe5fd2217f2c22398745332c2f"
   },
   "app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.webp": {
-    "mtime": 1766758917.9445298,
+    "mtime": 1784203119.7706888,
     "ast_hash": "88ee58991699ccf4a0b6eca178ba1611",
     "semantic_hash": "88ee58991699ccf4a0b6eca178ba1611"
   },
   "app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp": {
-    "mtime": 1766758917.9455297,
+    "mtime": 1784203119.7706888,
     "ast_hash": "4adff1ee9eeb3f9685494567e4ae08c7",
     "semantic_hash": "4adff1ee9eeb3f9685494567e4ae08c7"
+  },
+  "app/src/test/java/es/virtualclubs/domain/usecase/GetSessionStateUseCaseTest.kt": {
+    "mtime": 1784203119.7716253,
+    "ast_hash": "87cf511a12e5f97737047e0c24d2546b",
+    "semantic_hash": ""
+  },
+  "app/src/test/java/es/virtualclubs/domain/usecase/RequestPasswordResetUseCaseTest.kt": {
+    "mtime": 1784203119.7716253,
+    "ast_hash": "4772446fd3de1d72066d620bb634aa71",
+    "semantic_hash": ""
+  },
+  "app/src/test/java/es/virtualclubs/presentation/screens/home/HomeViewModelTest.kt": {
+    "mtime": 1784203119.772287,
+    "ast_hash": "26e76394fd6ccf5ed8189cdc78823c3f",
+    "semantic_hash": ""
+  },
+  "app/src/test/java/es/virtualclubs/presentation/screens/resetPassword/ResetPasswordViewModelTest.kt": {
+    "mtime": 1784203119.772287,
+    "ast_hash": "79f226b83a134968a19cc6f2affd344a",
+    "semantic_hash": ""
+  },
+  "app/src/test/java/es/virtualclubs/presentation/screens/settings/SettingsViewModelTest.kt": {
+    "mtime": 1784203119.772287,
+    "ast_hash": "af8ca12309406eb322effb53ac3bba4a",
+    "semantic_hash": ""
+  },
+  "app/src/test/java/es/virtualclubs/presentation/screens/verifyemailresult/VerifyEmailResultViewModelTest.kt": {
+    "mtime": 1784203119.772287,
+    "ast_hash": "b252147b504a0e431ccc02089a7dee63",
+    "semantic_hash": ""
+  },
+  ".github/workflows/graphify.yml": {
+    "mtime": 1784203119.7532907,
+    "ast_hash": "e6bff5aeda6f7771ca5187a2438c9939",
+    "semantic_hash": ""
   }
 }
